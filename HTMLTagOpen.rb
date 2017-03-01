@@ -8,6 +8,8 @@ class HTMLTagOpen < HTMLTag
 
     def initialize(html_line, str)
         super(html_line, str)
+
+        puts "Opening tag created: #{str}"
     end
 
     def has_closing_tag

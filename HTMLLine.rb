@@ -1,5 +1,4 @@
-require_relative 'HTMLTagOpen.rb'
-require_relative 'HTMLTagClose.rb'
+require_relative 'HTMLTagFactory.rb'
 
 class HTMLLine
     attr_accessor :html_file
@@ -14,7 +13,6 @@ class HTMLLine
         @open_bracket_detected = false
         @opening_tag_detected = false
         @closing_tag_detected = false
-        @forward_slash_detected = false
         @str = line_str
         @line_number = line_number
         #puts "#{@line_number}: #{@str}"
@@ -66,67 +64,62 @@ class HTMLLine
                 #we have a syntax error
                 puts_error("double '<'", @line_number)
                 puts_error_location(str,i)
-            elsif char == ">" and @open_bracket_detected and @forward_slash_detected
-                #a closing tag has been detected
+            elsif char == ">" and @open_bracket_detected
+                #a tag has been detected
                 @current_tag_str << ">"
-                ##search for the opening tag and set the closing tag
-                closing_tag = HTMLTagClose.new(self, @current_tag_str)
-                closing_tag.opening_tag = nil #search for opening tag
-                #go backwards with current tags array and match with first match
-                @tags.reverse.each do |searched_tag|
-                    if searched_tag.is_a?(HTMLTagOpen)
-                        opening_tag = searched_tag #clarify
-                        if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
-                            opening_tag.closing_tag = closing_tag
-                            closing_tag.opening_tag = opening_tag
-                            break
-                        end #else continue to search for the opening tag in the next iteration
-                    end #end if 
-                end #end do
-                
-                #we have to back track and continue to find the opening tag
-                if !closing_tag.has_opening_tag
-                    @html_file.lines.reverse.each do |current_line|
-                        current_line.tags.reverse.each do |searched_tag|
-                            if searched_tag.is_a?(HTMLTagOpen)
-                                opening_tag = searched_tag #clarify
-                                if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
-                                    opening_tag.closing_tag = closing_tag
-                                    closing_tag.opening_tag = opening_tag
-                                    break
-                                end #else continue to search for the opening tag in the next iteration
-                            end #end if                             
-                        end #end do  
-                        break if closing_tag.has_opening_tag #else we have to continue to back track
-                    end #end do
-                end #end if
+                tag = HTMLTagFactory.create(@line, @current_tag_str)
 
-                if !closing_tag.has_opening_tag
-                    puts_error("Closing tag has no opening tag", @line_number)
-                    puts_error_location(str,i)                    
+                if tag != nil
+                    @tags << tag
+                else
+                    puts_error("invalid tag detected", @line_number)
+                    puts_error_location(str,i)
                 end
 
-                @tags << closing_tag
-                @current_tag_str = ""
-                @open_bracket_detected = false
-                @forward_slash_detected = false
-            elsif char == ">" and @open_bracket_detected and !@forward_slash_detected
-                #opening tag has been detected
-                @current_tag_str << ">"
-                tag = HTMLTagOpen.new(self, @current_tag_str)
-                #the closing tag should exist somewhere below
-                @tags << tag
+                if tag.is_a?(HTMLTagClose) #search for opening tag
+                    closing_tag = tag #clarify
+                   
+                    #go backwards with current tags array and match with first match
+                    @tags.reverse.each do |searched_tag|
+                        if searched_tag.is_a?(HTMLTagOpen)
+                            opening_tag = searched_tag #clarify
+                            if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
+                                opening_tag.closing_tag = closing_tag
+                                closing_tag.opening_tag = opening_tag
+                                break
+                            end #else continue to search for the opening tag in the next iteration
+                        end #end if searched_tag.is_a?(HTMLTagOpen)
+                    end #end do |searched_tag|
+                    
+                    #we have to back track and continue to find the opening tag
+                    if !closing_tag.has_opening_tag
+                        @html_file.lines.reverse.each do |current_line|
+                            current_line.tags.reverse.each do |searched_tag|
+                                if searched_tag.is_a?(HTMLTagOpen)
+                                    opening_tag = searched_tag #clarify
+                                    if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
+                                        opening_tag.closing_tag = closing_tag
+                                        closing_tag.opening_tag = opening_tag
+                                        break
+                                    end #else continue to search for the opening tag in the next iteration
+                                end #end if searched_tag.is_a?(HTMLTagOpen)                             
+                            end #end do |searched_tag|  
+                            break if closing_tag.has_opening_tag #else we have to continue to back track
+                        end #end do |current_line|
+                    end #end !closing_tag.has_opening_ta
+
+                    if !closing_tag.has_opening_tag
+                        puts_error("Closing tag has no opening tag", @line_number)
+                        puts_error_location(str,i)                    
+                    end #end !closing_tag.has_opening_tag 
+                end #end if is_a?(HTMLTagClose)
+
                 @current_tag_str = ""
                 @open_bracket_detected = false
             elsif char == ">" and !@open_bracket_detected
                 #potential syntax error
                 puts_warning("closing '>' detected without opening '<', check lines above", @line_number)
                 puts_warning_location(str,i)
-            elsif char == "/" and @open_bracket_detected
-                @forward_slash_detected = true;
-                @current_tag_str << char
-            elsif char == "/" and !@open_bracket_detected
-                #it is probably just regular inner HTML (content)
             elsif @open_bracket_detected
                 @current_tag_str << char
             elsif !@open_bracket_detected
