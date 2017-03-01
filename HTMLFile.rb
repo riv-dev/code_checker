@@ -3,14 +3,22 @@ require_relative 'HTMLLine.rb'
 class HTMLFile
     attr_accessor :file_path, :lines, :errors, :warnings
 
+    def check_all_tags
+        @lines.each do |current_line|
+            current_line.tags.each do |current_tag|
+                yield(current_line, current_tag)
+            end
+        end    
+    end
+
     def puts_error(error, line)
         @errors << "[Error][#{error}]: line #{line.line_number}"
-        @errors << "  #{line.str}"
+        @errors << "  #{line.str.strip}"
     end
 
     def puts_warning(warning, line)
         @warnings << "[Warning][#{warning}]: line #{line.line_number}"
-        @warnings << "  #{line.str}"
+        @warnings << "  #{line.str.strip}"
     end
 
     def initialize(file_path)
@@ -27,14 +35,13 @@ class HTMLFile
                 i = i + 1
             end #f.each_line
 
-            #Search through all tags and fine any opening tags without closing tags
-            @lines.each do |current_line|
-                current_line.tags.each do |current_tag|
-                    if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
-                        puts_error("#{current_tag.str} has no closing tag", current_line)
-                    end
-                end
+            #Insert all custom checks here
+            check_all_tags do |current_line, current_tag|
+                if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
+                    puts_error("#{current_tag.str} has no closing tag", current_line)
+                end                
             end
+
         end #File.open
 
         #Display errors

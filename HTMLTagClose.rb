@@ -5,7 +5,7 @@ class HTMLTagClose < HTMLTag
 
     def initialize(html_line, str)
         super(html_line, str)
-        puts "Closing tag created: #{str}"
+        #puts "Closing tag created: #{str}"
     end
 
     def has_opening_tag

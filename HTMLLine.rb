@@ -19,7 +19,7 @@ class HTMLLine
 
         detect_tags(@str)
 
-        puts "line #{@line_number}: #{@tags.length}"
+        #puts "line #{@line_number}: #{@tags.length}"
     end
 
     def to_s
@@ -32,7 +32,7 @@ class HTMLLine
 
     def puts_error_location(str, i)
         str = str.scan(/^.{#{i-1}}|.+/).join("*Error*")
-        @html_file.errors << "  #{str}"
+        @html_file.errors << "  #{str.strip}"
     end
 
     def puts_warning(warning, i)
@@ -41,7 +41,7 @@ class HTMLLine
 
     def puts_warning_location(str, i)
         str = str.scan(/^.{#{i-1}}|.+/).join("*Warning*")
-        @html_file.warnings << "  #{str}"
+        @html_file.warnings << "  #{str.strip}"
     end
 
     def detect_tags(str)
@@ -50,6 +50,9 @@ class HTMLLine
         #tags_arr.each do |tag_str|
         #    @tags << HTMLTag.new(tag_str)
         #end
+
+        #remove handlebars expressions
+        str.gsub!(/\{\{>\s*(\w+.*)\s*\}\}/, ' {{ \1 }} ')
 
         @open_bracket_detected = false;
         @current_tag_str = ""

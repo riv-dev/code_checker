@@ -9,10 +9,6 @@ class HTMLTag
         @type = str.match(/<\s*\/?\s*(\w+)\s*.*>/).captures[0]
     end
 
-    def HTMLTag::is_closing_tag(str)
-        str.match(/<\s*\/?\s*(\w+)\s*.*>/)
-    end
-
     def to_s
         @str
     end
