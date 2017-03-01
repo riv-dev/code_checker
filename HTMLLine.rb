@@ -52,7 +52,8 @@ class HTMLLine
         #end
 
         #remove handlebars expressions
-        str.gsub!(/\{\{>\s*(\w+.*)\s*\}\}/, ' {{ \1 }} ')
+        str.gsub!(/\{\{>\s*(\w+.*)\s*\}\}/, '{{ \1 }}')
+        #remove comments <!-- -->
 
         @open_bracket_detected = false;
         @current_tag_str = ""
