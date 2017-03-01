@@ -1,3 +1,5 @@
+require_relative 'HTMLTag'
+
 class HTMLTagOpen < HTMLTag
     attr_accessor :id #type String
     attr_accessor :classes #type Array of Strings
@@ -15,6 +17,4 @@ class HTMLTagOpen < HTMLTag
     def closing_tag_line_number
         return @closing_tag.html_line.line_number if @closing_tag != nil
     end
-
-
 end

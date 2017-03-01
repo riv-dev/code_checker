@@ -1,4 +1,3 @@
-require_relative 'HTMLTag.rb'
 require_relative 'HTMLTagOpen.rb'
 require_relative 'HTMLTagClose.rb'
 
@@ -21,6 +20,12 @@ class HTMLLine
         #puts "#{@line_number}: #{@str}"
 
         detect_tags(@str)
+
+        puts "line #{@line_number}: #{@tags.length}"
+    end
+
+    def to_s
+        @str
     end
 
     def puts_error(error, i)
@@ -72,8 +77,8 @@ class HTMLLine
                     if searched_tag.is_a?(HTMLTagOpen)
                         opening_tag = searched_tag #clarify
                         if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
-                            searched_tag.closing_tag = closing_tag
-                            closing_tag.opening_tag = searched_tag
+                            opening_tag.closing_tag = closing_tag
+                            closing_tag.opening_tag = opening_tag
                             break
                         end #else continue to search for the opening tag in the next iteration
                     end #end if 
@@ -86,8 +91,8 @@ class HTMLLine
                             if searched_tag.is_a?(HTMLTagOpen)
                                 opening_tag = searched_tag #clarify
                                 if opening_tag.type == closing_tag.type and !opening_tag.has_closing_tag
-                                    searched_tag.closing_tag = closing_tag
-                                    closing_tag.opening_tag = searched_tag
+                                    opening_tag.closing_tag = closing_tag
+                                    closing_tag.opening_tag = opening_tag
                                     break
                                 end #else continue to search for the opening tag in the next iteration
                             end #end if                             

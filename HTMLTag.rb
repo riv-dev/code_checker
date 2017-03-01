@@ -8,4 +8,8 @@ class HTMLTag
         @str = str
         @type = str.match(/<\s*\/?\s*(\w+)\s*.*>/).captures[0]
     end
+
+    def to_s
+        @str
+    end
 end

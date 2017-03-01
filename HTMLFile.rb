@@ -29,4 +29,8 @@ class HTMLFile
             end
         end
     end #initialize
+
+    def to_s
+        @file_path
+    end
 end
