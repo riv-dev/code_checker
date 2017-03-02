@@ -1,1 +1,0 @@
-#Running command: ruby run_code_checker root_directory_path

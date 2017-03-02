@@ -1,3 +1,5 @@
+require_relative 'HTMLTag.rb'
+
 class HTMLTagVoid < HTMLTag
     @@void_tag_types_list = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr']
 

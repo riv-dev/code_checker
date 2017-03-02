@@ -1,4 +1,4 @@
-require_relative 'HTMLTag'
+require_relative 'HTMLTag.rb'
 
 class HTMLTagOpen < HTMLTag
     attr_accessor :id #type String

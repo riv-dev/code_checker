@@ -1,6 +1,6 @@
-require_relative 'HTMLTagOpen'
-require_relative 'HTMLTagClose'
-require_relative 'HTMLTagVoid'
+require_relative 'HTMLTagOpen.rb'
+require_relative 'HTMLTagClose.rb'
+require_relative 'HTMLTagVoid.rb'
 
 class HTMLTagFactory
     def HTMLTagFactory::create(html_line, str)
