@@ -4,15 +4,17 @@ class HTMLLine
     attr_accessor :html_file
     attr_accessor :str
     attr_accessor :line_number
-    attr_accessor :open_bracket_detected
     attr_accessor :tags #Type HTMLTag
+    @@open_comment_detected = false
+    @@open_bracket_detected = false
+    @@opening_tag_detected = false
+    @@closing_tag_detected = false
+    @@current_tag_str = ""
+    @@open_script_detected = false
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
         @tags = []
-        @open_bracket_detected = false
-        @opening_tag_detected = false
-        @closing_tag_detected = false
         @str = line_str
         @line_number = line_number
         #puts "#{@line_number}: #{@str}"
@@ -45,33 +47,66 @@ class HTMLLine
     end
 
     def detect_tags(str)
-        #tags_arr = str.scan(/<.*?>/)
+        #ignore line
+        if str.match(/<\s*!DOCTYPE\s+html\s*>/) #special HTML open tag
+            return @tags = []
+        end
 
-        #tags_arr.each do |tag_str|
-        #    @tags << HTMLTag.new(tag_str)
-        #end
+        #remove comments <!-- -->
+        if @@open_comment_detected and str.gsub!(/.*-->/, ' ')
+            #puts "end of comment"
+            #puts "  #{str}"
+            @@open_comment_detected = false
+        elsif @@open_comment_detected
+            #puts "comment ignored"
+            #puts "  #{str}"
+            return @tags = [] #commented line, don't process
+        elsif str.gsub!(/<!--.*-->/, ' ')
+            #puts "comment removed"
+            #puts " #{str}"
+            @@open_comment_detected = false
+        elsif str.gsub!(/<!--.*/, ' ')
+            #puts "open comment detected line:#{@line_number}}"
+            #puts "  #{str}"
+            @@open_comment_detected = true
+        end
+
+        #remove scripts
+        if @@open_script_detected and str.gsub!(/<\s*\/\s*script\s*>/, ' ')
+            #puts "end of script"
+            #puts "  #{str}"
+            @@open_script_detected = false
+        elsif @@open_script_detected
+            #puts "ignore script line"
+            #puts "  #{str}"
+            return @tags = []
+        elsif str.gsub!(/<\s*script\s*.*>.*<\s*\/\s*script\s*>/, ' ')
+            #puts "script removed"
+            #puts " #{str}"
+            @@open_script_detected = false
+        elsif str.gsub!(/<\s*script\s*.*>.*/, ' ')
+            #puts "open script detected"
+            #puts " #{str}"
+            @@open_script_detected = true
+        end
 
         #remove handlebars expressions
         str.gsub!(/\{\{>\s*(\w+.*)\s*\}\}/, '{{ \1 }}')
-        #remove comments <!-- -->
-
-        @open_bracket_detected = false;
-        @current_tag_str = ""
 
         i = 1
         str.split("").each do |char|
-            if char == "<" and !@open_bracket_detected
-                @open_bracket_detected = true
+            if char == "<" and !@@open_bracket_detected
+                @@open_bracket_detected = true
                 #new tag detected
-                @current_tag_str = "<"
-            elsif char == "<" and @open_bracket_detected
+                @@current_tag_str = "<"
+            elsif char == "<" and @@open_bracket_detected
                 #we have a syntax error
                 puts_error("double '<'", @line_number)
                 puts_error_location(str,i)
-            elsif char == ">" and @open_bracket_detected
+            elsif char == ">" and @@open_bracket_detected
                 #a tag has been detected
-                @current_tag_str << ">"
-                tag = HTMLTagFactory.create(@line, @current_tag_str)
+                @@current_tag_str << ">"
+                tag = HTMLTagFactory.create(@line, @@current_tag_str)
 
                 if tag != nil
                     @tags << tag
@@ -118,15 +153,17 @@ class HTMLLine
                     end #end !closing_tag.has_opening_tag 
                 end #end if is_a?(HTMLTagClose)
 
-                @current_tag_str = ""
-                @open_bracket_detected = false
-            elsif char == ">" and !@open_bracket_detected
+                @@current_tag_str = ""
+                @@open_bracket_detected = false
+            elsif char == ">" and !@@open_bracket_detected
                 #potential syntax error
                 puts_warning("closing '>' detected without opening '<', check lines above", @line_number)
                 puts_warning_location(str,i)
-            elsif @open_bracket_detected
-                @current_tag_str << char
-            elsif !@open_bracket_detected
+            elsif @@open_bracket_detected
+                if char != "\r" and char != "\n"
+                    @@current_tag_str << char
+                end
+            elsif !@@open_bracket_detected
                 #should be text within a tag
             else
 
