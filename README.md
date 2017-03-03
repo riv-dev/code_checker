@@ -32,7 +32,7 @@ Pipe the output to a logfile
 code_checker -f index.html > log.txt
 ```
 
-## Directions to run within Grunt, Ryukyu project
+## [Under Construction, do not try yet] Directions to run automatically within Grunt, Ryukyu project
 Add the following line to _dev/Gemfile
 ```ruby
 gem 'code_checker', :git => 'git://github.com/riv-dev/code_checker.git'
