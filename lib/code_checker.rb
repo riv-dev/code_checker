@@ -18,5 +18,9 @@ class CodeChecker
     Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file| # note one extra "*"
       HTMLFile.new(my_hbs_file)
     end
+
+    Dir.glob(html_folder+"/**/*.php") do |my_php_file| # note one extra "*"
+      HTMLFile.new(my_php_file)
+    end    
   end
 end
