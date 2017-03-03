@@ -57,7 +57,7 @@ class HTMLLine
         end
 
         #remove comments <!-- -->
-        if @@open_comment_detected and str.gsub!(/.*-->/, ' ')
+        if @@open_comment_detected and str.gsub!(/.*?-->/, ' ')
             #puts "end of comment"
             #puts "  #{str}"
             @@open_comment_detected = false
@@ -65,7 +65,7 @@ class HTMLLine
             #puts "comment ignored"
             #puts "  #{str}"
             return @tags = [] #commented line, don't process
-        elsif str.gsub!(/<!--.*-->/, ' ')
+        elsif str.gsub!(/<!--.*?-->/, ' ')
             #puts "comment removed"
             #puts " #{str}"
             @@open_comment_detected = false
@@ -76,7 +76,7 @@ class HTMLLine
         end
 
         #remove phps <?php ?>
-        if @@open_php_detected and str.gsub!(/.*\s+\?>/, ' ')
+        if @@open_php_detected and str.gsub!(/.*?\s+\?>/, ' ')
             #puts "end of php"
             #puts "  #{str}"
             @@open_php_detected = false
@@ -84,7 +84,7 @@ class HTMLLine
             #puts "php ignored"
             #puts "  #{str}"
             return @tags = [] #phped line, don't process
-        elsif str.gsub!(/<\?php\s+.*\s+\?>/, ' ')
+        elsif str.gsub!(/<\?php\s+.*?\s+\?>/, ' ')
             #puts "php removed"
             #puts " #{str}"
             @@open_php_detected = false
@@ -95,7 +95,7 @@ class HTMLLine
         end
 
         #remove ejs <%  %>
-        if @@open_ejs_detected and str.gsub!(/.*\s*%>/, ' ')
+        if @@open_ejs_detected and str.gsub!(/.*?\s*%>/, ' ')
             #puts "end of ejs"
             #puts "  #{str}"
             @@open_ejs_detected = false
@@ -103,7 +103,7 @@ class HTMLLine
             #puts "ejs ignored"
             #puts "  #{str}"
             return @tags = [] #ejsed line, don't process
-        elsif str.gsub!(/<%\s*.*\s*%>/, ' ')
+        elsif str.gsub!(/<%\s*.*?\s*%>/, ' ')
             #puts "ejs removed"
             #puts " #{str}"
             @@open_ejs_detected = false
