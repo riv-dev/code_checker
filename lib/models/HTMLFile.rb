@@ -40,6 +40,13 @@ class HTMLFile
                 if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
                     puts_error("#{current_tag.str} has no closing tag", current_line)
                 end                
+
+                #Ryukyu coding rule, no <img /> style void tags
+                if current_tag.is_a?(HTMLTagVoid)
+                    if current_tag.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
+                        puts_warning("Ryukyu: #{current_tag.str} void tag should not have '/' at end", current_line)
+                    end
+                end
             end
 
         end #File.open
