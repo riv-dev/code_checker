@@ -10,13 +10,13 @@ Checks .html and .hbs files for basic syntax and coding errors.  Current version
 ### Install the tool
 Run the following on the command line.  It does not matter which folder you are in.
 ```bash
-gem install specific_install
-gem specific_install -l git://github.com/riv-dev/code_checker.git
+sudo gem install specific_install
+sudo gem specific_install -l git://github.com/riv-dev/code_checker.git
 ```
 
 Make sure to check for updates ocassionally by running:
 ```bash
-gem specific_install -l git://github.com/riv-dev/code_checker.git
+sudo gem specific_install -l git://github.com/riv-dev/code_checker.git
 ```
 
 You are now ready, run the tool!
