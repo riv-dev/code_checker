@@ -45,8 +45,8 @@ class HTMLFile
         end #File.open
 
         #Display errors
+        puts "Checked #{@file_path}"
         if @errors.length > 0 or @warnings.length > 0
-            puts @file_path
             @errors.each do |error|
                 puts "  #{error}"
             end
@@ -54,6 +54,8 @@ class HTMLFile
             @warnings.each do |warning|
                 puts "  #{warning}"
             end
+        else
+            puts "  [Success][No errors found]"
         end
     end #initialize
 
