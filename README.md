@@ -22,11 +22,13 @@ gem specific_install -l git://github.com/riv-dev/code_checker.git
 You are now ready, run the tool!
 
 ### Option 1: Check a specific html file
+Navigate to the folder or provide full path name.
 ```bash
 code_checker -f index.html
 ```
 
 ### Option 2: Check an entire folder and sub-folders
+Navigate to root where folder exists or provide full path name. Example below is for "views" folder.
 ```bash
 code_checker -F views
 ```
@@ -36,9 +38,14 @@ code_checker -F views
 code_checker -F .
 ```
 
-### Pipe the output to a logfile
+### Optional: Pipe the output to a logfile
 ```bash
 code_checker -f index.html > log.txt
+```
+
+### Help: Get help about usage
+```bash
+code_checker -h
 ```
 
 ## [Under Construction, do not try yet] Directions to run automatically within Grunt, Ryukyu project
