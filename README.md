@@ -1,5 +1,5 @@
 #Code Checker
-Checks .html and .hbs files for basic syntax and coding errors.  Current version checks the following:
+Checks .html, .hbs, .php, and .ejs files for basic syntax and coding errors.  Current version checks the following:
 - Opening tags must have closing tags
 - Closing tags must have opening tags
 - Void tags should not have closing tags
