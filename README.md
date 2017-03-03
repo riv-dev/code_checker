@@ -1,5 +1,6 @@
 ## Directions to run as a tool on the command line
-Install the tool by running the following on the command line.  It does not matter which folder you are in.
+### Install the tool
+Run the following on the command line.  It does not matter which folder you are in.
 ```bash
 gem install specific_install
 gem specific_install -l git://github.com/riv-dev/code_checker.git
