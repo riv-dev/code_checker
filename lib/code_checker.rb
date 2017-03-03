@@ -10,4 +10,13 @@ class CodeChecker
     HTMLFile.new(html_file)
   end
 
+  def self.check_folder(html_folder)
+    Dir.glob(html_folder+"/**/*.html") do |my_html_file| # note one extra "*"
+      HTMLFile.new(my_html_file)
+    end
+
+    Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file| # note one extra "*"
+      HTMLFile.new(my_hbs_file)
+    end
+  end
 end

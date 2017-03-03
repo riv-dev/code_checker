@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
                 "lib/models/HTMLTagFactory.rb",
                 "lib/models/HTMLTagOpen.rb",
                 "lib/models/HTMLTagVoid.rb"]
+    s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'
 end

@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'code_checker'
+
+
+options = {}
+OptionParser.new do |opts|
+	opts.banner = ["Run with -f to check a single file.",
+                   "  e.g. code_checker -f index.html",
+                   "Run with -F to check all files within the folder.",
+                   "  e.g. code_checker -F views",
+                   "Run with -F . to check all files in current directory and sub-directories.",
+                   "  e.g. code_checker -F .",
+                   " ",
+                   "Option Descriptions:"].join("\n")
+
+	opts.on('-f', '--file filename', 'Input file name') do |name|
+		options[:infile] = name;
+	end
+
+    opts.on('-F', '--folder foldername', 'Input folder name') do |name|
+        options[:infolder] = name;
+    end
+
+	opts.on('-h', '--help', 'Displays Help') do
+		puts opts
+		exit
+	end    
+end.parse!
+
+if options == {}
+    puts 'Run "code_checker -h" to view required and optional arguments'
+    exit
+end
+
+if infile = options[:infile]
+    CodeChecker.check(infile)
+end
+
+if infolder = options[:infolder]
+    CodeChecker.check_folder(infolder)
+end
