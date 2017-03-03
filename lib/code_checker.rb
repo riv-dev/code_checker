@@ -45,7 +45,6 @@ class CodeChecker
               return true if folder_name.match(/#{term}/)
             end
           elsif exclude_folder.match(/\*.*\w$/) #match back only
-            puts "I'm here!"
             term = exclude_folder.gsub(/\*/,'')
             path_components.each do |folder_name|
               return true if folder_name.match(/#{term}$/)
