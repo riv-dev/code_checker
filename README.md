@@ -56,7 +56,7 @@ code_checker -F . -x *.ejs
 
 Allows multiple, separate with comma (no white spaces)
 ```bash
-code_checker -F . -x *.ejs, *.php, -X node_modules,lib,*temp*
+code_checker -F . -x *.ejs,*.php -X node_modules,lib,*temp*
 ```
 
 ### Optional: Check specific file types only (html, hbs, php, ejs)
