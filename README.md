@@ -21,7 +21,7 @@ sudo gem specific_install -l git://github.com/riv-dev/code_checker.git
 
 You are now ready, run the tool!
 
-### Option 1: Check a specific html file
+###  <font color="Blue">Option 1: Check a specific html file</font>
 Navigate to the folder or provide full path name.
 ```bash
 code_checker -f index.html
