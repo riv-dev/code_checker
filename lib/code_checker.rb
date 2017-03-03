@@ -14,9 +14,6 @@ class CodeChecker
     path_components = path.split("/");
     filename = path_components.last
 
-    #puts "Checking ignore path: #{path}"
-    #puts "  filename: #{filename}"
-
     if @@exclude_files != nil
       @@exclude_files.each do |exclude_file|
 
@@ -75,7 +72,7 @@ class CodeChecker
     if check_all or types.include?('html') 
       puts "Checking html files"
       puts
-      Dir.glob(html_folder+"/**/*.html") do |my_html_file| # note one extra "*"
+      Dir.glob(html_folder+"/**/*.html") do |my_html_file|
         HTMLFile.new(my_html_file) if !self.ignore_file?(my_html_file)
       end
     end
@@ -83,7 +80,7 @@ class CodeChecker
     if check_all or types.include?('hbs')
       puts "Checking hbs files"
       puts
-      Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file| # note one extra "*"
+      Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file|
         HTMLFile.new(my_hbs_file) if !self.ignore_file?(my_hbs_file)
       end
     end
@@ -91,7 +88,7 @@ class CodeChecker
     if check_all or types.include?('php')
       puts "Checking php files"
       puts
-      Dir.glob(html_folder+"/**/*.php") do |my_php_file| # note one extra "*"
+      Dir.glob(html_folder+"/**/*.php") do |my_php_file|
         HTMLFile.new(my_php_file) if !self.ignore_file?(my_php_file)
       end    
     end
@@ -99,7 +96,7 @@ class CodeChecker
     if check_all or types.include?('ejs')
       puts "Checking ejs files"
       puts
-      Dir.glob(html_folder+"/**/*.ejs") do |my_ejs_file| # note one extra "*"
+      Dir.glob(html_folder+"/**/*.ejs") do |my_ejs_file|
         HTMLFile.new(my_ejs_file) if !self.ignore_file?(my_ejs_file)
       end    
     end
