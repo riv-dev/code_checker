@@ -6,17 +6,15 @@ class CodeChecker
     puts "Hello World!"
   end
 
-  def self.check(html_file)
-    HTMLFile.new(html_file)
-  end
-
+  #Helper function.
+  #Returns true if options have been set to ignore the file
   def self.ignore_file?(path)
     path_components = path.split("/");
     filename = path_components.last
 
     if @@exclude_files != nil
       @@exclude_files.each do |exclude_file|
-
+        #Check for wildcards in exclude_file name
         if exclude_file.match(/\*.+\*/) #match front and back
           term = exclude_file.gsub(/\*/,'')
           return true if filename.match(/#{term}/)
@@ -26,7 +24,7 @@ class CodeChecker
         elsif exclude_file.match(/.+\*$/) #match front only
           term = exclude_file.gsub(/\*/,'')
           return true if filename.match(/^#{term}/)
-        else
+        else #no wildcard, match exactly
           return true if filename == exclude_file
         end
       end  
@@ -36,6 +34,7 @@ class CodeChecker
 
     if @@exclude_folders != nil
       @@exclude_folders.each do |exclude_folder|
+        #Check for wildcards in exclude_folder name
         if exclude_folder.match(/\*.+\*/) #match front and back
             term = exclude_folder.gsub(/\*/,'')
             path_components.each do |folder_name|
@@ -51,7 +50,7 @@ class CodeChecker
             path_components.each do |folder_name|
               return true if folder_name.match(/^#{term}/)
             end            
-          else
+          else #no wildcard, match exactly
             path_components.each do |folder_name|
               return true if folder_name == exclude_folder
             end            
@@ -62,13 +61,23 @@ class CodeChecker
     return false
   end
 
+  #Run code checker on a specific file
+  def self.check(html_file)
+    HTMLFile.new(html_file)
+  end
+
+  #Run code checker on files within the folder
   def self.check_folder(html_folder, options)
+    #Process options
     check_all = false
+    #if no types have been defined, check all file types by default
     check_all = true if options[:types] == nil or options[:types].length == 0
     types = options[:types]
+    #import file and folder exclusion options
     @@exclude_files = options[:exclude_files]
     @@exclude_folders = options[:exclude_folders]
 
+    #Run the checker for files and folders that have not been excluded
     if check_all or types.include?('html') 
       puts "Checking html files"
       puts

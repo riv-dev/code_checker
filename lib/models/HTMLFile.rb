@@ -27,16 +27,21 @@ class HTMLFile
         @file_path = file_path
         @lines = []
 
+        #Open the HTML file and read in each line
         File.open(file_path, 'r') do |f|
             i = 1
 
             f.each_line do |line|
+                #Process the HTML line and save it
                 @lines << HTMLLine.new(self, line, i)
                 i = i + 1
             end #f.each_line
 
+            #At this point all HTML lines have been processed.
+            #You may now iterate through the tags and look for errors or warnings
             #Insert all custom checks here
             check_all_tags do |current_line, current_tag|
+                #Check all open tags have closing tags
                 if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
                     puts_error("<#{current_tag.type}> has no closing tag", current_line)
                 end                
