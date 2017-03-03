@@ -12,6 +12,9 @@ class HTMLLine
     @@current_tag_str = ""
     @@open_script_detected = false
     @@open_php_detected = false
+    @@open_ejs_detected = false
+    @@open_attribute_detected = false
+    @@open_attribute_quote_detected = false
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
@@ -30,21 +33,21 @@ class HTMLLine
     end
 
     def puts_error(error, i)
-        @html_file.errors << "[Error][#{error}]: line #{i}"
+        @html_file.errors << "[Error] line #{i}: [#{error}]"
     end
 
     def puts_error_location(str, i)
         str = str.scan(/^.{#{i-1}}|.+/).join("*Error*")
-        @html_file.errors << "  #{str.strip}"
+        @html_file.errors << "  #{str.strip}\n\n"
     end
 
     def puts_warning(warning, i)
-        @html_file.warnings << "[Warning][#{warning}]: line #{i}"
+        @html_file.warnings << "[Warning] line #{i}: [#{warning}]"
     end
 
     def puts_warning_location(str, i)
         str = str.scan(/^.{#{i-1}}|.+/).join("*Warning*")
-        @html_file.warnings << "  #{str.strip}"
+        @html_file.warnings << "  #{str.strip}\n\n"
     end
 
     def detect_tags(str)
@@ -91,6 +94,25 @@ class HTMLLine
             @@open_php_detected = true
         end
 
+        #remove ejs <%  %>
+        if @@open_ejs_detected and str.gsub!(/.*\s+%>/, ' ')
+            #puts "end of ejs"
+            #puts "  #{str}"
+            @@open_ejs_detected = false
+        elsif @@open_ejs_detected
+            #puts "ejs ignored"
+            #puts "  #{str}"
+            return @tags = [] #ejsed line, don't process
+        elsif str.gsub!(/<%\s+.*\s+%>/, ' ')
+            #puts "ejs removed"
+            #puts " #{str}"
+            @@open_ejs_detected = false
+        elsif str.gsub!(/<%\s+.*/, ' ')
+            #puts "open ejs detected line:#{@line_number}}"
+            #puts "  #{str}"
+            @@open_ejs_detected = true
+        end
+
         #remove scripts
         if @@open_script_detected and str.gsub!(/<\s*\/\s*script\s*>/, ' ')
             #puts "end of script"
@@ -115,14 +137,25 @@ class HTMLLine
 
         i = 1
         str.split("").each do |char|
-            if char == "<" and !@@open_bracket_detected
+            if char == "=" and @@open_bracket_detected
+                @@open_attribute_detected = true
+                @@current_tag_str << char
+            elsif @@open_attribute_detected and !@@open_attribute_quote_detected and char == '"' or char == "'"
+                @@open_attribute_quote_detected = true
+                @@current_tag_str << char
+            elsif @@open_attribute_detected and @@open_attribute_quote_detected and char == '"' or char == "'"
+                #a full attribute key=value pair has been detected
+                @@current_tag_str << char
+                @@open_attribute_detected = false
+                @@open_attribute_quote_detected = false
+            elsif char == "<" and !@@open_bracket_detected
                 @@open_bracket_detected = true
                 #new tag detected
                 @@current_tag_str = "<"
-            elsif char == "<" and @@open_bracket_detected
-                #we have a syntax error
-                puts_error("double '<'", @line_number)
-                puts_error_location(str,i)
+            #elsif char == "<" and @@open_bracket_detected and !@@open_attribute_quote_detected
+            #    #we have a syntax error
+            #    puts_error("double '<'", @line_number)
+            #    puts_error_location(str,i)
             elsif char == ">" and @@open_bracket_detected
                 #a tag has been detected
                 @@current_tag_str << ">"
@@ -175,10 +208,10 @@ class HTMLLine
 
                 @@current_tag_str = ""
                 @@open_bracket_detected = false
-            elsif char == ">" and !@@open_bracket_detected
-                #potential syntax error
-                puts_warning("closing '>' detected without opening '<', check lines above", @line_number)
-                puts_warning_location(str,i)
+            #elsif char == ">" and !@@open_bracket_detected
+            #    #potential syntax error
+            #    puts_warning("closing '>' detected without opening '<', check lines above", @line_number)
+            #    puts_warning_location(str,i)
             elsif @@open_bracket_detected
                 if char != "\r" and char != "\n"
                     @@current_tag_str << char

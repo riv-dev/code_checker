@@ -16,6 +16,7 @@ class CodeChecker
 
     if check_all or types.include?('html') 
       puts "Checking html files"
+      puts
       Dir.glob(html_folder+"/**/*.html") do |my_html_file| # note one extra "*"
         HTMLFile.new(my_html_file)
       end
@@ -23,6 +24,7 @@ class CodeChecker
 
     if check_all or types.include?('hbs')
       puts "Checking hbs files"
+      puts
       Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file| # note one extra "*"
         HTMLFile.new(my_hbs_file)
       end
@@ -30,7 +32,16 @@ class CodeChecker
 
     if check_all or types.include?('php')
       puts "Checking php files"
+      puts
       Dir.glob(html_folder+"/**/*.php") do |my_php_file| # note one extra "*"
+        HTMLFile.new(my_php_file)
+      end    
+    end
+
+    if check_all or types.include?('ejs')
+      puts "Checking ejs files"
+      puts
+      Dir.glob(html_folder+"/**/*.ejs") do |my_php_file| # note one extra "*"
         HTMLFile.new(my_php_file)
       end    
     end

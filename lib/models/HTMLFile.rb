@@ -12,13 +12,13 @@ class HTMLFile
     end
 
     def puts_error(error, line)
-        @errors << "[Error][#{error}]: line #{line.line_number}"
-        @errors << "  #{line.str.strip}"
+        @errors << "[Error] line #{line.line_number}: [#{error}]"
+        @errors << "  #{line.str.strip}\n\n"
     end
 
     def puts_warning(warning, line)
-        @warnings << "[Warning][#{warning}]: line #{line.line_number}"
-        @warnings << "  #{line.str.strip}"
+        @warnings << "[Warning] line #{line.line_number}: [#{warning}]"
+        @warnings << "  #{line.str.strip}\n\n"
     end
 
     def initialize(file_path)
@@ -38,13 +38,13 @@ class HTMLFile
             #Insert all custom checks here
             check_all_tags do |current_line, current_tag|
                 if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
-                    puts_error("#{current_tag.str} has no closing tag", current_line)
+                    puts_error("<#{current_tag.type}> has no closing tag", current_line)
                 end                
 
                 #Ryukyu coding rule, no <img /> style void tags
                 if current_tag.is_a?(HTMLTagVoid)
                     if current_tag.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: #{current_tag.str} void tag should not have '/' at end", current_line)
+                        puts_warning("Ryukyu: void tag should not have '/' at end", current_line)
                     end
                 end
             end
@@ -61,9 +61,13 @@ class HTMLFile
             @warnings.each do |warning|
                 puts "  #{warning}"
             end
+            puts
         else
             puts "  [Success][No errors found]"
+            puts
         end
+        puts
+
     end #initialize
 
     def to_s
