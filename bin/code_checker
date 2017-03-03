@@ -12,6 +12,9 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -F views",
                    "Run with -F . to check all files in current directory and sub-directories.",
                    "  e.g. code_checker -F .",
+                   "Run with -t to specify file types to check.",
+                   "  e.g. code_checker -F . -t html,hbs",
+                   "  e.g. code_checker -F . -t html,php,ejs",
                    " ",
                    "Option Descriptions:"].join("\n")
 
@@ -21,6 +24,10 @@ OptionParser.new do |opts|
 
     opts.on('-F', '--folder foldername', 'Input folder name') do |name|
         options[:infolder] = name;
+    end
+
+    opts.on('-t', '--types (html, hbs, php, ejs)', 'File types to check') do |types|
+        options[:types] = types
     end
 
 	opts.on('-h', '--help', 'Displays Help') do
@@ -39,5 +46,6 @@ if infile = options[:infile]
 end
 
 if infolder = options[:infolder]
-    CodeChecker.check_folder(infolder)
+    types = options[:types].split(/\s*,\s*/) if options[:types] != nil
+    CodeChecker.check_folder(infolder, types)
 end
