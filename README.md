@@ -41,17 +41,18 @@ code_checker -F .
 ### Optional: Check specific file types only (html, hbs, php)
 Code checker checks all supported file types if -t option is not specified.
 If -t is specified, it will check those file types only.
-For example, check only html files:
+
+####For example, check only html files:
 ```bash
 code_checker -F . -t html
 ```
 
-For example, check html and hbs files:
+#### For example, check html and hbs files:
 ```bash
 code_checker -F . -t html,hbs
 ```
 
-For example, check only html and php files:
+#### For example, check only html and php files:
 ```bash
 code_checker -F . -t html,php
 ```
