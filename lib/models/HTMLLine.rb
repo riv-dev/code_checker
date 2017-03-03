@@ -52,6 +52,9 @@ class HTMLLine
             return @tags = []
         end
 
+        #ignore php lines
+        str.gsub!(/<\?php\s+.*\s+\?>/,' ')
+
         #remove comments <!-- -->
         if @@open_comment_detected and str.gsub!(/.*-->/, ' ')
             #puts "end of comment"

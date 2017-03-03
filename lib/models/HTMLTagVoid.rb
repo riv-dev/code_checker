@@ -24,7 +24,7 @@ class HTMLTagVoid < HTMLTag
             if str.match(/br|hr/)
                 return true;
             else #void tag requires attributes
-                if str.match(/[\w-_]+=.*/)
+                if str.match(/[\w\-_]+=.*/)
                     return true;
                 else
                     return false;
