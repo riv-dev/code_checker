@@ -95,7 +95,7 @@ class HTMLLine
         end
 
         #remove ejs <%  %>
-        if @@open_ejs_detected and str.gsub!(/.*\s+%>/, ' ')
+        if @@open_ejs_detected and str.gsub!(/.*\s*%>/, ' ')
             #puts "end of ejs"
             #puts "  #{str}"
             @@open_ejs_detected = false
@@ -103,11 +103,11 @@ class HTMLLine
             #puts "ejs ignored"
             #puts "  #{str}"
             return @tags = [] #ejsed line, don't process
-        elsif str.gsub!(/<%\s+.*\s+%>/, ' ')
+        elsif str.gsub!(/<%\s*.*\s*%>/, ' ')
             #puts "ejs removed"
             #puts " #{str}"
             @@open_ejs_detected = false
-        elsif str.gsub!(/<%\s+.*/, ' ')
+        elsif str.gsub!(/<%\s*.*/, ' ')
             #puts "open ejs detected line:#{@line_number}}"
             #puts "  #{str}"
             @@open_ejs_detected = true
