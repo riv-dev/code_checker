@@ -38,7 +38,28 @@ code_checker -F views
 code_checker -F .
 ```
 
-### Optional: Check specific file types only (html, hbs, php)
+### Optional: Exclude files and folder
+Use -x for file exclusions.
+```bash
+code_checker -F . -x index.html
+```
+
+Use -X for folder exclusions
+```bash
+code_checker -F . -X node_modules
+```
+
+Allows wildcard matching
+```bash
+code_checker -F . -x *.ejs
+```
+
+Allows multiple, separate with comma (no white spaces)
+```bash
+code_checker -F -x *.ejs, *.php, -X node_modules,lib,*temp*
+```
+
+### Optional: Check specific file types only (html, hbs, php, ejs)
 Code checker checks all supported file types if -t option is not specified.
 If -t is specified, it will check those file types only.
 
