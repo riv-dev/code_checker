@@ -11,6 +11,7 @@ class HTMLLine
     @@closing_tag_detected = false
     @@current_tag_str = ""
     @@open_script_detected = false
+    @@open_php_detected = false
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
@@ -52,9 +53,6 @@ class HTMLLine
             return @tags = []
         end
 
-        #ignore php lines
-        str.gsub!(/<\?php\s+.*\s+\?>/,' ')
-
         #remove comments <!-- -->
         if @@open_comment_detected and str.gsub!(/.*-->/, ' ')
             #puts "end of comment"
@@ -72,6 +70,25 @@ class HTMLLine
             #puts "open comment detected line:#{@line_number}}"
             #puts "  #{str}"
             @@open_comment_detected = true
+        end
+
+        #remove phps <?php ?>
+        if @@open_php_detected and str.gsub!(/.*\s+\?>/, ' ')
+            #puts "end of php"
+            #puts "  #{str}"
+            @@open_php_detected = false
+        elsif @@open_php_detected
+            #puts "php ignored"
+            #puts "  #{str}"
+            return @tags = [] #phped line, don't process
+        elsif str.gsub!(/<\?php\s+.*\s+\?>/, ' ')
+            #puts "php removed"
+            #puts " #{str}"
+            @@open_php_detected = false
+        elsif str.gsub!(/<\?php\s+.*/, ' ')
+            #puts "open php detected line:#{@line_number}}"
+            #puts "  #{str}"
+            @@open_php_detected = true
         end
 
         #remove scripts
