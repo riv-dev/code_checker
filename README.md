@@ -54,7 +54,7 @@ Allows wildcard matching
 code_checker -F . -x *.ejs
 ```
 
-Allows multiple, separate with comma (no white spaces)
+Allows multiple files and folders, separate with comma (no white spaces)
 ```bash
 code_checker -F . -x *.ejs,*.php -X node_modules,lib,*temp*
 ```
