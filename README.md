@@ -5,6 +5,11 @@ gem install specific_install
 gem specific_install -l git://github.com/riv-dev/code_checker.git
 ```
 
+Make sure to check for updates ocassionally by running:
+```bash
+gem specific_install -l git://github.com/riv-dev/code_checker.git
+```
+
 You are now ready, run the tool!
 
 Check an html file:
