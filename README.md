@@ -12,22 +12,22 @@ gem specific_install -l git://github.com/riv-dev/code_checker.git
 
 You are now ready, run the tool!
 
-Check an html file:
+### Option 1: Check a specific html file
 ```bash
 code_checker -f index.html
 ```
 
-Check an entire folder and sub-folders
+### Option 2: Check an entire folder and sub-folders
 ```bash
 code_checker -F views
 ```
 
-Check all files and folders in current directory
+### Option 3: Check all files and folders in current directory
 ```bash
 code_checker -F .
 ```
 
-Pipe the output to a logfile
+### Pipe the output to a logfile
 ```bash
 code_checker -f index.html > log.txt
 ```
