@@ -1,4 +1,5 @@
 require_relative 'models/HTMLFile.rb'
+require_relative 'models/HTMLFileFactory.rb'
 
 class CodeChecker
 
@@ -6,7 +7,37 @@ class CodeChecker
     puts "Hello World!"
   end
 
-  #Helper function.
+  #Run code checker on a specific file
+  def self.check(html_file)
+    HTMLFile.new(html_file)
+  end
+
+  #Run code checker on files within the folder
+  def self.check_folder(html_folder, options)
+    #Process options
+    #By default check all types
+    types = HTMLFileFactory.get_supported_types
+    #if types option is defined, check only the specified types
+    types = options[:types] if options[:types] != nil and options[:types].length > 0
+
+    #import file and folder exclusion options
+    @@exclude_files = options[:exclude_files]
+    @@exclude_folders = options[:exclude_folders]
+
+    #Run the checker for files and folders that have not been excluded
+    types.each do |file_type|
+      puts "Checking #{file_type} files"
+      puts
+
+      Dir.glob(html_folder+"/**/*.#{file_type}") do |file_name|
+        HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
+      end 
+    end #type.each do
+
+  end #def self.check_folder
+
+  private
+  #Helper functions
   #Returns true if options have been set to ignore the file
   def self.ignore_file?(path)
     path_components = path.split("/");
@@ -61,64 +92,4 @@ class CodeChecker
     return false
   end
 
-  #Run code checker on a specific file
-  def self.check(html_file)
-    HTMLFile.new(html_file)
-  end
-
-  #Run code checker on files within the folder
-  def self.check_folder(html_folder, options)
-    #Process options
-    check_all = false
-    #if no types have been defined, check all file types by default
-    check_all = true if options[:types] == nil or options[:types].length == 0
-    types = options[:types]
-    #import file and folder exclusion options
-    @@exclude_files = options[:exclude_files]
-    @@exclude_folders = options[:exclude_folders]
-
-    #Run the checker for files and folders that have not been excluded
-    if check_all or types.include?('html') 
-      puts "Checking html files"
-      puts
-      Dir.glob(html_folder+"/**/*.html") do |my_html_file|
-        HTMLFileFactory.create(my_html_file,'html') if !self.ignore_file?(my_html_file)
-      end
-    end
-
-    types.each do |type|
-      if check_all or types.include?(type) 
-        puts "Checking html files"
-        puts
-        Dir.glob(html_folder+"/**/*.html") do |my_html_file|
-          HTMLFileFactory.create(my_html_file,'html') if !self.ignore_file?(my_html_file)
-        end
-      end      
-    end
-
-    if check_all or types.include?('hbs')
-      puts "Checking hbs files"
-      puts
-      Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file|
-        HTMLFileFactory.create(my_hbs_file,'hbs') if !self.ignore_file?(my_hbs_file)
-      end
-    end
-
-    if check_all or types.include?('php')
-      puts "Checking php files"
-      puts
-      Dir.glob(html_folder+"/**/*.php") do |my_php_file|
-        HTMLFile.new(my_php_file) if !self.ignore_file?(my_php_file)
-      end    
-    end
-
-    if check_all or types.include?('ejs')
-      puts "Checking ejs files"
-      puts
-      Dir.glob(html_folder+"/**/*.ejs") do |my_ejs_file|
-        HTMLFile.new(my_ejs_file) if !self.ignore_file?(my_ejs_file)
-      end    
-    end
-
-  end
 end

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.0.5'
+    s.version = '1.0.6'
     s.date = '2017-03-02'
     s.summary = "Check HTML code and coding rules"
     s.authors = ["Ken Le"]
@@ -12,7 +12,8 @@ Gem::Specification.new do |s|
                 "lib/models/HTMLTagClose.rb",
                 "lib/models/HTMLTagFactory.rb",
                 "lib/models/HTMLTagOpen.rb",
-                "lib/models/HTMLTagVoid.rb"]
+                "lib/models/HTMLTagVoid.rb",
+                "lib/models/HTMLFileFactory.rb"]
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'

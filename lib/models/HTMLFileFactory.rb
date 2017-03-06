@@ -1,4 +1,5 @@
 class HTMLFileFactory
+    
     def self.create(file_path, file_type)
         if file_type.match(/^\.?html$/i)
             return HTMLFile.new(file_path)
@@ -13,5 +14,9 @@ class HTMLFileFactory
         else
             return nil
         end
+    end
+
+    def self.get_supported_types
+      return ['html','hbs','handlebars','php','ejs']
     end
 end
