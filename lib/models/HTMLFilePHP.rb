@@ -1,0 +1,3 @@
+class HTMLFilePHP < HTMLFile
+
+end

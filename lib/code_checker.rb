@@ -82,15 +82,25 @@ class CodeChecker
       puts "Checking html files"
       puts
       Dir.glob(html_folder+"/**/*.html") do |my_html_file|
-        HTMLFile.new(my_html_file) if !self.ignore_file?(my_html_file)
+        HTMLFileFactory.create(my_html_file,'html') if !self.ignore_file?(my_html_file)
       end
+    end
+
+    types.each do |type|
+      if check_all or types.include?(type) 
+        puts "Checking html files"
+        puts
+        Dir.glob(html_folder+"/**/*.html") do |my_html_file|
+          HTMLFileFactory.create(my_html_file,'html') if !self.ignore_file?(my_html_file)
+        end
+      end      
     end
 
     if check_all or types.include?('hbs')
       puts "Checking hbs files"
       puts
       Dir.glob(html_folder+"/**/*.hbs") do |my_hbs_file|
-        HTMLFile.new(my_hbs_file) if !self.ignore_file?(my_hbs_file)
+        HTMLFileFactory.create(my_hbs_file,'hbs') if !self.ignore_file?(my_hbs_file)
       end
     end
 

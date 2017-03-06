@@ -1,0 +1,3 @@
+class HTMLFileHBS < HTMLFile
+
+end
