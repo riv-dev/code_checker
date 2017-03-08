@@ -2,6 +2,9 @@ class HTMLTag
     attr_accessor :html_line #Type HTMLLine
     attr_accessor :str #Type String
     attr_accessor :type #Type String
+
+    attr_accessor :inner_html
+
     all_tags = ['!DOCTYPE', 
                 'a', 'abbr','acryonym','address','applet','area','article','aside','audio',
                 'b','base','basefont','bdi','bdo','big','blockquote','body','br','button','canvas','caption','center','cite','code','col','colgroup',
@@ -25,6 +28,7 @@ class HTMLTag
         @html_line = html_line
         @str = str
         @type = str.match(/<\s*\/?\s*(\w+)\s*.*>/).captures[0]
+        @inner_html = []
     end
 
     def to_s

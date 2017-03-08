@@ -9,7 +9,12 @@ class CodeChecker
 
   #Run code checker on a specific file
   def self.check(html_file)
-    HTMLFile.new(html_file)
+    begin
+      captures = html_file.match(/\.(\w+)$/).captures
+      HTMLFileFactory.create(html_file, captures[0])
+    rescue
+      HTMLFile.new(html_file)
+    end
   end
 
   #Run code checker on files within the folder
