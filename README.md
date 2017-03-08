@@ -4,7 +4,7 @@ Checks .html, .hbs, .php, and .ejs files for basic syntax and coding errors.  Cu
 - Closing tags must have opening tags
 - Void tags should not have closing tags
 - Validity of void tags
-- Ryukyu rule: No "/" in void tags
+- Ryukyu rule: No "/" character at end of void tags
 - Ryukyu rule: No half-width spaces in Japanese, Korean, and Chinese characters
 
 ## Directions to run as a tool on the command line
