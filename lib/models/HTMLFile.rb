@@ -48,19 +48,41 @@ class HTMLFile
                 i = i + 1
             end #f.each_line
 
-            #At this point all HTML lines have been processed.
-            #You may now iterate through the tags and look for errors or warnings
-            #Insert all custom checks here
-            check_all_tags do |current_line, current_tag|
-                #Ryukyu coding rule, no <img /> style void tags
-                if current_tag.is_a?(HTMLTagVoid)
-                    if current_tag.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: void tag should not have '/' at end", current_line)
+        end #File.open
+
+        if @root_tags.length == 0
+            #Somewhere there was not a closing tag so the root was not 
+            #discovered properly.  Manually add in the root
+           @root_tags << @parent_tags_stash.first
+        end
+
+        #@root_tags.each do |root_tag|
+        #    puts "Root tag: #{root_tag}"
+        #    print_elements(root_tag,"")
+        #    puts
+        #end
+
+        #At this point all HTML lines have been processed.
+        #You may now iterate through the tags and look for errors or warnings
+        #There should be only one root tag, the <html> tag, however allow cases where
+        #there may be more than one root tag
+        @root_tags.each do |root_tag|
+            check_all_elements(root_tag) do |current_element|
+
+                #Insert custom checks here
+
+                #1) Ryukyu coding rule, no <img /> style void tags
+                if current_element.is_a?(HTMLTagVoid)
+                    if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
+                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line)
                     end
                 end
-            end
 
-        end #File.open
+                #2) No half-width spaces in content
+
+            end
+        end
+
 
         #Display errors
         puts "Checked #{@file_path}"
@@ -79,17 +101,6 @@ class HTMLFile
         end
         puts
 
-        if @root_tags.length == 0
-            #Somewhere there was not a closing tag so the root was not 
-            #discovered properly.  Manually add in the root
-           @root_tags << @parent_tags_stash.first
-        end
-
-        #@root_tags.each do |root_tag|
-        #    puts "Root tag: #{root_tag}"
-        #    print_elements(root_tag,"")
-        #    puts
-        #end
     end #initialize
 
     def get_tag_by_id(id)
@@ -136,18 +147,23 @@ class HTMLFile
         @warnings << "  #{line.str.strip}\n\n"
     end
 
-    def check_all_tags
-        @lines.each do |current_line|
-            current_line.tags.each do |current_tag|
-                #Default check.  Check all open tags have closing tags
-                if current_tag.is_a?(HTMLTagOpen) and !current_tag.has_closing_tag
-                    puts_error("<#{current_tag.type}> has no closing tag", current_line)
-                end      
+    #Recursive tree traversal check
+    def check_all_elements(root_element)
+        if root_element.is_a?(HTMLTagOpen) and !root_element.has_closing_tag
+            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line)
+        end
 
-                #Custom checks get added here with the yield statement
-                yield(current_line, current_tag)
+        #Recursion to traverse the full tree
+        if root_element.is_a?(HTMLTagOpen)
+            root_element.children.each do |child|
+                check_all_elements(child) do |current_element|
+                    yield(current_element)
+                end
             end
-        end    
+        end
+
+        #Insert custom checks on the element here        
+        yield(root_element)
     end
 
 end
