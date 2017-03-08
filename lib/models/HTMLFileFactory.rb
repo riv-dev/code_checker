@@ -16,6 +16,9 @@ class HTMLFileFactory
         elsif file_type.match(/^\.?ejs$/i)
             return HTMLFileEJS.new(file_path)
         else
+            puts "[NOTIFICATION] Did not check #{file_path}. #{file_type} file type not supported."
+            puts "  supported file types: #{self.get_supported_types.join(", ")}"
+            puts
             return nil
         end
     end
