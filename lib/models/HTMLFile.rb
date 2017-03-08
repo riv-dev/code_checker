@@ -76,6 +76,12 @@ class HTMLFile
         end
         puts
 
+        if @root_tags.length == 0
+            #Somewhere there was not a closing tag so the root was not 
+            #discovered properly.  Manually add in the root
+           @root_tags << @parent_tags_stash.first
+        end
+
         #@root_tags.each do |root_tag|
         #    puts "Root tag: #{root_tag}"
         #    print_tag(root_tag,"")
@@ -89,7 +95,11 @@ class HTMLFile
             tag.children.each do |child|
                 print_tag(child, "  #{spaces}")
             end
-            puts "#{spaces}#{tag.closing_tag.str}"
+            begin
+                puts "#{spaces}#{tag.closing_tag.str}"
+            rescue
+                puts "#{spaces}[Error]#{tag.str} has no closing tag"
+            end
         end
     end
 

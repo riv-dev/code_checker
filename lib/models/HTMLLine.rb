@@ -161,6 +161,9 @@ class HTMLLine
                         end #end do |current_line|
                     end #end !closing_tag.has_opening_ta
 
+                    puts "Closing tag: #{closing_tag.str}"
+                    puts "  Opening tag: #{closing_tag.opening_tag.str}" if closing_tag.has_opening_tag
+
                     if !closing_tag.has_opening_tag
                         puts_error("Closing tag has no opening tag", @line_number)
                         puts_error_location(str,i)                    
