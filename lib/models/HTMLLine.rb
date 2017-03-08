@@ -8,6 +8,7 @@ class HTMLLine
     attr_accessor :tags #Type HTMLTag
     @@current_tag_str = ""
     @@current_content_str = ""
+    @@current_content_start_line = nil
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
@@ -122,9 +123,10 @@ class HTMLLine
                 end
 
                 #Flush any current content into the current parent tag
-                if @@current_content_str.length > 0 and @html_file.parent_tags_stash.last != nil
-                    @html_file.parent_tags_stash.last.children << HTMLContent.new(self, @@current_content_str.strip)
+                if @@current_content_str.strip.length > 0 and !@@current_content_str.match(/^\s+$/) and @html_file.parent_tags_stash.last != nil
+                    @html_file.parent_tags_stash.last.children << HTMLContent.new(@@current_content_start_line, @@current_content_str.strip)
                     @@current_content_str = ""
+                    @@current_content_start_line = nil
                 end
 
                 if tag.is_a?(HTMLTagOpen)
@@ -192,7 +194,12 @@ class HTMLLine
                     @@current_tag_str << char
                 end
             elsif !@html_file.open_bracket_detected and @html_file.opening_tag_detected
+                #need to save the current line the content started one
+                #because content can span multiple lines
                 if char != "\r" and char != "\n"
+                    if @@current_content_start_line == nil
+                        @@current_content_start_line = self if char != " " and char != "\t"
+                    end
                     @@current_content_str << char
                 end
                 #should be text within a tag

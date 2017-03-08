@@ -23,5 +23,4 @@ Gem::Specification.new do |s|
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'
-    s.add_dependency 'nokogiri'
 end

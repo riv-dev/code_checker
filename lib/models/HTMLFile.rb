@@ -1,4 +1,3 @@
-require 'nokogiri'
 require_relative 'HTMLLine.rb'
 
 class HTMLFile
@@ -79,6 +78,13 @@ class HTMLFile
                 end
 
                 #2) No half-width spaces in content
+                if current_element.is_a?(HTMLContent)
+                    asian_char_regex = /[\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}](\s+)/
+                    if current_element.str.match(asian_char_regex)
+                        current_element.html_line.str.gsub!(asian_char_regex,'\1[**Warning, half-width space detected]')
+                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line)
+                    end
+                end
 
             end
         end
