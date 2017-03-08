@@ -5,16 +5,7 @@ class HTMLLine
     attr_accessor :str
     attr_accessor :line_number
     attr_accessor :tags #Type HTMLTag
-    @@open_comment_detected = false
-    @@open_bracket_detected = false
-    @@opening_tag_detected = false
-    @@closing_tag_detected = false
     @@current_tag_str = ""
-    @@open_script_detected = false
-    @@open_php_detected = false
-    @@open_ejs_detected = false
-    @@open_attribute_detected = false
-    @@open_attribute_quote_detected = false
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
@@ -56,107 +47,69 @@ class HTMLLine
             return @tags = []
         end
 
+        #Process the line through templating engine
+        str = @html_file.process_line_through_templating_engine(str)
+
         #remove comments <!-- -->
-        if @@open_comment_detected and str.gsub!(/.*?-->/, ' ')
+        if @html_file.open_comment_detected and str.gsub!(/.*?-->/, ' ')
             #puts "end of comment"
             #puts "  #{str}"
-            @@open_comment_detected = false
-        elsif @@open_comment_detected
+            @html_file.open_comment_detected = false
+        elsif @html_file.open_comment_detected
             #puts "comment ignored"
             #puts "  #{str}"
             return @tags = [] #commented line, don't process
         elsif str.gsub!(/<!--.*?-->/, ' ')
             #puts "comment removed"
             #puts " #{str}"
-            @@open_comment_detected = false
+            @html_file.open_comment_detected = false
         elsif str.gsub!(/<!--.*/, ' ')
             #puts "open comment detected line:#{@line_number}}"
             #puts "  #{str}"
-            @@open_comment_detected = true
-        end
-
-        #remove phps <?php ?>
-        if @@open_php_detected and str.gsub!(/.*?\s+\?>/, ' ')
-            #puts "end of php"
-            #puts "  #{str}"
-            @@open_php_detected = false
-        elsif @@open_php_detected
-            #puts "php ignored"
-            #puts "  #{str}"
-            return @tags = [] #phped line, don't process
-        elsif str.gsub!(/<\?php\s+.*?\s+\?>/, ' ')
-            #puts "php removed"
-            #puts " #{str}"
-            @@open_php_detected = false
-        elsif str.gsub!(/<\?php\s+.*/, ' ')
-            #puts "open php detected line:#{@line_number}}"
-            #puts "  #{str}"
-            @@open_php_detected = true
-        end
-
-        #remove ejs <%  %>
-        if @@open_ejs_detected and str.gsub!(/.*?\s*%>/, ' ')
-            #puts "end of ejs"
-            #puts "  #{str}"
-            @@open_ejs_detected = false
-        elsif @@open_ejs_detected
-            #puts "ejs ignored"
-            #puts "  #{str}"
-            return @tags = [] #ejsed line, don't process
-        elsif str.gsub!(/<%\s*.*?\s*%>/, ' ')
-            #puts "ejs removed"
-            #puts " #{str}"
-            @@open_ejs_detected = false
-        elsif str.gsub!(/<%\s*.*/, ' ')
-            #puts "open ejs detected line:#{@line_number}}"
-            #puts "  #{str}"
-            @@open_ejs_detected = true
+            @html_file.open_comment_detected = true
         end
 
         #remove scripts
-        if @@open_script_detected and str.gsub!(/<\s*\/\s*script\s*>/, ' ')
+        if @html_file.open_script_detected and str.gsub!(/<\s*\/\s*script\s*>/, ' ')
             #puts "end of script"
             #puts "  #{str}"
-            @@open_script_detected = false
-        elsif @@open_script_detected
+            @html_file.open_script_detected = false
+        elsif @html_file.open_script_detected
             #puts "ignore script line"
             #puts "  #{str}"
             return @tags = []
         elsif str.gsub!(/<\s*script\s*.*>.*<\s*\/\s*script\s*>/, ' ')
             #puts "script removed"
             #puts " #{str}"
-            @@open_script_detected = false
+            @html_file.open_script_detected = false
         elsif str.gsub!(/<\s*script\s*.*>.*/, ' ')
             #puts "open script detected"
             #puts " #{str}"
-            @@open_script_detected = true
+            @html_file.open_script_detected = true
         end
-
-        #remove handlebars expressions
-        str.gsub!(/\{\{>\s*(\w+.*)\s*\}\}/, '{{ \1 }}')
 
         i = 1
         str.split("").each do |char|
-            if char == "=" and @@open_bracket_detected
-                @@open_attribute_detected = true
+            if char == "=" and @html_file.open_bracket_detected
+                @html_file.open_attribute_detected = true
                 @@current_tag_str << char
-            elsif @@open_attribute_detected and !@@open_attribute_quote_detected and char == '"' or char == "'"
-                @@open_attribute_quote_detected = true
+            elsif @html_file.open_attribute_detected and !@html_file.open_attribute_quote_detected and char == '"' or char == "'"
+                @html_file.open_attribute_quote_detected = true
                 @@current_tag_str << char
-            elsif @@open_attribute_detected and @@open_attribute_quote_detected and char == '"' or char == "'"
+            elsif @html_file.open_attribute_detected and @html_file.open_attribute_quote_detected and char == '"' or char == "'"
                 #a full attribute key=value pair has been detected
                 @@current_tag_str << char
-                @@open_attribute_detected = false
-                @@open_attribute_quote_detected = false
-            elsif char == "<" and !@@open_bracket_detected
-                @@open_bracket_detected = true
+                @html_file.open_attribute_detected = false
+                @html_file.open_attribute_quote_detected = false
+            elsif char == "<" and !@html_file.open_bracket_detected
+                @html_file.open_bracket_detected = true
                 #new tag detected
                 @@current_tag_str = "<"
-            #elsif char == "<" and @@open_bracket_detected and !@@open_attribute_quote_detected
+            #elsif char == "<" and @html_file.open_bracket_detected and !@html_file.open_attribute_quote_detected
             #    #we have a syntax error
             #    puts_error("double '<'", @line_number)
             #    puts_error_location(str,i)
-            elsif char == ">" and @@open_bracket_detected
+            elsif char == ">" and @html_file.open_bracket_detected
                 #a tag has been detected
                 @@current_tag_str << ">"
                 tag = HTMLTagFactory.create(@line, @@current_tag_str)
@@ -207,16 +160,16 @@ class HTMLLine
                 end #end if is_a?(HTMLTagClose)
 
                 @@current_tag_str = ""
-                @@open_bracket_detected = false
-            #elsif char == ">" and !@@open_bracket_detected
+                @html_file.open_bracket_detected = false
+            #elsif char == ">" and !@html_file.open_bracket_detected
             #    #potential syntax error
             #    puts_warning("closing '>' detected without opening '<', check lines above", @line_number)
             #    puts_warning_location(str,i)
-            elsif @@open_bracket_detected
+            elsif @html_file.open_bracket_detected
                 if char != "\r" and char != "\n"
                     @@current_tag_str << char
                 end
-            elsif !@@open_bracket_detected
+            elsif !@html_file.open_bracket_detected
                 #should be text within a tag
             else
 
@@ -225,4 +178,5 @@ class HTMLLine
         end #end do 
 
     end # end def
+
 end

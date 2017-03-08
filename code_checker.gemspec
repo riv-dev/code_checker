@@ -13,8 +13,13 @@ Gem::Specification.new do |s|
                 "lib/models/HTMLTagFactory.rb",
                 "lib/models/HTMLTagOpen.rb",
                 "lib/models/HTMLTagVoid.rb",
-                "lib/models/HTMLFileFactory.rb"]
+                "lib/models/HTMLFileFactory.rb",
+                "lib/models/HTMLFileHBS.rb",
+                "lib/models/HTMLFilePHP.rb",
+                "lib/models/HTMLFileEJS.rb"]
+
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'
+    s.add_dependency 'nokogiri'
 end

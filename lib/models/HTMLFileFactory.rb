@@ -1,3 +1,7 @@
+require_relative 'HTMLFileHBS.rb'
+require_relative 'HTMLFilePHP.rb'
+require_relative 'HTMLFileEJS.rb'
+
 class HTMLFileFactory
     
     def self.create(file_path, file_type)
