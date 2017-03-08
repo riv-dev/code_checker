@@ -121,7 +121,15 @@ class HTMLLine
                     puts_error_location(str,i)
                 end
 
-                if tag.is_a?(HTMLTagClose) #search for opening tag
+                if tag.is_a?(HTMLTagOpen)
+                    tag.parent = @html_file.parent_tags_stash.last
+                    @html_file.parent_tags_stash.last.children << tag if @html_file.parent_tags_stash.last != nil
+                    @html_file.parent_tags_stash.push(tag)
+                elsif tag.is_a?(HTMLTagVoid)
+                    tag.parent = @html_file.parent_tags_stash.last
+                    @html_file.parent_tags_stash.last.children << tag if @html_file.parent_tags_stash.last != nil
+                    #Void tag cannot be the parent of any other tag, do not push onto parent_tags_stash
+                elsif tag.is_a?(HTMLTagClose) #search for opening tag
                     closing_tag = tag #clarify
                    
                     #go backwards with current tags array and match with first match
@@ -156,7 +164,13 @@ class HTMLLine
                     if !closing_tag.has_opening_tag
                         puts_error("Closing tag has no opening tag", @line_number)
                         puts_error_location(str,i)                    
-                    end #end !closing_tag.has_opening_tag 
+                    else #end !closing_tag.has_opening_tag 
+                        #pop the parent off
+                        parent = @html_file.parent_tags_stash.pop 
+                        #save root tags for future traversal.
+                        #usually there is only one root tag, the <html> tag
+                        @html_file.root_tags << parent if @html_file.parent_tags_stash.length == 0
+                    end
                 end #end if is_a?(HTMLTagClose)
 
                 @@current_tag_str = ""

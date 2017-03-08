@@ -4,6 +4,9 @@ require_relative 'HTMLLine.rb'
 class HTMLFile
     attr_accessor :file_path, :lines, :errors, :warnings
 
+    #Root tags are used for searching the document
+    attr_accessor :root_tags
+
     #Used for parsing the document
     attr_accessor :open_comment_detected, 
                   :open_bracket_detected, 
@@ -11,7 +14,8 @@ class HTMLFile
                   :closing_tag_detected, 
                   :open_script_detected, 
                   :open_attribute_detected, 
-                  :open_attribute_quote_detected
+                  :open_attribute_quote_detected,
+                  :parent_tags_stash
 
 
     def initialize(file_path)
@@ -19,6 +23,7 @@ class HTMLFile
         @warnings = []
         @file_path = file_path
         @lines = []
+        @root_tags = []
 
         #Attributes used for parsing the document
         @open_comment_detected = false
@@ -28,6 +33,7 @@ class HTMLFile
         @open_script_detected = false
         @open_attribute_detected = false
         @open_attribute_quote_detected = false
+        @parent_tags_stash = []
 
         #Open the HTML file and read in each line
         File.open(file_path, 'r') do |f|
@@ -70,7 +76,22 @@ class HTMLFile
         end
         puts
 
+        #@root_tags.each do |root_tag|
+        #    puts "Root tag: #{root_tag}"
+        #    print_tag(root_tag,"")
+        #    puts
+        #end
     end #initialize
+
+    def print_tag(tag,spaces)
+        puts "#{spaces}#{tag.str}"
+        if tag.is_a?(HTMLTagOpen)
+            tag.children.each do |child|
+                print_tag(child, "  #{spaces}")
+            end
+            puts "#{spaces}#{tag.closing_tag.str}"
+        end
+    end
 
     def to_s
         @file_path

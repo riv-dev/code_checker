@@ -5,9 +5,14 @@ class HTMLTagOpen < HTMLTag
     attr_accessor :classes #type Array of Strings
     attr_accessor :attributes #type Hash
     attr_accessor :closing_tag #type HTMLTagClose
+    attr_accessor :parent
+    attr_accessor :children
 
     def initialize(html_line, str)
         super(html_line, str)
+
+        @parent = nil
+        @children = []
 
         #puts "Opening tag created: #{str}"
     end
