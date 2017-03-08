@@ -1,6 +1,6 @@
-class HTMLTag
-    attr_accessor :html_line #Type HTMLLine
-    attr_accessor :str #Type String
+require_relative 'HTMLElement.rb'
+
+class HTMLTag < HTMLElement
     attr_accessor :type #Type String
     attr_accessor :id
     attr_accessor :classes
@@ -25,8 +25,7 @@ class HTMLTag
                 'u','ul','var','video','wbr']
 
     def initialize(html_line, str)
-        @html_line = html_line
-        @str = str
+        super(html_line, str)
         @type = str.match(/<\s*\/?\s*(\w+)\s*.*>/).captures[0]
         @inner_html = []
         @id = nil

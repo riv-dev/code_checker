@@ -8,6 +8,8 @@ Gem::Specification.new do |s|
     s.files = ["lib/code_checker.rb",
                 "lib/models/HTMLFile.rb",
                 "lib/models/HTMLLine.rb",
+                "lib/models/HTMLElement.rb",
+                "lib/models/HTMLContent.rb",
                 "lib/models/HTMLTag.rb",
                 "lib/models/HTMLTagClose.rb",
                 "lib/models/HTMLTagFactory.rb",

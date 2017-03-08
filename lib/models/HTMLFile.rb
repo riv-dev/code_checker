@@ -35,6 +35,9 @@ class HTMLFile
         @open_attribute_quote_detected = false
         @parent_tags_stash = []
 
+        @tags_by_id = {}
+        @tags_by_class = {}
+
         #Open the HTML file and read in each line
         File.open(file_path, 'r') do |f|
             i = 1
@@ -84,21 +87,29 @@ class HTMLFile
 
         #@root_tags.each do |root_tag|
         #    puts "Root tag: #{root_tag}"
-        #    print_tag(root_tag,"")
+        #    print_elements(root_tag,"")
         #    puts
         #end
     end #initialize
 
-    def print_tag(tag,spaces)
-        puts "#{spaces}#{tag.str}"
-        if tag.is_a?(HTMLTagOpen)
-            tag.children.each do |child|
-                print_tag(child, "  #{spaces}")
+    def get_tag_by_id(id)
+        return @tags_by_id[id]
+    end
+
+    def get_tags_by_class(classname)
+        return @tags_by_class[classname]
+    end
+
+    def print_elements(element,spaces)
+        puts "#{spaces}#{element.str}"
+        if element.is_a?(HTMLTagOpen)
+            element.children.each do |child|
+                print_elements(child, "  #{spaces}")
             end
             begin
-                puts "#{spaces}#{tag.closing_tag.str}"
+                puts "#{spaces}#{element.closing_tag.str}"
             rescue
-                puts "#{spaces}[Error]#{tag.str} has no closing tag"
+                puts "#{spaces}[Error]#{element.str} has no closing tag"
             end
         end
     end

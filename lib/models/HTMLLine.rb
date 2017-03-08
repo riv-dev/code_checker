@@ -1,4 +1,5 @@
 require_relative 'HTMLTagFactory.rb'
+require_relative 'HTMLContent.rb'
 
 class HTMLLine
     attr_accessor :html_file
@@ -6,6 +7,7 @@ class HTMLLine
     attr_accessor :line_number
     attr_accessor :tags #Type HTMLTag
     @@current_tag_str = ""
+    @@current_content_str = ""
 
     def initialize(html_file, line_str, line_number)
         @html_file = html_file
@@ -105,14 +107,12 @@ class HTMLLine
                 @html_file.open_bracket_detected = true
                 #new tag detected
                 @@current_tag_str = "<"
-            #elsif char == "<" and @html_file.open_bracket_detected and !@html_file.open_attribute_quote_detected
-            #    #we have a syntax error
-            #    puts_error("double '<'", @line_number)
-            #    puts_error_location(str,i)
+
+
             elsif char == ">" and @html_file.open_bracket_detected
                 #a tag has been detected
                 @@current_tag_str << ">"
-                tag = HTMLTagFactory.create(@line, @@current_tag_str)
+                tag = HTMLTagFactory.create(self, @@current_tag_str)
 
                 if tag != nil
                     @tags << tag
@@ -121,15 +121,23 @@ class HTMLLine
                     puts_error_location(str,i)
                 end
 
+                #Flush any current content into the current parent tag
+                if @@current_content_str.length > 0 and @html_file.parent_tags_stash.last != nil
+                    @html_file.parent_tags_stash.last.children << HTMLContent.new(self, @@current_content_str.strip)
+                    @@current_content_str = ""
+                end
+
                 if tag.is_a?(HTMLTagOpen)
                     tag.parent = @html_file.parent_tags_stash.last
                     @html_file.parent_tags_stash.last.children << tag if @html_file.parent_tags_stash.last != nil
                     @html_file.parent_tags_stash.push(tag)
+                    @html_file.opening_tag_detected = true
                 elsif tag.is_a?(HTMLTagVoid)
                     tag.parent = @html_file.parent_tags_stash.last
                     @html_file.parent_tags_stash.last.children << tag if @html_file.parent_tags_stash.last != nil
                     #Void tag cannot be the parent of any other tag, do not push onto parent_tags_stash
                 elsif tag.is_a?(HTMLTagClose) #search for opening tag
+                    @html_file.opening_tag_detected = false
                     closing_tag = tag #clarify
                    
                     #go backwards with current tags array and match with first match
@@ -161,9 +169,6 @@ class HTMLLine
                         end #end do |current_line|
                     end #end !closing_tag.has_opening_ta
 
-                    puts "Closing tag: #{closing_tag.str}"
-                    puts "  Opening tag: #{closing_tag.opening_tag.str}" if closing_tag.has_opening_tag
-
                     if !closing_tag.has_opening_tag
                         puts_error("Closing tag has no opening tag", @line_number)
                         puts_error_location(str,i)                    
@@ -186,7 +191,10 @@ class HTMLLine
                 if char != "\r" and char != "\n"
                     @@current_tag_str << char
                 end
-            elsif !@html_file.open_bracket_detected
+            elsif !@html_file.open_bracket_detected and @html_file.opening_tag_detected
+                if char != "\r" and char != "\n"
+                    @@current_content_str << char
+                end
                 #should be text within a tag
             else
 
