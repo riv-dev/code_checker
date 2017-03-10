@@ -1,7 +1,7 @@
 require 'colorize'
 require_relative 'HTMLLine.rb'
 
-class HTMLFile
+class HTMLFile < CodeFile
     attr_accessor :file_path, :lines, :errors, :warnings
 
     #Root tags are used for searching the document
