@@ -7,8 +7,7 @@ class HTMLFile < CodeFile
     attr_accessor :root_tags
 
     #Used for parsing the document
-    attr_accessor :open_comment_detected, 
-                  :open_bracket_detected, 
+    attr_accessor :open_bracket_detected, 
                   :opening_tag_detected, 
                   :closing_tag_detected, 
                   :open_script_detected, 
@@ -27,7 +26,6 @@ class HTMLFile < CodeFile
     def custom_initialize_instance_variables
         @root_tags = []
         #Attributes used for parsing the document
-        @open_comment_detected = false
         @open_bracket_detected = false
         @opening_tag_detected = false
         @closing_tag_detected = false

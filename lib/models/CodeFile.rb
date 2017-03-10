@@ -3,11 +3,16 @@ require_relative 'CodeLine.rb'
 class CodeFile
     attr_accessor :file_path, :lines, :errors, :warnings
 
+    #Used for parsing document
+    attr_accessor :open_comment_detected
+
     def initialize(file_path)
         @errors = []
         @warnings = []
         @file_path = file_path
         @lines = []
+
+        @open_comment_detected = false
 
         #must override this method
         custom_set_codeline_class
@@ -29,21 +34,22 @@ class CodeFile
 
 
     protected
+    #Override this method in the child class
     def custom_set_codeline_class
-        @codeline_class = CodeLine.class
-        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        @codeline_class = CodeLine
+        puts "[Application Error]".colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
         return false
     end
 
+    #Override this method in the child class
     def custom_initialize_instance_variables
-        #override this method
-        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        puts "[Application Error]".colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
         return false
     end
     
+    #Override this method in the child class
     def custom_check_file_after_processing_done
-        #override this method
-        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        puts "[Application Error]"..colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
         return false
     end
 
