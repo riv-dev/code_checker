@@ -1,3 +1,5 @@
+require_relative 'CodeLine.rb'
+
 class CodeFile
     attr_accessor :file_path, :lines, :errors, :warnings
 
@@ -27,12 +29,26 @@ class CodeFile
 
 
     protected
+    def custom_set_codeline_class
+        @codeline_class = CodeLine.class
+        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        return false
+    end
+
     def custom_initialize_instance_variables
         #override this method
+        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        return false
     end
     
     def custom_check_file_after_processing_done
         #override this method
+        puts "[Application Error]".red + "[#{__FILE__}][Need to override #{__method__}]"
+        return false
+    end
+
+    def to_s
+        return @file_path
     end
 
     def read_file_and_process_each_line
@@ -42,7 +58,7 @@ class CodeFile
 
             f.each_line do |line|
                 #Custom process line code
-                @lines << @code_line_class.new(self, line, line_number)
+                @lines << @codeline_class.new(self, line, line_number)
 
                 line_number = line_number + 1
             end #f.each_line
@@ -63,20 +79,20 @@ class CodeFile
             end
             puts
         else
-            puts "  [Success][No errors found]"
+            puts "  " + "[Success]".green + "[No errors found]"
             puts
         end
         puts
     end
 
     def puts_error(error, line, details)
-        @errors << "[Error] line #{line.line_number}: [#{error}]"
-        @errors << "  #{details}\n\n"
+        @errors << "[Error]".colorize(:color => :white, :background => :red) + " line #{line.line_number}: " + "[#{error}]".red
+        @errors << "\n    #{details}\n\n\n"
     end
 
     def puts_warning(warning, line, details)
-        @warnings << "[Warning] line #{line.line_number}: [#{warning}]"
-        @warnings << "  #{details}\n\n"
+        @warnings << "[Warning]".colorize(:color => :black, :background => :yellow) + " line #{line.line_number}: " + "[#{warning}]".yellow
+        @warnings << "\n    #{details}\n\n\n"
     end
 
 end

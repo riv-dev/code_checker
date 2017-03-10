@@ -3,7 +3,7 @@ require_relative 'HTMLTag.rb'
 class HTMLTagVoid < HTMLTag
     attr_accessor :parent
 
-    @@void_tag_types_list = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr', 'path']
+    @@void_tag_types_list = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr','path']
     @@void_tag_no_params = ['br', 'hr']
 
     def initialize(html_line, str)

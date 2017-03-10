@@ -1,9 +1,8 @@
 require 'colorize'
+require_relative 'CodeFile.rb'
 require_relative 'HTMLLine.rb'
 
 class HTMLFile < CodeFile
-    attr_accessor :file_path, :lines, :errors, :warnings
-
     #Root tags are used for searching the document
     attr_accessor :root_tags
 
@@ -17,14 +16,16 @@ class HTMLFile < CodeFile
                   :open_attribute_quote_detected,
                   :parent_tags_stash
 
-
     def initialize(file_path)
-        @errors = []
-        @warnings = []
-        @file_path = file_path
-        @lines = []
-        @root_tags = []
+        super(file_path)
+    end #initialize
 
+    def custom_set_codeline_class
+        @codeline_class = HTMLLine
+    end
+
+    def custom_initialize_instance_variables
+        @root_tags = []
         #Attributes used for parsing the document
         @open_comment_detected = false
         @open_bracket_detected = false
@@ -37,19 +38,9 @@ class HTMLFile < CodeFile
 
         @tags_by_id = {}
         @tags_by_class = {}
-
-        #Open the HTML file and read in each line
-        File.open(file_path, 'r') do |f|
-            i = 1
-
-            f.each_line do |line|
-                #Process the HTML line and save it
-                @lines << HTMLLine.new(self, line, i)
-                i = i + 1
-            end #f.each_line
-
-        end #File.open
-
+    end
+    
+    def custom_check_file_after_processing_done
         if @root_tags.length == 0
             #Somewhere there was not a closing tag so the root was not 
             #discovered properly.  Manually add in the root
@@ -73,6 +64,8 @@ class HTMLFile < CodeFile
 
                 #1) Ryukyu coding rule, no <img /> style void tags
                 if current_element.is_a?(HTMLTagVoid)
+                    return if current_element.type == "path" #path is a foreign tag, allow "/" at the end
+
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
                         puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line, current_element.html_line.str.strip)
                     end
@@ -82,33 +75,14 @@ class HTMLFile < CodeFile
                 if current_element.is_a?(HTMLContent)
                     asian_char_regex = /([\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}])(\s+)/
                     if current_element.str.match(asian_char_regex)
-                        current_element.str.gsub!(asian_char_regex,'\1'+"[S]".yellow)
+                        current_element.str.gsub!(asian_char_regex,'\1'+" ".colorize(:background => :yellow))
                         puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line, current_element.str)
                     end
                 end
 
             end
         end
-
-
-        #Display errors
-        puts "Checked #{@file_path}"
-        if @errors.length > 0 or @warnings.length > 0
-            @errors.each do |error|
-                puts "  #{error}"
-            end
-
-            @warnings.each do |warning|
-                puts "  #{warning}"
-            end
-            puts
-        else
-            puts "  [Success][No errors found]"
-            puts
-        end
-        puts
-
-    end #initialize
+    end
 
     def get_tag_by_id(id)
         return @tags_by_id[id]
@@ -132,10 +106,6 @@ class HTMLFile < CodeFile
         end
     end
 
-    def to_s
-        @file_path
-    end
-
     #override this function for specific templating engines
     def process_line_through_templating_engine(str)
         #Default HTML file, do nothing
@@ -144,15 +114,6 @@ class HTMLFile < CodeFile
 
     #Private and helper functions
     private
-    def puts_error(error, line, details)
-        @errors << "[Error]".red + " line #{line.line_number}: " + "[#{error}]".red
-        @errors << "  #{details}\n\n"
-    end
-
-    def puts_warning(warning, line, details)
-        @warnings << "[Warning]".yellow + " line #{line.line_number}: " + "[#{warning}]".yellow
-        @warnings << "  #{details}\n\n"
-    end
 
     #Recursive tree traversal check
     def check_all_elements(root_element)

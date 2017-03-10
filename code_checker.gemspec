@@ -6,6 +6,8 @@ Gem::Specification.new do |s|
     s.authors = ["Ken Le"]
     s.email = "kenle545@gmail.com"
     s.files = ["lib/code_checker.rb",
+                "lib/models/CodeFile.rb",
+                "lib/models/CodeLine.rb",
                 "lib/models/HTMLFile.rb",
                 "lib/models/HTMLLine.rb",
                 "lib/models/HTMLElement.rb",
@@ -18,7 +20,8 @@ Gem::Specification.new do |s|
                 "lib/models/HTMLFileFactory.rb",
                 "lib/models/HTMLFileHBS.rb",
                 "lib/models/HTMLFilePHP.rb",
-                "lib/models/HTMLFileEJS.rb"]
+                "lib/models/HTMLFileEJS.rb",
+                "lib/models/SASSFile.rb"]
     s.add_dependency "colorize"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
