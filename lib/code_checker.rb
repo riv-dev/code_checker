@@ -1,5 +1,6 @@
 require_relative 'models/HTMLFile.rb'
 require_relative 'models/HTMLFileFactory.rb'
+require_relative 'models/SASSFile.rb'
 
 class CodeChecker
 
@@ -38,6 +39,11 @@ class CodeChecker
         HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
       end 
     end #type.each do
+
+    #Check SASS Files
+    Dir.glob(html_folder+"/**/*.scss") do |file_name|
+      SASSFile.new(file_name) if !self.ignore_file?(file_name)
+    end     
 
   end #def self.check_folder
 

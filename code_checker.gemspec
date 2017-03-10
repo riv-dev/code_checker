@@ -24,7 +24,8 @@ Gem::Specification.new do |s|
                 "lib/models/SASSFile.rb",
                 "lib/models/SASSLine.rb",
                 "lib/models/SASSProperty.rb",
-                "lib/models/SASSSelector.rb"]
+                "lib/models/SASSSelector.rb",
+                "lib/models/SASSMixin.rb"]
     s.add_dependency "colorize"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'

@@ -1,15 +1,19 @@
 require_relative 'CodeFile.rb'
 require_relative 'SASSLine.rb'
+require_relative 'SASSMixin.rb'
 
 class SASSFile < CodeFile
 
     #Used for parsing the document
     attr_accessor :open_selector_bracket_detected,
+                  :open_function_detected,
                   :parent_selectors_stash,
                   :root_selectors
 
     def initialize(file_path)
         super(file_path)
+
+        #print_all
     end #initialize
 
     #Override this method in the child class
@@ -20,6 +24,7 @@ class SASSFile < CodeFile
     #Override this method in the child class
     def custom_initialize_instance_variables
         @open_selector_bracket_detected = false
+        @open_function_detected = false
         @parent_selectors_stash = []
         @root_selectors = []
      end
@@ -36,7 +41,11 @@ class SASSFile < CodeFile
     end
 
     def print_all_selector(root_selector,spaces)
-        puts "#{spaces}#{root_selector} {"
+        if root_selector.is_a?(SASSMixin)
+            puts "#{spaces}@mixin #{root_selector} {"
+        else
+            puts "#{spaces}#{root_selector} {"    
+        end
         root_selector.properties.each do |property|
             puts "#{spaces}  #{property}"
         end

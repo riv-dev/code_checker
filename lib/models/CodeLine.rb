@@ -45,7 +45,7 @@ class CodeLine
     end
 
     def puts_warning(warning, line_number)
-        @code_file.warnings << "[Warning]".colorize(:color => :white, :background => :yellow) + " line #{line_number}: " + "[#{warning}]".yellow
+        @code_file.warnings << "[Warning]".colorize(:color => :black, :background => :yellow) + " line #{line_number}: " + "[#{warning}]".yellow
     end
 
     def puts_warning_location(str, char_position)
