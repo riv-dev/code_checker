@@ -73,16 +73,16 @@ class HTMLFile
                 #1) Ryukyu coding rule, no <img /> style void tags
                 if current_element.is_a?(HTMLTagVoid)
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line)
+                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line, current_element.html_line.str)
                     end
                 end
 
                 #2) No half-width spaces in content
                 if current_element.is_a?(HTMLContent)
-                    asian_char_regex = /[\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}](\s+)/
+                    asian_char_regex = /([\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}])(\s+)/
                     if current_element.str.match(asian_char_regex)
-                        current_element.html_line.str.gsub!(asian_char_regex,'\1[**Warning, half-width space detected]')
-                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line)
+                        current_element.str.gsub!(asian_char_regex,'\1[**Warning, half-width space detected]')
+                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line, current_element.str)
                     end
                 end
 
@@ -143,20 +143,20 @@ class HTMLFile
 
     #Private and helper functions
     private
-    def puts_error(error, line)
+    def puts_error(error, line, details)
         @errors << "[Error] line #{line.line_number}: [#{error}]"
-        @errors << "  #{line.str.strip}\n\n"
+        @errors << "  #{details}\n\n"
     end
 
-    def puts_warning(warning, line)
+    def puts_warning(warning, line, details)
         @warnings << "[Warning] line #{line.line_number}: [#{warning}]"
-        @warnings << "  #{line.str.strip}\n\n"
+        @warnings << "  #{details}\n\n"
     end
 
     #Recursive tree traversal check
     def check_all_elements(root_element)
         if root_element.is_a?(HTMLTagOpen) and !root_element.has_closing_tag
-            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line)
+            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line, root_element.html_line.str)
         end
 
         #Recursion to traverse the full tree
