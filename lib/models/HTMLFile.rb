@@ -73,7 +73,7 @@ class HTMLFile
                 #1) Ryukyu coding rule, no <img /> style void tags
                 if current_element.is_a?(HTMLTagVoid)
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line, current_element.html_line.str)
+                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line, current_element.html_line.str.strip)
                     end
                 end
 
@@ -156,7 +156,7 @@ class HTMLFile
     #Recursive tree traversal check
     def check_all_elements(root_element)
         if root_element.is_a?(HTMLTagOpen) and !root_element.has_closing_tag
-            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line, root_element.html_line.str)
+            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line, root_element.html_line.str.strip)
         end
 
         #Recursion to traverse the full tree
