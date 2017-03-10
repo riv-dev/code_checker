@@ -4,7 +4,7 @@ class SASSMixin
     attr_accessor :properties #Type array of strings
     attr_accessor :children_selectors #Type array of children selectors
 
-    def initialize(codeline, name, parent_selector)
+    def initialize(codeline, name)
         @codeline = codeline
         @name = name
         @properties = []

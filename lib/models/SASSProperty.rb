@@ -13,7 +13,7 @@ class SASSProperty
     end
 
     def to_s
-        return "#{@name}: #{@value}"
+        return "#{@name}: #{@value};"
     end
 
 end
