@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
                 "lib/models/HTMLFileHBS.rb",
                 "lib/models/HTMLFilePHP.rb",
                 "lib/models/HTMLFileEJS.rb"]
-
+    s.add_dependency "colorize"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'

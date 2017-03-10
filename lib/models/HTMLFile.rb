@@ -1,3 +1,4 @@
+require 'colorize'
 require_relative 'HTMLLine.rb'
 
 class HTMLFile
@@ -81,7 +82,7 @@ class HTMLFile
                 if current_element.is_a?(HTMLContent)
                     asian_char_regex = /([\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}])(\s+)/
                     if current_element.str.match(asian_char_regex)
-                        current_element.str.gsub!(asian_char_regex,'\1[**Warning, half-width space detected]')
+                        current_element.str.gsub!(asian_char_regex,'\1'+"[S]".yellow)
                         puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line, current_element.str)
                     end
                 end
@@ -144,12 +145,12 @@ class HTMLFile
     #Private and helper functions
     private
     def puts_error(error, line, details)
-        @errors << "[Error] line #{line.line_number}: [#{error}]"
+        @errors << "[Error]".red + " line #{line.line_number}: " + "[#{error}]".red
         @errors << "  #{details}\n\n"
     end
 
     def puts_warning(warning, line, details)
-        @warnings << "[Warning] line #{line.line_number}: [#{warning}]"
+        @warnings << "[Warning]".yellow + " line #{line.line_number}: " + "[#{warning}]".yellow
         @warnings << "  #{details}\n\n"
     end
 

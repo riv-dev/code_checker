@@ -1,3 +1,4 @@
+require 'colorize'
 require_relative 'HTMLTagFactory.rb'
 require_relative 'HTMLContent.rb'
 
@@ -27,20 +28,20 @@ class HTMLLine
     end
 
     def puts_error(error, i)
-        @html_file.errors << "[Error] line #{i}: [#{error}]"
+        @html_file.errors << "[Error]".red + "line #{i}:" + "[#{error}]".red
     end
 
     def puts_error_location(str, i)
-        str = str.scan(/^.{#{i-1}}|.+/).join("*Error*")
+        str = str.scan(/^.{#{i-1}}|.+/).join("*Error*".red)
         @html_file.errors << "  #{str.strip}\n\n"
     end
 
     def puts_warning(warning, i)
-        @html_file.warnings << "[Warning] line #{i}: [#{warning}]"
+        @html_file.warnings << "[Warning]".yellow + " line #{i}: " + "[#{warning}]".yellow
     end
 
     def puts_warning_location(str, i)
-        str = str.scan(/^.{#{i-1}}|.+/).join("*Warning*")
+        str = str.scan(/^.{#{i-1}}|.+/).join("*Warning*".yellow)
         @html_file.warnings << "  #{str.strip}\n\n"
     end
 
