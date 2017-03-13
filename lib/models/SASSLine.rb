@@ -167,7 +167,7 @@ class SASSLine < CodeLine
 
                 if values.length == 2
                     current_css_property = SASSProperty.new(self, @code_file.parent_selectors_stash.last, values[0].strip.chomp, values[1].strip.chomp)
-                    @code_file.parent_selectors_stash.last.properties << current_css_property
+                    @code_file.parent_selectors_stash.last.properties << current_css_property if @code_file.parent_selectors_stash.last != nil
                     @code_file.all_properties << current_css_property
                 elsif values.length == 1
                     #it is not a valid CSS property:value pair
