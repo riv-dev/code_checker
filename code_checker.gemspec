@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.0.11'
+    s.version = '1.1.0'
     s.date = '2017-03-02'
-    s.summary = "Check HTML code and coding rules"
+    s.summary = "Check HTML & SASS code for basic syntax and coding rules"
     s.authors = ["Ken Le"]
     s.email = "kenle545@gmail.com"
     s.files = ["lib/code_checker.rb",
@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
                 "lib/models/SASSLine.rb",
                 "lib/models/SASSProperty.rb",
                 "lib/models/SASSSelector.rb",
-                "lib/models/SASSMixin.rb"]
+                "lib/models/SASSMixin.rb",
+                "lib/models/SASSInclude.rb"]
     s.add_dependency "colorize"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'

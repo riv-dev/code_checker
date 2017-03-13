@@ -9,12 +9,16 @@ class CodeChecker
   end
 
   #Run code checker on a specific file
-  def self.check(html_file)
+  def self.check(file_path)
     begin
-      captures = html_file.match(/\.(\w+)$/).captures
-      HTMLFileFactory.create(html_file, captures[0])
+      captures = file_path.match(/\.(\w+)$/).captures
+      if(captures[0] == 'scss')
+        SASSFile.new(file_path)
+      else
+        HTMLFileFactory.create(html_file, captures[0])
+      end
     rescue
-      HTMLFile.new(html_file)
+      HTMLFile.new(file_path)
     end
   end
 

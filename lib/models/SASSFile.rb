@@ -8,7 +8,8 @@ class SASSFile < CodeFile
     attr_accessor :open_selector_bracket_detected,
                   :open_function_detected,
                   :parent_selectors_stash,
-                  :root_selectors
+                  :root_selectors,
+                  :all_properties
 
     def initialize(file_path)
         super(file_path)
@@ -27,11 +28,24 @@ class SASSFile < CodeFile
         @open_function_detected = false
         @parent_selectors_stash = []
         @root_selectors = []
+        @all_properties = []
      end
     
     #Override this method in the child class
     def custom_check_file_after_processing_done
+        check_all_properties do |property|
+            SASSInclude.get_common_include_names.each do |include_name|
+                if property.name.match(/#{include_name}/)
+                    puts_warning("Ryukyu: Use compass mixin @include #{include_name}()", property.codeline, property.to_s)                    
+                end
+            end
+        end
+    end
 
+    def check_all_properties
+        @all_properties.each do |property|
+            yield(property)
+        end
     end
 
     def print_all
@@ -46,6 +60,11 @@ class SASSFile < CodeFile
         else
             puts "#{spaces}#{root_selector} {"    
         end
+
+        root_selector.includes.each do |sass_include|
+            puts "#{spaces}  #{sass_include}"
+        end
+
         root_selector.properties.each do |property|
             puts "#{spaces}  #{property}"
         end

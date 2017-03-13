@@ -2,7 +2,8 @@ class SASSSelector
     attr_accessor :codeline
     attr_accessor :name #Type string
     attr_accessor :pseudo_class #Type string
-    attr_accessor :properties #Type array of strings
+    attr_accessor :properties #Type array of SASSProperty's
+    attr_accessor :includes #Type array of SASSInclude's
     attr_accessor :parent_selector #Type CSSSelector
     attr_accessor :children_selectors #Type array of children selectors
 
@@ -11,6 +12,7 @@ class SASSSelector
         @name = name
         @pseudo_class = nil
         @properties = []
+        @includes = []
         @parent_selector = parent_selector
         @children_selectors = []
     end

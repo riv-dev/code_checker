@@ -1,6 +1,7 @@
 require_relative 'CodeLine.rb'
 require_relative 'SASSSelector.rb'
 require_relative 'SASSProperty.rb'
+require_relative 'SASSInclude.rb'
 
 class SASSLine < CodeLine
     attr_accessor :selectors
@@ -28,6 +29,28 @@ class SASSLine < CodeLine
             end
         end
 
+        #remove comments <!-- -->
+        str.gsub!(/\/\/.*/,'')
+
+        if @code_file.open_comment_detected and str.gsub!(/.*?\*\//, ' ')
+            #puts "end of comment"
+            #puts "  #{str}"
+            @code_file.open_comment_detected = false
+        elsif @code_file.open_comment_detected
+            #puts "comment ignored"
+            #puts "  #{str}"
+            #don't process the line
+            return
+        elsif str.gsub!(/\/\*.*?\*\//, ' ')
+            #puts "comment removed"
+            #puts " #{str}"
+            @code_file.open_comment_detected = false
+        elsif str.gsub!(/\/\*.*/, ' ')
+            #puts "open comment detected line:#{@line_number}}"
+            #puts "  #{str}"
+            @code_file.open_comment_detected = true
+        end
+
         #Check for ending ";"        
         if str.match(/\w+\s*$/)
            puts_error('Missing ; at end of the line', @line_number) 
@@ -51,33 +74,32 @@ class SASSLine < CodeLine
             @@mixin_detected = true
         end
 
-        #remove comments <!-- -->
-        str.gsub!(/\/\/.*/,'')
-
-        if @code_file.open_comment_detected and str.gsub!(/.*?\*\//, ' ')
-            #puts "end of comment"
-            #puts "  #{str}"
-            @code_file.open_comment_detected = false
-        elsif @code_file.open_comment_detected
-            #puts "comment ignored"
-            #puts "  #{str}"
-            #don't process the line
+        if captures = str.match(/^\s*@include\s*([\w\-_]+)\(?([$\w\-_,\s+]*)\)?/)
+            name = captures[1]
+            parameters = nil
+            parameters = captures[2] if captures.length == 3
+            current_include = SASSInclude.new(self, @code_file.parent_selectors_stash.last, name, parameters)
+            @code_file.parent_selectors_stash.last.includes << current_include if @code_file.parent_selectors_stash.last != nil
             return
-        elsif str.gsub!(/\/\*.*?\*\//, ' ')
-            #puts "comment removed"
-            #puts " #{str}"
-            @code_file.open_comment_detected = false
-        elsif str.gsub!(/\/\*.*/, ' ')
-            #puts "open comment detected line:#{@line_number}}"
-            #puts "  #{str}"
-            @code_file.open_comment_detected = true
         end
 
+        @@function_open_bracket_stash = []
+
         #Remove functions
-        if @code_file.open_function_detected and str.match(/.*}$/)
-            #puts "end of comment"
-            #puts "  #{str}"
-            @code_file.open_function_detected = false
+        if @code_file.open_function_detected and captures = str.scan(/\{/)
+            captures.length.times do
+                @@function_open_bracket_stash << "{"
+            end
+            return
+        elsif @code_file.open_function_detected and captures = str.scan(/\}/)
+            captures.length.times do 
+                @@function_open_bracket_stash.pop
+            end
+
+            if @@function_open_bracket_stash.length == 0
+                @code_file.open_function_detected = false
+            end
+
             return
         elsif @code_file.open_function_detected
             #puts "comment ignored"
@@ -85,6 +107,11 @@ class SASSLine < CodeLine
             #don't process the line
             return
         elsif str.match(/^\s*@function/)
+            if captures = str.scan(/\{/)
+                captures.length.times do
+                    @@function_open_bracket_stash << "{"
+                end
+            end
             #puts "open comment detected line:#{@line_number}}"
             #puts "  #{str}"
             @code_file.open_function_detected = true
@@ -141,6 +168,7 @@ class SASSLine < CodeLine
                 if values.length == 2
                     current_css_property = SASSProperty.new(self, @code_file.parent_selectors_stash.last, values[0].strip.chomp, values[1].strip.chomp)
                     @code_file.parent_selectors_stash.last.properties << current_css_property
+                    @code_file.all_properties << current_css_property
                 elsif values.length == 1
                     #it is not a valid CSS property:value pair
                     #possibly it is a sass mixin or extend
