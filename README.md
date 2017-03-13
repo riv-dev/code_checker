@@ -7,6 +7,9 @@ Checks .html, .hbs, .php, and .ejs files for basic syntax and coding errors.  Cu
 - Ryukyu rule: No "/" character at end of void tags
 - Ryukyu rule: No half-width spaces in Japanese, Korean, and Chinese characters
 
+Checks .scss fils for basic syntax and coding errors.  Current version checks the following:
+- Common compass mixins that must be used
+
 ## Directions to run as a tool on the command line
 ### Install the tool
 Run the following on the command line.  It does not matter which folder you are in.
