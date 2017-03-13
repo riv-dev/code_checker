@@ -72,6 +72,7 @@ class SASSLine < CodeLine
             parameters = captures[2] if captures.length == 3
             current_include = SASSInclude.new(self, @code_file.parent_selectors_stash.last, name, parameters)
             @code_file.parent_selectors_stash.last.includes << current_include if @code_file.parent_selectors_stash.last != nil
+            @code_file.all_includes << current_include
             return
         end
 
@@ -153,6 +154,7 @@ class SASSLine < CodeLine
                     current_parent_selector = @code_file.parent_selectors_stash.last
                     current_selector = SASSSelector.new(self, @@current_undefined_str.strip.chomp, current_parent_selector)
                     current_parent_selector.children_selectors << current_selector if current_parent_selector != nil
+                    @code_file.all_selectors << current_selector
                 end
 
                 @code_file.parent_selectors_stash << current_selector
