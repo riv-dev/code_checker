@@ -51,14 +51,6 @@ class SASSLine < CodeLine
             @code_file.open_comment_detected = true
         end
 
-        #Check for ending ";"        
-        if str.match(/\w+\s*$/)
-           puts_error('Missing ; at end of the line', @line_number) 
-           puts_error_location(str,str.length)
-           #Correct the string so we can properly continue the check below
-           str = str + ";"
-        end
-
         #Ignore imports
         if str.match(/^s*@import/)
             return
@@ -116,6 +108,14 @@ class SASSLine < CodeLine
             #puts "  #{str}"
             @code_file.open_function_detected = true
             return
+        end
+
+        #Check for ending ";"        
+        if str.match(/\w+\s*$/)
+           puts_error('Missing ; at end of the line', @line_number) 
+           puts_error_location(str,str.length)
+           #Correct the string so we can properly continue the check below
+           str = str + ";"
         end
 
         i = 1
