@@ -9,6 +9,8 @@ Checks .html, .hbs, .php, and .ejs files for basic syntax and coding errors.  Cu
 
 Checks .scss fils for basic syntax and coding errors.  Current version checks the following:
 - Common compass mixins that must be used
+- Basic hover checks.  Makes sure hover is defined inside @media for PC.
+- Makes sure transition is not defined inside hover
 
 ## Directions to run as a tool on the command line
 ### Install the tool
