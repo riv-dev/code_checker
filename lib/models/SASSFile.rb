@@ -40,7 +40,7 @@ class SASSFile < CodeFile
         check_all_properties do |property|
             SASSInclude.get_common_include_names.each do |include_name|
                 if property.name.match(/#{include_name}/)
-                    puts_warning("Ryukyu: Use compass mixin @include #{include_name}()", property.codeline, property.codeline.str)                    
+                    puts_warning("Ryukyu: Use compass mixin @include #{include_name}()", property.codeline, property.codeline.str.chomp.strip)                    
                 end
             end
         end
@@ -48,7 +48,7 @@ class SASSFile < CodeFile
         check_all_selectors do |selector|
             if selector.name.match(/hover/)
                 unless selector.parent_selector and selector.parent_selector.name.match(/@media/)
-                    puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str)
+                    puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str.chomp.strip)
                 end
             end
         end
@@ -56,7 +56,7 @@ class SASSFile < CodeFile
         check_all_includes do |sass_include|
             if sass_include.name.match(/transition/)
                 if sass_include.selector.name.match(/hover/)
-                   puts_warning("Ryukyu: transition should not be put inside hover", sass_include.codeline, sass_include.codeline.str)
+                   puts_warning("Ryukyu: transition should not be put inside hover", sass_include.codeline, sass_include.codeline.str.chomp.strip)
                 end
             end
         end
