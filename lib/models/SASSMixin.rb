@@ -13,6 +13,11 @@ class SASSMixin
         @children_selectors = []
     end
 
+    #Mixins don't select any element
+    def element_selector_string
+        return nil
+    end    
+
     def to_s
         return @name
     end

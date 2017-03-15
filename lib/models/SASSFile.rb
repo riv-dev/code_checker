@@ -38,6 +38,7 @@ class SASSFile < CodeFile
     #Override this method in the child class
     def custom_check_file_after_processing_done
         check_all_properties do |property|
+            #puts "Selector string: #{property.element_selector_string}"
             SASSInclude.get_common_include_names.each do |include_name|
                 if property.name.match(/#{include_name}/)
                     puts_warning("Ryukyu: Use compass mixin @include #{include_name}()", property.codeline, property.codeline.str.chomp.strip)                    
@@ -47,7 +48,11 @@ class SASSFile < CodeFile
 
         check_all_selectors do |selector|
             if selector.name.match(/hover/)
-                unless selector.parent_selector and selector.parent_selector.name.match(/@media/)
+                while selector.parent_selector and !selector.parent_selector.is_a?(SASSMixin) and !selector.parent_selector.name.match(/@media/)
+                    selector.parent_selector = selector.parent_selector.parent_selector
+                end
+
+                if selector.parent_selector == nil
                     puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str.chomp.strip)
                 end
             end
