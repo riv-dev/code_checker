@@ -1,5 +1,5 @@
-#Code Checker
-Checks .html, .hbs, .php, and .ejs files for basic syntax and coding errors.  Current version checks the following:
+# Code Checker
+Checks .html, .hbs, .php, .ejs, and .sass files for basic syntax and coding errors.  Current version checks the following:
 - Opening tags must have closing tags
 - Closing tags must have opening tags
 - Void tags should not have closing tags
@@ -69,7 +69,7 @@ code_checker -F . -x *.ejs,*.php -X node_modules,lib,*temp*
 Code checker checks all supported file types if -t option is not specified.
 If -t is specified, it will check those file types only.
 
-####For example, check only html files:
+#### For example, check only html files:
 ```bash
 code_checker -F . -t html
 ```
