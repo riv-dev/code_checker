@@ -19,12 +19,12 @@ class SASSSelector
     #The selector string to get the specific element
     #the style applies to
     def element_selector_string
-        if self.name.match(/^\s*@media/) or self.name.match(/^\s*&\s*:\w+\s*$/) 
-            return "#{@parent_selector.element_selector_string}"
+        if @name.match(/^\s*@media/) or @name.match(/^\s*&\s*:\w+\s*$/) 
+            @parent_selector ? (return "#{@parent_selector.element_selector_string}") : (return nil)
         elsif captures = self.name.match(/^\s*(.+):\w+\s*/)
-            return "#{@parent_selector.element_selector_string} #{captures[1]}"
+            @parent_selectr ? (return "#{@parent_selector.element_selector_string} #{captures[1]}") : (return captures[1])
         else
-            return "#{@parent_selector.element_selector_string} #{@name}"
+            @parent_selector ? (return "#{@parent_selector.element_selector_string} #{@name}") : (return @name)
         end
     end
 

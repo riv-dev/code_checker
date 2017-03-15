@@ -148,11 +148,11 @@ class SASSLine < CodeLine
                         puts_error('Mixin cannot be nested inside parent selector', @line_number) 
                         puts_error_location(str,str.length)
                     end
-                    current_selector = SASSMixin.new(self, @@current_undefined_str.strip.chomp)
+                    current_selector = SASSMixin.new(self, @@current_undefined_str.chomp.strip)
                     @@mixin_detected = false
                 else
                     current_parent_selector = @code_file.parent_selectors_stash.last
-                    current_selector = SASSSelector.new(self, @@current_undefined_str.strip.chomp, current_parent_selector)
+                    current_selector = SASSSelector.new(self, @@current_undefined_str.chomp.strip, current_parent_selector)
                     current_parent_selector.children_selectors << current_selector if current_parent_selector != nil
                     @code_file.all_selectors << current_selector
                 end
@@ -165,7 +165,7 @@ class SASSLine < CodeLine
                 @code_file.root_selectors << selector if @code_file.parent_selectors_stash.length == 0 and selector != nil
             elsif char == ";"
                 #@@current_undefined_str is a property value
-                values = @@current_undefined_str.split(":")
+                values = @@current_undefined_str.chomp.strip.split(":")
 
                 if values.length == 2
                     current_css_property = SASSProperty.new(self, @code_file.parent_selectors_stash.last, values[0].strip.chomp, values[1].strip.chomp)
@@ -183,7 +183,9 @@ class SASSLine < CodeLine
                 #Reset str
                 @@current_undefined_str = ""
             else
-                @@current_undefined_str << char;
+                if char != "\r" and char != "\n"
+                    @@current_undefined_str << char
+                end               
             end #end if
 
             i = i + 1
