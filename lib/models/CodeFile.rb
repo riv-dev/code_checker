@@ -14,6 +14,7 @@ class CodeFile
 
         @open_comment_detected = false
 
+        begin
         #must override this method
         custom_set_codeline_class
 
@@ -29,6 +30,9 @@ class CodeFile
         #Refactored to views
         #insert display_all_errors_and_warnings here in child
         #display_all_errors_and_warnings
+        rescue => e
+            #puts error
+        end
 
 
     end #initialize

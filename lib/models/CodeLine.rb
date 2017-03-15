@@ -11,11 +11,15 @@ class CodeLine
         @line_number = line_number
         #puts "#{@line_number}: #{@str}"
 
+        begin
         #Overrid this method in child classes
         custom_initialize_instance_variables
 
         #Override this method in child classes
         custom_process_line(@str)
+        rescue => e
+            #puts e
+        end
     end
 
     #Override method
