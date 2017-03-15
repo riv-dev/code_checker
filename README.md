@@ -94,7 +94,7 @@ code_checker -F . -t html,php
 
 ### Optional: Pipe the output to a logfile
 ```bash
-code_checker -f index.html > log.txt
+code_checker -f index.html -o log.txt
 ```
 
 ### Help: Get help about usage

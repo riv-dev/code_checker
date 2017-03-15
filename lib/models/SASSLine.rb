@@ -19,6 +19,7 @@ class SASSLine < CodeLine
 
     #Override method
     def custom_process_line(str)
+        str = str.gsub(/\/\*/,'')
         if @line_number == 1
             if !str.match(/^\s*@charset\s+"utf-8"/)
                 puts_warning('First line should contain @charset "utf-8";', @line_number)
@@ -51,16 +52,14 @@ class SASSLine < CodeLine
         end
 
         #Ignore imports
-        if str.match(/^s*@import/)
+        if str.match(/^\s*@import/)
             return
         end
 
         #Ignore variables
-        if str.match(/^s*\$\w+/)
+        if str.match(/^\s*\$\w+/)
             return
         end
-
-
 
         if captures = str.match(/^\s*@include\s*([\w\-_]+)\(?([$\w\-_,\s+]*)\)?/)
             name = captures[1]
