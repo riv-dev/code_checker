@@ -7,7 +7,6 @@ class SASSLine < CodeLine
     attr_accessor :selectors
 
     @@current_undefined_str = ""
-    @@mixin_detected = false;
 
     def initialize(code_file, line_str, line_number)
         super(code_file, line_str, line_number)
@@ -61,17 +60,14 @@ class SASSLine < CodeLine
             return
         end
 
-        #Detect mixins
-        if str.gsub!(/^s*(@mixin\s+)([A-Za-z\-_]+.*)/,'\2')
-            @@mixin_detected = true
-        end
+
 
         if captures = str.match(/^\s*@include\s*([\w\-_]+)\(?([$\w\-_,\s+]*)\)?/)
             name = captures[1]
             parameters = nil
             parameters = captures[2] if captures.length == 3
-            current_include = SASSInclude.new(self, @code_file.parent_selectors_stash.last, name, parameters)
-            @code_file.parent_selectors_stash.last.includes << current_include if @code_file.parent_selectors_stash.last != nil
+            current_include = SASSInclude.new(self, @code_file.parents_stash.last, name, parameters)
+            @code_file.parents_stash.last.includes << current_include if @code_file.parents_stash.last != nil
             @code_file.all_includes << current_include
             return
         end
@@ -142,34 +138,35 @@ class SASSLine < CodeLine
 
             if char == "{"
                 #@@current_undefined_str is a selector
-                if @@mixin_detected
-                    current_parent_selector = @code_file.parent_selectors_stash.last
-                    if current_parent_selector != nil
+                if captures = @@current_undefined_str.match(/^\s*(@mixin\s+)([A-Za-z\-\_]+)\s*(\((.*)\))?\s*$/)
+                #Detect mixins
+                    current_parent = @code_file.parents_stash.last
+                    if current_parent != nil
                         puts_error('Mixin cannot be nested inside parent selector', @line_number) 
                         puts_error_location(str,str.length)
                     end
-                    current_selector = SASSMixin.new(self, @@current_undefined_str.chomp.strip)
-                    @@mixin_detected = false
+                    current_selector = SASSMixin.new(self, captures[2], captures[4])
+                    @code_file.all_mixins << current_selector
                 else
-                    current_parent_selector = @code_file.parent_selectors_stash.last
-                    current_selector = SASSSelector.new(self, @@current_undefined_str.chomp.strip, current_parent_selector)
-                    current_parent_selector.children_selectors << current_selector if current_parent_selector != nil
+                    current_parent = @code_file.parents_stash.last
+                    current_selector = SASSSelector.new(self, @@current_undefined_str.chomp.strip, current_parent)
+                    current_parent.children_selectors << current_selector if current_parent != nil
                     @code_file.all_selectors << current_selector
                 end
 
-                @code_file.parent_selectors_stash << current_selector
+                @code_file.parents_stash << current_selector
                 #Reset str
                 @@current_undefined_str = ""
             elsif char == "}"
-                selector = @code_file.parent_selectors_stash.pop
-                @code_file.root_selectors << selector if @code_file.parent_selectors_stash.length == 0 and selector != nil
+                selector = @code_file.parents_stash.pop
+                @code_file.root_selectors << selector if @code_file.parents_stash.length == 0 and selector != nil
             elsif char == ";"
                 #@@current_undefined_str is a property value
                 values = @@current_undefined_str.chomp.strip.split(":")
 
                 if values.length == 2
-                    current_css_property = SASSProperty.new(self, @code_file.parent_selectors_stash.last, values[0].strip.chomp, values[1].strip.chomp)
-                    @code_file.parent_selectors_stash.last.properties << current_css_property if @code_file.parent_selectors_stash.last != nil
+                    current_css_property = SASSProperty.new(self, @code_file.parents_stash.last, values[0].strip.chomp, values[1].strip.chomp)
+                    @code_file.parents_stash.last.properties << current_css_property if @code_file.parents_stash.last != nil
                     @code_file.all_properties << current_css_property
                 elsif values.length == 1
                     #it is not a valid CSS property:value pair

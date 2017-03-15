@@ -26,12 +26,22 @@ class CodeFile
         #override this method
         custom_check_file_after_processing_done
 
+        #Refactored to views
         #insert display_all_errors_and_warnings here in child
-        display_all_errors_and_warnings
+        #display_all_errors_and_warnings
 
 
     end #initialize
 
+    def puts_error(error, line, details)
+        @errors << "[Error]".colorize(:color => :white, :background => :red) + " line #{line.line_number}: " + "[#{error}]".red
+        @errors << "\n    #{details}\n\n\n"
+    end
+
+    def puts_warning(warning, line, details)
+        @warnings << "[Warning]".colorize(:color => :black, :background => :yellow) + " line #{line.line_number}: " + "[#{warning}]".yellow
+        @warnings << "\n    #{details}\n\n\n"
+    end
 
     protected
     #Override this method in the child class
@@ -89,16 +99,6 @@ class CodeFile
             puts
         end
         puts
-    end
-
-    def puts_error(error, line, details)
-        @errors << "[Error]".colorize(:color => :white, :background => :red) + " line #{line.line_number}: " + "[#{error}]".red
-        @errors << "\n    #{details}\n\n\n"
-    end
-
-    def puts_warning(warning, line, details)
-        @warnings << "[Warning]".colorize(:color => :black, :background => :yellow) + " line #{line.line_number}: " + "[#{warning}]".yellow
-        @warnings << "\n    #{details}\n\n\n"
     end
 
 end

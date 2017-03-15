@@ -3,16 +3,16 @@ class SASSSelector
     attr_accessor :name #Type string
     attr_accessor :properties #Type array of SASSProperty's
     attr_accessor :includes #Type array of SASSInclude's
-    attr_accessor :parent_selector #Type CSSSelector
+    attr_accessor :parent #Type CSSSelector
     attr_accessor :children_selectors #Type array of children selectors
 
-    def initialize(codeline, name, parent_selector)
+    def initialize(codeline, name, parent)
         @codeline = codeline
         @name = name
         @pseudo_class = nil
         @properties = []
         @includes = []
-        @parent_selector = parent_selector
+        @parent = parent
         @children_selectors = []
     end
 
@@ -20,11 +20,14 @@ class SASSSelector
     #the style applies to
     def element_selector_string
         if @name.match(/^\s*@media/) or @name.match(/^\s*&\s*:\w+\s*$/) 
-            @parent_selector ? (return "#{@parent_selector.element_selector_string}") : (return nil)
-        elsif captures = self.name.match(/^\s*(.+):\w+\s*/)
-            @parent_selectr ? (return "#{@parent_selector.element_selector_string} #{captures[1]}") : (return captures[1])
+            @parent ? (return "#{@parent.element_selector_string}") : (return "Error")
+        elsif @name.match(/\s*(.+?)\s*:\w+\s*/)
+            new_str = @name.gsub(/\s*(.+?)\s*:\w+\s*/,'\1')
+            @parent ? (return "#{@parent.element_selector_string} #{new_str}") : (return new_str)
+        elsif captures = @name.match(/&\s*([\-_\w]+)/)
+            @parent ? (return "#{@parent.element_selector_string}#{captures[1]}".strip) : (return "Error")
         else
-            @parent_selector ? (return "#{@parent_selector.element_selector_string} #{@name}") : (return @name)
+            @parent ? (return "#{@parent.element_selector_string} #{@name}") : (return @name)
         end
     end
 

@@ -12,6 +12,9 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 - Basic hover checks.  Makes sure hover is defined inside @media for PC.
 - Makes sure transition is not defined inside hover
 
+Cross checking between .html and .scss files
+- Makes sure hover styles are applied to <a> elements only
+
 ## Directions to run as a tool on the command line
 ### Install the tool
 Run the following on the command line.  It does not matter which folder you are in.

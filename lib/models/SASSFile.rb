@@ -7,11 +7,12 @@ class SASSFile < CodeFile
     #Used for parsing the document
     attr_accessor :open_selector_bracket_detected,
                   :open_function_detected,
-                  :parent_selectors_stash,
+                  :parents_stash,
                   :root_selectors,
-                  :all_properties,
                   :all_selectors,
-                  :all_includes
+                  :all_mixins,
+                  :all_includes,
+                  :all_properties
 
     def initialize(file_path)
         super(file_path)
@@ -28,11 +29,12 @@ class SASSFile < CodeFile
     def custom_initialize_instance_variables
         @open_selector_bracket_detected = false
         @open_function_detected = false
-        @parent_selectors_stash = []
+        @parents_stash = []
         @root_selectors = []
-        @all_properties = []
         @all_selectors = []
+        @all_mixins = []
         @all_includes = []
+        @all_properties = []
      end
     
     #Override this method in the child class
@@ -47,9 +49,9 @@ class SASSFile < CodeFile
 
         check_all_selectors do |selector|
             if selector.name.match(/hover/)
-                current_parent = selector.parent_selector
+                current_parent = selector.parent
                 while current_parent and !current_parent.is_a?(SASSMixin) and !current_parent.name.match(/@media/)
-                    current_parent = current_parent.parent_selector
+                    current_parent = current_parent.parent
                 end
 
                 if current_parent == nil
@@ -60,7 +62,7 @@ class SASSFile < CodeFile
 
         check_all_includes do |sass_include|
             if sass_include.name.match(/transition/)
-                if sass_include.selector.name.match(/hover/)
+                if sass_include.parent.name.match(/hover/)
                    puts_warning("Ryukyu: transition should not be put inside hover", sass_include.codeline, sass_include.codeline.str.chomp.strip)
                 end
             end
@@ -92,11 +94,7 @@ class SASSFile < CodeFile
     end
 
     def print_all_selector(root_selector,spaces)
-        if root_selector.is_a?(SASSMixin)
-            puts "#{spaces}@mixin #{root_selector} {"
-        else
-            puts "#{spaces}#{root_selector} {"    
-        end
+        puts "#{spaces}#{root_selector} {"    
 
         root_selector.includes.each do |sass_include|
             #puts "Selector string: #{sass_include.element_selector_string}"

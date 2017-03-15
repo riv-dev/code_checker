@@ -1,8 +1,13 @@
+require 'nokogiri'
 require_relative 'models/HTMLFile.rb'
 require_relative 'models/HTMLFileFactory.rb'
 require_relative 'models/SASSFile.rb'
+require_relative 'views/ErrorView.rb'
 
 class CodeChecker
+
+  @@all_html_files = {} #Hash for easy searching
+  @@all_sass_files = []
 
   def self.hi
     puts "Hello World!"
@@ -24,6 +29,7 @@ class CodeChecker
 
   #Run code checker on files within the folder
   def self.check_folder(html_folder, options)
+    puts "Code Checker running, please wait..."
     #Process options
     #By default check all types
     types = HTMLFileFactory.get_supported_types
@@ -36,20 +42,128 @@ class CodeChecker
 
     #Run the checker for files and folders that have not been excluded
     types.each do |file_type|
-      puts "Checking #{file_type} files"
-      puts
+      #puts "Checking #{file_type} files"
+      #puts
 
       Dir.glob(html_folder+"/**/*.#{file_type}") do |file_name|
-        HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
+        @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
       end 
     end #type.each do
 
     #Check SASS Files
     Dir.glob(html_folder+"/**/*.scss") do |file_name|
-      SASSFile.new(file_name) if !self.ignore_file?(file_name)
+      @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
     end     
 
+    #Cross checking
+    #Collect all mixins and includes
+    all_mixins = {}
+    all_includes = []
+    all_root_selectors = []
+    @@all_sass_files.each do |sass_file|
+      #Hash for speed performance
+      sass_file.all_mixins.each do |mixin|
+        all_mixins[mixin.name.strip] = mixin
+      end
+
+      all_includes.concat(sass_file.all_includes)
+      all_root_selectors.concat(sass_file.root_selectors)
+    end
+
+    #Insert all defined mixins
+    all_includes.each do |sass_include|
+      if mixin = all_mixins[sass_include.name.strip]
+          mixin.includes.each do |insert_include|
+            clone = insert_include.clone
+            clone.parent = sass_include.parent
+            sass_include.parent.includes << clone if sass_include.parent != nil
+          end
+
+          mixin.properties.each do |insert_property|
+            clone = insert_property.clone
+            clone.parent = sass_include.parent
+            sass_include.parent.properties << clone if sass_include.parent != nil
+          end
+
+          mixin.children_selectors.each do |insert_child_selector|
+            clone = self.deep_copy(insert_child_selector) #Do a deep copy
+            clone.parent = sass_include.parent
+            sass_include.parent.children_selectors << clone if sass_include.parent != nil
+          end #insert
+      end #if
+    end #all_includes
+
+    all_hover_selector_strings = []
+
+    self.check_all_selectors(all_root_selectors) do |selector|
+      if selector.name.match(/hover/)
+        all_hover_selector_strings << selector.element_selector_string
+      end      
+    end
+  
+    #all_hover_selector_strings.each do |selector|
+    #  puts "1. #{selector}"
+    #end
+
+    #Search through HTML files again with hover selectors
+    types.each do |file_type|
+      #puts "Cross-checking #{file_type} files"
+      #puts
+
+      Dir.glob(html_folder+"/**/*.#{file_type}") do |file_name|
+        #puts "File #{file_name}"
+        page = Nokogiri::HTML(File.open(file_name))
+        all_hover_selector_strings.each do |selector_string|
+          begin
+            results = page.css(selector_string)
+            results.each do |result|
+              unless result.name.strip == "a"
+                line = @@all_html_files[file_name].lines[result.line-1]
+                @@all_html_files[file_name].puts_warning("Ryukyu: Hover style put on non-link element <a>", line, line.to_s.strip)
+              end
+            end
+          rescue => e
+            #Parse error
+          end #end begin
+        end #end all_hover
+      end #end Dir.glob
+    end #type.each do
+
+
+    #Done with all checks, display all the errors
+    @@all_html_files.keys.each do |file_name|
+      ErrorView.new(@@all_html_files[file_name])
+    end
+
+    @@all_sass_files.each do |file|
+      ErrorView.new(file)
+    end
+
   end #def self.check_folder
+
+  def self.deep_copy(selector)
+    selector = selector.clone
+
+    i = 0
+    children_selectors = selector.children_selectors
+    selector.children_selectors = []
+    children_selectors.each do |child_selector|
+      selector.children_selectors << child_selector.clone
+      selector.children_selectors[i].parent = selector
+      i = i+1
+    end
+    return selector
+  end  
+
+  def self.check_all_selectors(root_selectors)
+    root_selectors.each do |root_selector|
+      yield(root_selector)
+
+      self.check_all_selectors(root_selector.children_selectors) do |sel|
+        yield(sel)
+      end
+    end
+  end
 
   private
   #Helper functions

@@ -53,7 +53,7 @@ if options == {}
     exit
 end
 
-puts options
+#puts options
 
 if infile = options[:infile]
     CodeChecker.check(infile)

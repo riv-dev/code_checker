@@ -1,12 +1,12 @@
 class SASSInclude
-    attr_accessor :codeline, :selector, :name, :parameters
+    attr_accessor :codeline, :parent, :name, :parameters
 
     @@common_include_names = ['border-radius','transition','box-shadow','text-shadow','linear-gradient','radial-gradient','rotate',
                               'skew','scale','translate','opacity','background-size']
 
-    def initialize(codeline, selector, name, parameters)
+    def initialize(codeline, parent, name, parameters)
         @codeline = codeline
-        @selector = selector
+        @parent = parent
         @name = name
         @parameters = parameters
     end
@@ -18,7 +18,7 @@ class SASSInclude
     #The selector string to get the specific element
     #the style applies to
     def element_selector_string
-        return @selector.element_selector_string
+        return @parent.element_selector_string
     end 
 
     def to_s
