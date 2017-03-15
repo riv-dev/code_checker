@@ -48,7 +48,7 @@ class SASSFile < CodeFile
         end
 
         check_all_selectors do |selector|
-            if selector.name.match(/hover/)
+            if selector.name.match(/:hover/)
                 current_parent = selector.parent
                 while current_parent and !current_parent.is_a?(SASSMixin) and !current_parent.name.match(/@media/)
                     current_parent = current_parent.parent
