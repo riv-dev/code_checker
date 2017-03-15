@@ -28,7 +28,7 @@ class CodeChecker
   end
 
   #Run code checker on files within the folder
-  def self.check_folder(html_folder, options)
+  def self.check_folder(folders, options)
     puts "Code Checker running, please wait..."
     #Process options
     #By default check all types
@@ -40,20 +40,29 @@ class CodeChecker
     @@exclude_files = options[:exclude_files]
     @@exclude_folders = options[:exclude_folders]
 
+    #Clear the output file
+    if options[:output_file]
+      f = open(options[:output_file],'w')
+      f.close
+    end
+
     #Run the checker for files and folders that have not been excluded
     types.each do |file_type|
       #puts "Checking #{file_type} files"
       #puts
-
-      Dir.glob(html_folder+"/**/*.#{file_type}") do |file_name|
-        @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
-      end 
+      folders.each do |folder|
+        Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
+          @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
+        end 
+      end
     end #type.each do
 
     #Check SASS Files
-    Dir.glob(html_folder+"/**/*.scss") do |file_name|
-      @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
-    end     
+    folders.each do |folder|
+      Dir.glob(folder+"/**/*.scss") do |file_name|
+        @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
+      end     
+    end
 
     #Cross checking
     #Collect all mixins and includes
@@ -109,34 +118,35 @@ class CodeChecker
     types.each do |file_type|
       #puts "Cross-checking #{file_type} files"
       #puts
-
-      Dir.glob(html_folder+"/**/*.#{file_type}") do |file_name|
-        #puts "File #{file_name}"
-        page = Nokogiri::HTML(File.open(file_name))
-        all_hover_selector_strings.each do |selector_string|
-          begin
-            results = page.css(selector_string)
-            results.each do |result|
-              if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
-                line = @@all_html_files[file_name].lines[result.line-1]
-                @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
+      folders.each do |folder|
+        Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
+          #puts "File #{file_name}"
+          page = Nokogiri::HTML(File.open(file_name))
+          all_hover_selector_strings.each do |selector_string|
+            begin
+              results = page.css(selector_string)
+              results.each do |result|
+                if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
+                  line = @@all_html_files[file_name].lines[result.line-1]
+                  @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
+                end
               end
-            end
-          rescue => e
-            #Parse error
-          end #end begin
-        end #end all_hover
-      end #end Dir.glob
+            rescue => e
+              #Parse error
+            end #end begin
+          end #end all_hover
+        end #end Dir.glob
+      end #folders.each
     end #type.each do
 
 
     #Done with all checks, display all the errors
     @@all_html_files.keys.each do |file_name|
-      ErrorView.new(@@all_html_files[file_name])
+      ErrorView.new(@@all_html_files[file_name], options[:output_file])
     end
 
     @@all_sass_files.each do |file|
-      ErrorView.new(file)
+      ErrorView.new(file, options[:output_file])
     end
 
   end #def self.check_folder

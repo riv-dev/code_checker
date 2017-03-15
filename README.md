@@ -42,7 +42,12 @@ Navigate to root where folder exists or provide full path name. Example below is
 code_checker -F views
 ```
 
-### Option 3: Check all files and folders in current directory
+### Option 3: Check multiple folders
+```bash
+code_checker -F view,_dev/_sass
+```
+
+### Option 4: Check all files and folders in current directory
 ```bash
 code_checker -F .
 ```

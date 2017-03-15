@@ -10,6 +10,7 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -f index.html",
                    "Run with -F to check all files within the folder.",
                    "  e.g. code_checker -F views",
+                   "  e.g. code_checker -F _dev/_sass,views",
                    "Run with -F . to check all files in current directory and sub-directories.",
                    "  e.g. code_checker -F .",
                    "Run with -t to specify file types to check.",
@@ -19,6 +20,8 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -F . -x *.ejs,*index*",
                    "Run with -X to exclude certain folders, uses * wildcard",
                    "  e.g. code_checker -F . -X node_modules,.git*",
+                   "Run with -o to output results to a file",
+                   "  e.g. code_checker -F . -o log.txt",
                    " ",
                    "Option Descriptions:"].join("\n")
 
@@ -26,8 +29,8 @@ OptionParser.new do |opts|
 		options[:infile] = name;
 	end
 
-    opts.on('-F', '--folder foldername', 'Input folder name') do |name|
-        options[:infolder] = name;
+    opts.on('-F', '--folders foldernames', 'Input folder names') do |names|
+        options[:infolders] = names;
     end
 
     opts.on('-t', '--types (html, hbs, php, ejs)', 'File types to check') do |types|
@@ -40,6 +43,10 @@ OptionParser.new do |opts|
 
     opts.on('-X', '--exclude_folders folders', 'Folders to exclude, allows * wildcards') do |names|
         options[:exclude_folders] = names
+    end
+
+    opts.on('-o', '--output_file filename', 'Output file name') do |name|
+        options[:output_file] = name
     end
 
 	opts.on('-h', '--help', 'Displays Help') do
@@ -59,10 +66,12 @@ if infile = options[:infile]
     CodeChecker.check(infile)
 end
 
-if infolder = options[:infolder]
+if infolders = options[:infolders]
     check_folder_options = {}
     check_folder_options[:types] = options[:types].split(/\s*,\s*/) if options[:types] != nil
     check_folder_options[:exclude_files] = options[:exclude_files].split(/\s*,\s*/) if options[:exclude_files] != nil
     check_folder_options[:exclude_folders] = options[:exclude_folders].split(/\s*,\s*/) if options[:exclude_folders] != nil
-    CodeChecker.check_folder(infolder, check_folder_options)
+    check_folder_options[:output_file] = options[:output_file]
+    check_folders = infolders.split(/\s*,\s*/)
+    CodeChecker.check_folder(check_folders, check_folder_options)
 end
