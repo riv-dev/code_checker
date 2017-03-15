@@ -13,7 +13,7 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 - Makes sure transition is not defined inside hover
 
 Cross checking between .html and .scss files
-- Makes sure hover styles are applied to 'a' tags only
+- Makes sure hover styles are applied to 'a', 'input', 'button' tags only
 
 ## Directions to run as a tool on the command line
 ### Install the tool
