@@ -117,9 +117,9 @@ class CodeChecker
           begin
             results = page.css(selector_string)
             results.each do |result|
-              unless result.name.strip == "a"
+              if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
                 line = @@all_html_files[file_name].lines[result.line-1]
-                @@all_html_files[file_name].puts_warning("Ryukyu: Hover style put on non-link element <a>", line, line.to_s.strip)
+                @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
               end
             end
           rescue => e
