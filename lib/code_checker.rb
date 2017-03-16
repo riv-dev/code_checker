@@ -105,7 +105,7 @@ class CodeChecker
     all_hover_selector_strings = []
 
     self.check_all_selectors(all_root_selectors) do |selector|
-      if selector.name.match(/hover/)
+      if selector.name.match(/:hover/)
         all_hover_selector_strings << selector.element_selector_string
       end      
     end
