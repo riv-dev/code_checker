@@ -63,7 +63,7 @@ class CodeFile
     
     #Override this method in the child class
     def custom_check_file_after_processing_done
-        puts "[Application Error]"..colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
+        puts "[Application Error]".colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
         return false
     end
 
