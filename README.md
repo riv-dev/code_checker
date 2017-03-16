@@ -36,18 +36,13 @@ Navigate to the folder or provide full path name.
 code_checker -f index.html
 ```
 
-### Option 2: Check an entire folder and sub-folders
-Navigate to root where folder exists or provide full path name. Example below is for "views" folder.
+### Option 2: Check entire folders and sub-folders
+Navigate to root where folders exists or provide full path name. Example below is for "views" and "_dev/_sass" folders.
 ```bash
-code_checker -F views
+code_checker -F views,_dev/_sass
 ```
 
-### Option 3: Check multiple folders
-```bash
-code_checker -F view,_dev/_sass
-```
-
-### Option 4: Check all files and folders in current directory
+### Option 3: Check all files and folders in current directory
 ```bash
 code_checker -F .
 ```
