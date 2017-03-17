@@ -77,7 +77,7 @@ class SASSLine < CodeLine
             end
 
             if @@include_open_bracket_stash.length == 0
-                @code_file.open_function_detected = false
+                @code_file.open_include_detected = false
             end
 
             return
@@ -95,7 +95,7 @@ class SASSLine < CodeLine
             @code_file.all_includes << current_include
 
             if captures = str.scan(/\{/)
-                @code_file.open_include_detected = true
+                @code_file.open_include_detected = true if captures.length > 0
                 captures.length.times do
                     @@include_open_bracket_stash << "{"
                 end

@@ -31,7 +31,7 @@ class SASSFile < CodeFile
     def custom_initialize_instance_variables
         @open_selector_bracket_detected = false
         @open_function_detected = false
-        @open_include_detectec = false
+        @open_include_detected = false
         @parents_stash = []
         @root_selectors = []
         @all_selectors = []
