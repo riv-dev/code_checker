@@ -12,6 +12,7 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 - Basic hover checks.  Makes sure hover is defined inside @media for PC.
 - Makes sure transition is not defined inside hover
 - Use min-width instead of max-width as @media breakpoint.
+- Use em for line-height, because em can change dynamically with the font in use.
 
 Cross checking between .html and .scss files
 - Makes sure hover styles are applied to 'a', 'input', 'button' tags only
