@@ -7,6 +7,7 @@ Checks .html, .hbs, .php, and .ejs, files for basic syntax and coding errors.  C
 - Ryukyu rule: No half-width spaces in Japanese, Korean, and Chinese characters
 - Ryukyu rule 9: Only one h1 tag per document, usually for the logo or page title
 - Ryukyu rule 15: No "/" character at end of void tags
+- Ryukyu rule: img tag needs alt attribute defined
 
 Checks .scss fils for basic syntax and coding errors.  Current version checks the following:
 - Ryukyu rule 1: Add @charset "utf-8"; at the first of file
