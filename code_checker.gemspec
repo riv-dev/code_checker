@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
                 "lib/models/SASSSelector.rb",
                 "lib/models/SASSMixin.rb",
                 "lib/models/SASSInclude.rb",
+                "lib/models/SASSDirective.rb",
                 "lib/views/ErrorView.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"

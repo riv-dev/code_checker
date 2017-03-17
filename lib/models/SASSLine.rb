@@ -2,11 +2,14 @@ require_relative 'CodeLine.rb'
 require_relative 'SASSSelector.rb'
 require_relative 'SASSProperty.rb'
 require_relative 'SASSInclude.rb'
+require_relative 'SASSDirective.rb'
 
 class SASSLine < CodeLine
     attr_accessor :selectors
 
     @@current_undefined_str = ""
+    @@include_open_bracket_stash = []        
+    @@function_open_bracket_stash = []
 
     def initialize(code_file, line_str, line_number)
         super(code_file, line_str, line_number)
@@ -61,17 +64,47 @@ class SASSLine < CodeLine
             return
         end
 
-        if captures = str.match(/^\s*@include\s*([\w\-_]+)\(?([$\w\-_,\s+]*)\)?/)
+
+        #Process includes and includes that have open and closing brackets { }
+        if @code_file.open_include_detected and captures = str.scan(/\{/)
+            captures.length.times do
+                @@include_open_bracket_stash << "{"
+            end
+            return
+        elsif @code_file.open_include_detected and captures = str.scan(/\}/)
+            captures.length.times do 
+                @@include_open_bracket_stash.pop
+            end
+
+            if @@include_open_bracket_stash.length == 0
+                @code_file.open_function_detected = false
+            end
+
+            return
+        elsif @code_file.open_include_detected
+            #puts "comment ignored"
+            #puts "  #{str}"
+            #don't process the line
+            return
+        elsif captures = str.match(/^\s*@include\s*([\w\-_]+)\(?([$\w\-_,\s+]*)\)?/)
             name = captures[1]
             parameters = nil
             parameters = captures[2] if captures.length == 3
             current_include = SASSInclude.new(self, @code_file.parents_stash.last, name, parameters)
             @code_file.parents_stash.last.includes << current_include if @code_file.parents_stash.last != nil
             @code_file.all_includes << current_include
-            return
-        end
 
-        @@function_open_bracket_stash = []
+            if captures = str.scan(/\{/)
+                @code_file.open_include_detected = true
+                captures.length.times do
+                    @@include_open_bracket_stash << "{"
+                end
+            end
+            #puts "open comment detected line:#{@line_number}}"
+            #puts "  #{str}"
+            return
+        end       
+
 
         #Remove functions
         if @code_file.open_function_detected and captures = str.scan(/\{/)
@@ -106,6 +139,9 @@ class SASSLine < CodeLine
             return
         end
 
+        #Remove #{$n} style variable insertions
+        str.gsub!(/#\{(\s*.*?\s*)\}/,'\1'.strip)
+
         #Check for ending ";"        
         if str.match(/\w+\s*$/)
            puts_error('Missing ; at end of the line', @line_number) 
@@ -113,6 +149,9 @@ class SASSLine < CodeLine
            #Correct the string so we can properly continue the check below
            str = str + ";"
         end
+
+        #Add ";" to end of line with style .style {property:value}
+        str.gsub!(/(\w+)\s*\}\s*$/,'\1;}')
 
         i = 1
         str.split("").each do |char|
@@ -146,8 +185,18 @@ class SASSLine < CodeLine
                     end
                     current_selector = SASSMixin.new(self, captures[2], captures[4])
                     @code_file.all_mixins << current_selector
+                elsif captures = @@current_undefined_str.match(/(^\s*@if|^\s*@for|^\s*@while|^\s*@each|^\s*@else)/)
+                    current_selector = SASSDirective.new(captures[1].chomp.strip)
                 else
-                    current_parent = @code_file.parents_stash.last
+                    #Find the current parent, ignore sass directives
+                    current_parent = nil
+                    @code_file.parents_stash.reverse.each do |parent|
+                        if parent and !parent.is_a?(SASSDirective)
+                            current_parent = parent
+                            break
+                        end
+                    end
+
                     current_selector = SASSSelector.new(self, @@current_undefined_str.chomp.strip, current_parent)
                     current_parent.children_selectors << current_selector if current_parent != nil
                     @code_file.all_selectors << current_selector
@@ -158,13 +207,36 @@ class SASSLine < CodeLine
                 @@current_undefined_str = ""
             elsif char == "}"
                 selector = @code_file.parents_stash.pop
-                @code_file.root_selectors << selector if @code_file.parents_stash.length == 0 and selector != nil
+
+                if !selector.is_a?(SASSDirective)
+                    if @code_file.parents_stash.length == 0 and selector != nil
+                        @code_file.root_selectors << selector
+                    else
+                        all_directives = true
+
+                        @code_file.parents_stash.each do |parent|
+                            all_directives = false if !parent.is_a?(SASSDirective)
+                            break
+                        end
+
+                        @code_file.root_selectors << selector if all_directives and selector != nil
+                    end
+                end
             elsif char == ";"
                 #@@current_undefined_str is a property value
                 values = @@current_undefined_str.chomp.strip.split(":")
 
                 if values.length == 2
-                    current_css_property = SASSProperty.new(self, @code_file.parents_stash.last, values[0].strip.chomp, values[1].strip.chomp)
+                    #Find the current parent, ignore sass directives
+                    current_parent = nil
+                    @code_file.parents_stash.reverse.each do |parent|
+                        if parent and !parent.is_a?(SASSDirective)
+                            current_parent = parent
+                            break
+                        end
+                    end
+
+                    current_css_property = SASSProperty.new(self, current_parent, values[0].strip.chomp, values[1].strip.chomp)
                     @code_file.parents_stash.last.properties << current_css_property if @code_file.parents_stash.last != nil
                     @code_file.all_properties << current_css_property
                 elsif values.length == 1

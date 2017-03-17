@@ -7,12 +7,14 @@ class SASSFile < CodeFile
     #Used for parsing the document
     attr_accessor :open_selector_bracket_detected,
                   :open_function_detected,
+                  :open_include_detected,
                   :parents_stash,
                   :root_selectors,
                   :all_selectors,
                   :all_mixins,
                   :all_includes,
                   :all_properties
+
 
     def initialize(file_path)
         super(file_path)
@@ -29,6 +31,7 @@ class SASSFile < CodeFile
     def custom_initialize_instance_variables
         @open_selector_bracket_detected = false
         @open_function_detected = false
+        @open_include_detectec = false
         @parents_stash = []
         @root_selectors = []
         @all_selectors = []
@@ -57,12 +60,12 @@ class SASSFile < CodeFile
                 if current_parent == nil
                     puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str.chomp.strip)
                 end
-            end
-
-            if selector.name.match(/@media/)
+            elsif selector.name.match(/@media/)
                 if selector.name.match(/max-width/)
                     puts_warning("Ryukyu: Use min-width only for @media", selector.codeline, selector.codeline.str.chomp.strip)
                 end
+            elsif selector.name.match(/^\s*[\w\-_]+/) or selector.name.match(/,\s*[\w\-_]+/)
+                puts_warning("Ryukyu: Avoid styling directly on HTML tag, define a class instead.", selector.codeline, selector.codeline.str.chomp.strip)
             end
         end
 
@@ -78,6 +81,12 @@ class SASSFile < CodeFile
             if sass_property.name.match(/line-height/)
                 if !sass_property.value.match(/em/)
                     puts_warning("Ryukyu: Use em for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                end
+            end
+
+            if sass_property.name.match(/font-size/)
+                if !sass_property.value.match(/px/)
+                    puts_warning("Ryukyu: Use px for font-size,don't use em, rem, %... , because it offers absolute control over text.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
                 end
             end
         end
