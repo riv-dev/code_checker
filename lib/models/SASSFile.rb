@@ -58,6 +58,12 @@ class SASSFile < CodeFile
                     puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str.chomp.strip)
                 end
             end
+
+            if selector.name.match(/@media/)
+                if selector.name.match(/max-width/)
+                    puts_warning("Ryukyu: Use min-width only for @media", selector.codeline, selector.codeline.str.chomp.strip)
+                end
+            end
         end
 
         check_all_includes do |sass_include|
