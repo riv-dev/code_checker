@@ -82,12 +82,18 @@ class SASSFile < CodeFile
                 if !sass_property.value.match(/em/)
                     puts_warning("Ryukyu: Use em for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
                 end
-            end
-
-            if sass_property.name.match(/font-size/)
+            elsif sass_property.name.match(/font-size/)
                 if !sass_property.value.match(/px/)
                     puts_warning("Ryukyu: Use px for font-size,don't use em, rem, %... , because it offers absolute control over text.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
                 end
+            elsif sass_property.name.match(/display/)
+                if sass_property.value.match(/flex/)
+                    puts_warning("Ryukyu: Don't use flexbox because old version of IE and Android does not support.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                end
+            end
+
+            if sass_property.value.match(/calc/)
+                puts_warning("Ryukyu: Don't use calc because old version of IE and Android does not support.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
             end
         end
     end

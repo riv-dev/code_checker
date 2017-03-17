@@ -16,6 +16,7 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 - Use em for line-height, because em can change dynamically with the font in use.
 - Use px for font-size,don't use em, rem, %... , because it offers absolute control over text.
 - Makes sure no styles directly on HTML tags
+- Don't use flexbox, calc because old version of IE and Android does not support.
 
 Cross checking between .html and .scss files
 - Makes sure hover styles are applied to 'a', 'input', 'button' tags only
