@@ -73,6 +73,14 @@ class SASSFile < CodeFile
                 end
             end
         end
+
+        check_all_properties do |sass_property|
+            if sass_property.name.match(/line-height/)
+                if !sass_property.value.match(/em/)
+                    puts_warning("Ryukyu: Use em for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                end
+            end
+        end
     end
 
     def check_all_properties
