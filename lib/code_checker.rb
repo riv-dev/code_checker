@@ -127,6 +127,10 @@ class CodeChecker
         Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
           #puts "File #{file_name}"
           page = Nokogiri::HTML(File.open(file_name))
+
+          results_all_tags_that_require_hover = page.css('a,input[type="submit"],input[type="reset"],input[type="button"],button')
+          results_hover_applied = []
+
           all_hover_selector_strings.each do |selector_string|
             begin
               results = page.css(selector_string)
@@ -134,12 +138,21 @@ class CodeChecker
                 if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
                   line = @@all_html_files[file_name].lines[result.line-1]
                   @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
+                else
+                  results_hover_applied << result
                 end
               end
             rescue => e
               #Parse error
             end #end begin
           end #end all_hover
+
+          tags_that_need_hover = results_all_tags_that_require_hover.to_a - results_hover_applied
+
+          tags_that_need_hover.each do |tag_that_needs_hover|
+            line = @@all_html_files[file_name].lines[tag_that_needs_hover.line-1]
+            @@all_html_files[file_name].puts_warning("Ryukyu: No hover style is defined. <a>, <input>, <button> tags require hover", line, line.to_s.strip)
+          end
         end #end Dir.glob
       end #folders.each
     end #type.each do

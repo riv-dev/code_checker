@@ -1,5 +1,5 @@
 # Code Checker
-Checks .html, .hbs, .php, .ejs, and .sass files for basic syntax and coding errors.  Current version checks the following:
+Checks .html, .hbs, .php, and .ejs, files for basic syntax and coding errors.  Current version checks the following:
 - Opening tags must have closing tags
 - Closing tags must have opening tags
 - Void tags should not have closing tags
@@ -14,6 +14,7 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 
 Cross checking between .html and .scss files
 - Makes sure hover styles are applied to 'a', 'input', 'button' tags only
+- Makes sure all 'a', 'input', and 'button' tags have hover style defined
 
 ## Directions to run as a tool on the command line
 ### Install the tool
