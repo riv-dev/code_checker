@@ -18,7 +18,7 @@ Checks .scss fils for basic syntax and coding errors.  Current version checks th
 - Ryukyu rule 5: Makes sure transition is not defined inside hover
 - Ryukyu rule 7: Makes sure no styles directly on HTML tags
 - Ryukyu rule 10: Don't use flexbox, calc because old version of IE and Android does not support.
-- Ryukyu rule 17:Common compass mixins that must be used
+- Ryukyu rule 17: Common compass mixins that must be used
 
 Cross checking between .html and .scss files
 - Ryukyu rule 5: Makes sure hover styles are applied to 'a', 'input', 'button' tags only
