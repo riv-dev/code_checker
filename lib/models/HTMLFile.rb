@@ -70,6 +70,13 @@ class HTMLFile < CodeFile
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
                         puts_warning("Ryukyu: void tag should not have '/' at end", current_element.code_line, current_element.code_line.str.strip)
                     end
+
+                    if current_element.type == 'img'
+                        if !current_element.str.match(/alt/)
+                            puts_warning("Ryukyu: img tag needs alt attribute defined", current_element.code_line, current_element.code_line.str.strip)
+                        end
+                    end
+
                 end
 
                 #2) No half-width spaces in content
