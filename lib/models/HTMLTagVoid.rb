@@ -6,8 +6,8 @@ class HTMLTagVoid < HTMLTag
     @@void_tag_types_list = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr','path']
     @@void_tag_no_params = ['br', 'hr']
 
-    def initialize(html_line, str)
-        super(html_line, str)
+    def initialize(code_line, str)
+        super(code_line, str)
 
         @parent = nil
         #puts "Void tag created: #{str}"

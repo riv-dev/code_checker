@@ -6,6 +6,7 @@ Checks .html, .hbs, .php, and .ejs, files for basic syntax and coding errors.  C
 - Validity of void tags
 - Ryukyu rule: No "/" character at end of void tags
 - Ryukyu rule: No half-width spaces in Japanese, Korean, and Chinese characters
+- Ryukyu rule: Only one h1 tag per document, usually for the logo or page title
 
 Checks .scss fils for basic syntax and coding errors.  Current version checks the following:
 - Common compass mixins that must be used

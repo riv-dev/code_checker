@@ -119,7 +119,7 @@ class CodeChecker
     #  puts "1. #{selector}"
     #end
 
-    #Search through HTML files again with hover selectors
+    #Search through HTML files again to do cross-checking between SASS and HTML
     types.each do |file_type|
       #puts "Cross-checking #{file_type} files"
       #puts
@@ -128,6 +128,7 @@ class CodeChecker
           #puts "File #{file_name}"
           page = Nokogiri::HTML(File.open(file_name))
 
+          #Check hover styling
           results_all_tags_that_require_hover = page.css('a,input[type="submit"],input[type="reset"],input[type="button"],button')
           results_hover_applied = []
 

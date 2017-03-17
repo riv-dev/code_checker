@@ -15,6 +15,9 @@ class HTMLFile < CodeFile
                   :open_attribute_quote_detected,
                   :parent_tags_stash
 
+    #Ryukyu check
+    @@h1_tags = []
+
     def initialize(file_path)
         super(file_path)
     end #initialize
@@ -65,7 +68,7 @@ class HTMLFile < CodeFile
                     return if current_element.type == "path" #path is a foreign tag, allow "/" at the end
 
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.html_line, current_element.html_line.str.strip)
+                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.code_line, current_element.code_line.str.strip)
                     end
                 end
 
@@ -74,10 +77,24 @@ class HTMLFile < CodeFile
                     asian_char_regex = /([\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}])(\s+)/
                     if current_element.str.match(asian_char_regex)
                         current_element.str.gsub!(asian_char_regex,'\1'+" ".colorize(:background => :yellow))
-                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.html_line, current_element.str)
+                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.code_line, current_element.str)
                     end
                 end
 
+                #3) Only one h1 tag
+                if current_element.is_a?(HTMLTagOpen)
+                    if current_element.type == 'h1'
+                        @@h1_tags << current_element
+                        if @@h1_tags.length > 1
+                            warning_str = "This h1 tag: #{current_element.str}"
+                            @@h1_tags.each  do |h1_tag|
+                                 next if h1_tag == @@h1_tags.last
+                                 warning_str = warning_str + "\n    Other h1 is tag in: #{h1_tag.code_line.code_file.file_path}: line #{h1_tag.code_line.line_number}"
+                            end
+                            puts_warning("Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.", current_element.code_line, warning_str)
+                        end
+                    end
+                end
             end
         end
     end
@@ -116,7 +133,7 @@ class HTMLFile < CodeFile
     #Recursive tree traversal check
     def check_all_elements(root_element)
         if root_element.is_a?(HTMLTagOpen) and !root_element.has_closing_tag
-            puts_error("<#{root_element.type}> has no closing tag", root_element.html_line, root_element.html_line.str.strip)
+            puts_error("<#{root_element.type}> has no closing tag", root_element.code_line, root_element.code_line.str.strip)
         end
 
         #Recursion to traverse the full tree

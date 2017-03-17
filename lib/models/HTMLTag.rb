@@ -24,8 +24,8 @@ class HTMLTag < HTMLElement
                 'table','tbody','td','textarea','tfoot','th','thead','time','title','tr','track','tt',
                 'u','ul','var','video','wbr']
 
-    def initialize(html_line, str)
-        super(html_line, str)
+    def initialize(code_line, str)
+        super(code_line, str)
         @type = str.match(/<\s*\/?\s*(\w+)\s*.*>/).captures[0]
         @inner_html = []
         @id = nil

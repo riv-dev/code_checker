@@ -18,7 +18,7 @@ class CodeLine
         #Override this method in child classes
         custom_process_line(@str)
         rescue => e
-            #puts e
+            puts e
         end
     end
 

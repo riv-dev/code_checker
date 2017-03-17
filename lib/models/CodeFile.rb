@@ -31,7 +31,7 @@ class CodeFile
         #insert display_all_errors_and_warnings here in child
         #display_all_errors_and_warnings
         rescue => e
-            #puts error
+            puts error
         end
 
 
