@@ -63,7 +63,9 @@ end
 #puts options
 
 if infile = options[:infile]
-    CodeChecker.check(infile)
+    check_file_options = {}
+    check_file_options[:output_file] = options[:output_file]
+    CodeChecker.check(infile, check_file_options)
 end
 
 if infolders = options[:infolders]

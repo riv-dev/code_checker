@@ -14,17 +14,22 @@ class CodeChecker
   end
 
   #Run code checker on a specific file
-  def self.check(file_path)
+  def self.check(file_path, options)
+    sass_file = nil
+    html_file = nil
     begin
       captures = file_path.match(/\.(\w+)$/).captures
       if(captures[0] == 'scss')
-        SASSFile.new(file_path)
+        sass_file = SASSFile.new(file_path)
       else
-        HTMLFileFactory.create(html_file, captures[0])
+        html_file = HTMLFileFactory.create(html_file, captures[0])
       end
     rescue
-      HTMLFile.new(file_path)
+      html_file = HTMLFile.new(file_path)
     end
+
+    ErrorView.new(html_file, options[:output_file]) if html_file
+    ErrorView.new(sass_file, options[:output_file]) if sass_file
   end
 
   #Run code checker on files within the folder
