@@ -84,7 +84,9 @@ class SASSFile < CodeFile
         check_all_properties do |sass_property|
             if sass_property.name.match(/line-height/)
                 unless sass_property.value.match(/em/) or sass_property.value.match(/\d$/)
-                    puts_warning("Ryukyu: Use em or unitless for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                    if(!sass_property.parent.name.match(/button|btn/))
+                        puts_warning("Ryukyu: Use em or unitless for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                    end
                 end
             elsif sass_property.name.match(/font-size/)
                 if !sass_property.value.match(/px/)
