@@ -38,9 +38,7 @@ sudo gem specific_install -l git://github.com/riv-dev/code_checker.git
 ```
 
 If you get Error: Operation not permitted, try the following command instead
-```bash
-sudo gem specific_install -n /usr/local/bin -l git://github.com/riv-dev/code_checker.git
-```
+http://stackoverflow.com/questions/33145388/gem-update-install-operation-not-permitted-since-el-capitan-how-to-set-default
 
 You are now ready, run the tool!
 
