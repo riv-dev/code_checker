@@ -22,7 +22,6 @@ class SASSLine < CodeLine
 
     #Override method
     def custom_process_line(str)
-        str = str.gsub(/\/\*/,'')
         if @line_number == 1
             if !str.match(/^\s*@charset\s+"utf-8"/)
                 puts_warning('First line should contain @charset "utf-8";', @line_number)
@@ -40,7 +39,7 @@ class SASSLine < CodeLine
             #puts "  #{str}"
             @code_file.open_comment_detected = false
         elsif @code_file.open_comment_detected
-            #puts "comment ignored"
+            puts "comment ignored"
             #puts "  #{str}"
             #don't process the line
             return
