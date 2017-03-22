@@ -75,12 +75,16 @@ class SASSFile < CodeFile
                    puts_warning("Ryukyu: transition should not be put inside hover", sass_include.codeline, sass_include.codeline.str.chomp.strip)
                 end
             end
+
+            if sass_include.name.match(/flex/)
+                puts_warning("Ryukyu: Don't use flexbox because old version of IE and Android does not support.", sass_include.codeline, sass_include.codeline.str.chomp.strip)
+            end
         end
 
         check_all_properties do |sass_property|
             if sass_property.name.match(/line-height/)
-                if !sass_property.value.match(/em/)
-                    puts_warning("Ryukyu: Use em for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
+                unless sass_property.value.match(/em/) or sass_property.value.match(/\d$/)
+                    puts_warning("Ryukyu: Use em or unitless for line-height, because em can change dynamically with the font in use.", sass_property.codeline, sass_property.codeline.str.chomp.strip)
                 end
             elsif sass_property.name.match(/font-size/)
                 if !sass_property.value.match(/px/)
