@@ -16,7 +16,6 @@ class HTMLFile < CodeFile
                   :parent_tags_stash
 
     #Ryukyu check
-    @@h1_tags = []
 
     def initialize(file_path)
         super(file_path)
@@ -39,6 +38,8 @@ class HTMLFile < CodeFile
 
         @tags_by_id = {}
         @tags_by_class = {}
+
+        @h1_tags = []
     end
     
     def custom_check_file_after_processing_done
@@ -91,11 +92,11 @@ class HTMLFile < CodeFile
                 #3) Only one h1 tag
                 if current_element.is_a?(HTMLTagOpen)
                     if current_element.type == 'h1'
-                        @@h1_tags << current_element
-                        if @@h1_tags.length > 1
+                        @h1_tags << current_element
+                        if @h1_tags.length > 1
                             warning_str = "This h1 tag: #{current_element.str}"
-                            @@h1_tags.each  do |h1_tag|
-                                 next if h1_tag == @@h1_tags.last
+                            @h1_tags.each  do |h1_tag|
+                                 next if h1_tag == @h1_tags.last
                                  warning_str = warning_str + "\n    Other h1 is tag in: #{h1_tag.code_line.code_file.file_path}: line #{h1_tag.code_line.line_number}"
                             end
                             puts_warning("Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.", current_element.code_line, warning_str)
