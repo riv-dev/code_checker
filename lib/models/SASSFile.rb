@@ -52,18 +52,26 @@ class SASSFile < CodeFile
 
         check_all_selectors do |selector|
             if selector.name.match(/:hover/)
-                current_parent = selector.parent
-                while current_parent and !current_parent.is_a?(SASSMixin) and !current_parent.name.match(/@media/)
-                    current_parent = current_parent.parent
+                if selector.element_selector_string.match(/^\s*\.no-touchevents/)
+                    #We are good
+                    next
+                else
+                    #Needs to be wrapped inside @media for PC
+                    current_parent = selector.parent
+                    while current_parent and !current_parent.is_a?(SASSMixin) and !current_parent.name.match(/@media/)
+                        current_parent = current_parent.parent
+                    end
+
+                    if current_parent == nil
+                        puts_warning("Ryukyu: Hover must be defined inside @media for PC only or using .no-touchevents class", selector.codeline, selector.codeline.str.chomp.strip)
+                    end
                 end
 
-                if current_parent == nil
-                    puts_warning("Ryukyu: Hover must be defined inside @media for PC only", selector.codeline, selector.codeline.str.chomp.strip)
-                end
             elsif selector.name.match(/@media/)
                 if selector.name.match(/max-width/)
                     puts_warning("Ryukyu: Use min-width only for @media", selector.codeline, selector.codeline.str.chomp.strip)
                 end
+
             elsif selector.name.match(/^\s*[\w\-_]+/) or selector.name.match(/,\s*[\w\-_]+/)
                 puts_warning("Ryukyu: Avoid styling directly on HTML tag, define a class instead.", selector.codeline, selector.codeline.str.chomp.strip)
             end

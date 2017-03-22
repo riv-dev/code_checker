@@ -137,7 +137,7 @@ class CodeChecker
           all_hover_selector_strings.each do |selector_string|
             begin
               #puts selector_string
-              results = page.css(selector_string)
+              results = page.css(selector_string.gsub(/\.no-touchevents/,'')) #We understand no-touchevents
               results.each do |result|
                 if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
                   line = @@all_html_files[file_name].lines[result.line-1]
