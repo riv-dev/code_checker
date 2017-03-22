@@ -125,6 +125,8 @@ class CodeChecker
       #puts
       folders.each do |folder|
         Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
+          next if self.ignore_file?(file_name)
+
           #puts "File #{file_name}"
           page = Nokogiri::HTML(File.open(file_name))
 
@@ -134,6 +136,7 @@ class CodeChecker
 
           all_hover_selector_strings.each do |selector_string|
             begin
+              #puts selector_string
               results = page.css(selector_string)
               results.each do |result|
                 if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
@@ -144,7 +147,7 @@ class CodeChecker
                 end
               end
             rescue => e
-              #Parse error
+              puts e
             end #end begin
           end #end all_hover
 

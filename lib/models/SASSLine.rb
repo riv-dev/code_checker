@@ -39,7 +39,7 @@ class SASSLine < CodeLine
             #puts "  #{str}"
             @code_file.open_comment_detected = false
         elsif @code_file.open_comment_detected
-            puts "comment ignored"
+            #puts "comment ignored"
             #puts "  #{str}"
             #don't process the line
             return
@@ -62,7 +62,6 @@ class SASSLine < CodeLine
         if str.match(/^\s*\$\w+/)
             return
         end
-
 
         #Process includes and includes that have open and closing brackets { }
         if @code_file.open_include_detected and captures = str.scan(/\{/)
