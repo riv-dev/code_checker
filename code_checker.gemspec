@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.5.0'
+    s.version = '1.5.1'
     s.date = '2017-03-02'
     s.summary = "Check HTML & SASS code for basic syntax and coding rules"
     s.authors = ["Ken Le"]
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
                 "lib/models/SASSMixin.rb",
                 "lib/models/SASSInclude.rb",
                 "lib/models/SASSDirective.rb",
+                "lib/models/SASSKeyFrames.rb",
                 "lib/views/ErrorView.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"

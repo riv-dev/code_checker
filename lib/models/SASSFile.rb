@@ -72,7 +72,7 @@ class SASSFile < CodeFile
                     puts_warning("Ryukyu: Use min-width only for @media", selector.codeline, selector.codeline.str.chomp.strip)
                 end
 
-            elsif selector.name.match(/^\s*[\w\-_]+/) or selector.name.match(/,\s*[\w\-_]+/)
+            elsif selector.is_a?(SASSSelector) and (selector.name.match(/^\s*[a-z\-_]+/) or selector.name.match(/,\s*[a-z\-_]+/))
                 puts_warning("Ryukyu: Avoid styling directly on HTML tag, define a class instead.", selector.codeline, selector.codeline.str.chomp.strip)
             end
         end

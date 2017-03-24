@@ -3,6 +3,7 @@ require_relative 'SASSSelector.rb'
 require_relative 'SASSProperty.rb'
 require_relative 'SASSInclude.rb'
 require_relative 'SASSDirective.rb'
+require_relative 'SASSKeyFrames.rb'
 
 class SASSLine < CodeLine
     attr_accessor :selectors
@@ -184,7 +185,9 @@ class SASSLine < CodeLine
                     current_selector = SASSMixin.new(self, captures[2], captures[4])
                     @code_file.all_mixins << current_selector
                 elsif captures = @@current_undefined_str.match(/(^\s*@if|^\s*@for|^\s*@while|^\s*@each|^\s*@else)/)
-                    current_selector = SASSDirective.new(captures[1].chomp.strip)
+                    current_selector = SASSDirective.new(self, captures[1].chomp.strip)
+                elsif captures = @@current_undefined_str.match(/^\s*@keyframes\s+(.*)/)
+                    current_selector = SASSKeyFrames.new(self, captures[1].chomp.strip)
                 else
                     #Find the current parent, ignore sass directives
                     current_parent = nil
