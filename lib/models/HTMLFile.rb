@@ -101,7 +101,11 @@ class HTMLFile < CodeFile
                             end
                             puts_warning("Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.", current_element.code_line, warning_str)
                         end
-                    end
+                    elsif current_element.type == 'a'
+                        if !current_element.str.match(/href/)
+                            puts_warning("Ryukyu: a tag needs href attribute defined", current_element.code_line, current_element.code_line.str.strip)
+                        end
+                    end                    
                 end
             end
         end
