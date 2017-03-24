@@ -142,7 +142,7 @@ class SASSLine < CodeLine
         str.gsub!(/#\{(\s*.*?\s*)\}/,'\1'.strip)
 
         #Check for ending ";"        
-        if str.match(/\w+\s*$/)
+        if str.match(/[\w\)]\s*$/)
            puts_error('Missing ; at end of the line', @line_number) 
            puts_error_location(str,str.length)
            #Correct the string so we can properly continue the check below
