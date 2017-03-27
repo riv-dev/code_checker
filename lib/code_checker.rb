@@ -34,10 +34,11 @@ class CodeChecker
 
   #Run code checker on files within the folder
   def self.check_folder(folders, options)
-    puts "Code Checker running, please wait..."
+    puts "CCode Checker running, please wait..."
     #Process options
     #By default check all types
     types = HTMLFileFactory.get_supported_types
+    types << "scss"
     #if types option is defined, check only the specified types
     types = options[:types] if options[:types] != nil and options[:types].length > 0
 
@@ -55,19 +56,22 @@ class CodeChecker
     types.each do |file_type|
       #puts "Checking #{file_type} files"
       #puts
-      folders.each do |folder|
-        Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
-          @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
-        end 
+      #Check SASS Files
+      if file_type == "scss"
+        folders.each do |folder|
+          Dir.glob(folder+"/**/*.scss") do |file_name|
+            @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
+          end     
+        end
+      else
+        folders.each do |folder|
+          Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
+            @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
+          end 
+        end
       end
     end #type.each do
 
-    #Check SASS Files
-    folders.each do |folder|
-      Dir.glob(folder+"/**/*.scss") do |file_name|
-        @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
-      end     
-    end
 
     #Cross checking
     #Collect all mixins and includes
@@ -109,14 +113,19 @@ class CodeChecker
 
     all_hover_selector_strings = []
 
+    i = 0
     self.check_all_selectors(all_root_selectors) do |selector|
       if selector.name.match(/:hover/)
+        #puts "#{i}. #{selector.name}"
+        #i = i+1
         all_hover_selector_strings << selector.element_selector_string
       end      
     end
-  
+
+    #i=0
     #all_hover_selector_strings.each do |selector|
-    #  puts "1. #{selector}"
+      #puts "#{i}. #{selector}"
+      #i = i+1
     #end
 
     #Search through HTML files again to do cross-checking between SASS and HTML
@@ -147,7 +156,7 @@ class CodeChecker
                 end
               end
             rescue => e
-              puts e
+              #puts e
             end #end begin
           end #end all_hover
 

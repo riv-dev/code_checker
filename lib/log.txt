@@ -1,0 +1,98 @@
+CCode Checker running, please wait...
+1. .products-list .items .hello
+1. #bar .poo--about
+1. .hov
+1. @mixin
+1. @mixin
+1. .iphone__button--about
+Checked ./models/index.html
+  [0;30;43m[Warning][0m line 19: [0;33;49m[Ryukyu: a tag needs href attribute defined][0m
+  
+    <a class="hov" >Link to another another page</a>
+
+
+  [0;30;43m[Warning][0m line 24: [0;33;49m[Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.][0m
+  
+    This h1 tag: <h1>
+    Other h1 is tag in: ./models/index.html: line 5
+
+
+ 
+ 
+Checked ./models/screen.scss
+  [0;30;43m[Warning][0m line 19: [0;33;49m[Ryukyu: Use compass mixin @include background-size()][0m
+  
+    background-size: 12px 12px;
+
+
+  [0;30;43m[Warning][0m line 40: [0;33;49m[Ryukyu: Use compass mixin @include opacity()][0m
+  
+    opacity: 1;
+
+
+  [0;30;43m[Warning][0m line 89: [0;33;49m[Ryukyu: Use compass mixin @include opacity()][0m
+  
+    opacity: 0.123;
+
+
+  [0;30;43m[Warning][0m line 97: [0;33;49m[Ryukyu: Use compass mixin @include opacity()][0m
+  
+    opacity: 0.3;
+
+
+  [0;30;43m[Warning][0m line 104: [0;33;49m[Ryukyu: Use compass mixin @include opacity()][0m
+  
+    opacity: 0.41;
+
+
+  [0;30;43m[Warning][0m line 8: [0;33;49m[Ryukyu: Avoid styling directly on HTML tag, define a class instead.][0m
+  
+    img {
+
+
+  [0;30;43m[Warning][0m line 32: [0;33;49m[Ryukyu: Avoid styling directly on HTML tag, define a class instead.][0m
+  
+    img {
+
+
+  [0;30;43m[Warning][0m line 87: [0;33;49m[Ryukyu: Use min-width only for @media][0m
+  
+    @media(max-width:690px) {
+
+
+  [0;30;43m[Warning][0m line 94: [0;33;49m[Ryukyu: Avoid styling directly on HTML tag, define a class instead.][0m
+  
+    img {
+
+
+  [0;30;43m[Warning][0m line 75: [0;33;49m[Ryukyu: Don't use flexbox because old version of IE and Android does not support.][0m
+  
+    @include flex;
+
+
+  [0;30;43m[Warning][0m line 24: [0;33;49m[Ryukyu: Don't use flexbox because old version of IE and Android does not support.][0m
+  
+    display: flex;
+
+
+  [0;30;43m[Warning][0m line 58: [0;33;49m[Ryukyu: Don't use calc because old version of IE and Android does not support.][0m
+  
+    width: calc(100% - 100px);
+
+
+  [0;30;43m[Warning][0m line 60: [0;33;49m[Ryukyu: Use px for font-size,don't use em, rem, %... , because it offers absolute control over text.][0m
+  
+    font-size: 3em;
+
+
+  [0;30;43m[Warning][0m line 77: [0;33;49m[Ryukyu: Use em or unitless for line-height, because em can change dynamically with the font in use.][0m
+  
+    line-height: 1.5px;
+
+
+ 
+ 
+Checked ./models/screen2.scss
+  [0;30;43m[Warning][0m line 1: [0;33;49m[First line should contain @charset "utf-8";][0m
+ 
+ 
