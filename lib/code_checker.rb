@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'fileutils'
 require 'w3c_validators'
 require 'open-uri'
 require_relative 'models/HTMLFile.rb'
@@ -32,8 +33,8 @@ class CodeChecker
       html_file = HTMLFile.new(file_path)
     end
 
-    ErrorView.new(html_file, options[:output_file]) if html_file
-    ErrorView.new(sass_file, options[:output_file]) if sass_file
+    ErrorView.display(html_file, options[:output_file]) if html_file
+    ErrorView.display(sass_file, options[:output_file]) if sass_file
   end
 
   #Run code checker on a uri
@@ -46,27 +47,53 @@ class CodeChecker
       url = url.chomp.strip
       if options[:username] and options[:password]
         puts "Checking #{url} with username=#{options[:username]} and password=#{options[:password]}"
-        open(url, :http_basic_authentication => [options[:username], options[:password]])
-        page = Nokogiri::HTML(open(url, :http_basic_authentication => [options[:username], options[:password]]))
+        uri = nil
+        begin
+          uri = open(url, :http_basic_authentication => [options[:username], options[:password]], :redirect => false)
+        rescue OpenURI::HTTPRedirect => redirect
+          #Handle redirects
+          uri = open(redirect.uri.to_s, :http_basic_authentication => [options[:username], options[:password]], :redirect => false)
+        end
+        page = Nokogiri::HTML(uri)
       else
         puts "Checking #{url}"
         page = Nokogiri::HTML(open(url))
       end
 
-      #puts page.to_s
       results = validator.validate_text(page.to_s)
 
-      puts "Warnings:"
-      puts results.warnings
-      puts "Errors:"
-      puts results.errors
+      #puts page.to_s
+      #Save the HTML file
+      if options[:export_folder] 
+        request_path = URI.parse(url).request_uri
+        request_path = options[:export_folder] + request_path
+
+        if !request_path.match(/\.html\s*$/)
+          if request_path.match(/\/\s*$/)
+            request_path = request_path + "index.html" 
+          else
+            request_path = request_path + "/index.html"
+          end
+        end
+
+        dirname = File.dirname(request_path)
+        unless File.directory?(dirname)
+          FileUtils.mkdir_p(dirname)
+        end
+
+        f = File.open(request_path,'w')
+        f << page.to_s
+        f.close
+      end
+
+      ErrorView.display_w3c(url, results, options[:output_file])
 
     end
   end
 
   #Run code checker on files within the folder
   def self.check_folder(folders, options)
-    puts "CCode Checker running, please wait..."
+    puts "Code Checker running, please wait..."
     #Process options
     #By default check all types
     types = HTMLFileFactory.get_supported_types
@@ -206,11 +233,11 @@ class CodeChecker
 
     #Done with all checks, display all the errors
     @@all_html_files.keys.each do |file_name|
-      ErrorView.new(@@all_html_files[file_name], options[:output_file])
+      ErrorView.display(@@all_html_files[file_name], options[:output_file])
     end
 
     @@all_sass_files.each do |file|
-      ErrorView.new(file, options[:output_file])
+      ErrorView.display(file, options[:output_file])
     end
 
   end #def self.check_folder
