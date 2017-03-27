@@ -22,6 +22,8 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -F . -X node_modules,.git*",
                    "Run with -o to output results to a file",
                    "  e.g. code_checker -F . -o log.txt",
+                   "Run with -U to give a URL list file to check",
+                   "  e.g. code_checker -U urls_to_check.txt",
                    " ",
                    "Option Descriptions:"].join("\n")
 
@@ -31,6 +33,18 @@ OptionParser.new do |opts|
 
     opts.on('-F', '--folders foldernames', 'Input folder names') do |names|
         options[:infolders] = names;
+    end
+
+    opts.on('-U', '--urls file', 'URL list file name') do |name|
+        options[:urlfile] = name
+    end
+
+    opts.on('-u', '--user name', 'Username for url file') do |name|
+        options[:username] = name
+    end
+
+    opts.on('-p', '--password pw', 'Password for url file') do |name|
+        options[:password] = name
     end
 
     opts.on('-t', '--types (html, hbs, php, ejs)', 'File types to check') do |types|
@@ -76,4 +90,12 @@ if infolders = options[:infolders]
     check_folder_options[:output_file] = options[:output_file]
     check_folders = infolders.split(/\s*,\s*/)
     CodeChecker.check_folder(check_folders, check_folder_options)
+end
+
+if urlfile = options[:urlfile]
+    check_urls_options = {}
+    check_urls_options[:username] = options[:username]
+    check_urls_options[:password] = options[:password]
+    check_urls_options[:output_file] = options[:output_file]
+    CodeChecker.check_urls_file(urlfile, check_urls_options)
 end

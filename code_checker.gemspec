@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.5.3'
+    s.version = '1.6.0'
     s.date = '2017-03-02'
     s.summary = "Check HTML & SASS code for basic syntax and coding rules"
     s.authors = ["Ken Le"]
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
                 "lib/views/ErrorView.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"
+    s.add_dependency "w3c_validators"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'
