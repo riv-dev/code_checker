@@ -1,8 +1,12 @@
 require 'nokogiri'
+require 'w3c_validators'
+require 'open-uri'
 require_relative 'models/HTMLFile.rb'
 require_relative 'models/HTMLFileFactory.rb'
 require_relative 'models/SASSFile.rb'
 require_relative 'views/ErrorView.rb'
+
+include W3CValidators
 
 class CodeChecker
 
@@ -30,6 +34,34 @@ class CodeChecker
 
     ErrorView.new(html_file, options[:output_file]) if html_file
     ErrorView.new(sass_file, options[:output_file]) if sass_file
+  end
+
+  #Run code checker on a uri
+  def self.check_urls_file(urlfile, options)
+    validator = NuValidator.new
+
+    f = File.open(urlfile, "r")
+    f.each_line do |url|
+      page = nil
+      url = url.chomp.strip
+      if options[:username] and options[:password]
+        puts "Checking #{url} with username=#{options[:username]} and password=#{options[:password]}"
+        open(url, :http_basic_authentication => [options[:username], options[:password]])
+        page = Nokogiri::HTML(open(url, :http_basic_authentication => [options[:username], options[:password]]))
+      else
+        puts "Checking #{url}"
+        page = Nokogiri::HTML(open(url))
+      end
+
+      #puts page.to_s
+      results = validator.validate_text(page.to_s)
+
+      puts "Warnings:"
+      puts results.warnings
+      puts "Errors:"
+      puts results.errors
+
+    end
   end
 
   #Run code checker on files within the folder

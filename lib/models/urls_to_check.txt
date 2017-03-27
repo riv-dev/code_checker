@@ -1,0 +1,4 @@
+http://localhost:3000/mock
+http://localhost:3000/mock/tower
+http://localhost:3000/mock/museum
+http://localhost:3000/mock/restaurant

@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
                 "lib/views/ErrorView.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"
+    s.add_dependency "w3c_validators"
     s.executables = ["code_checker"]
     s.homepage = 'https://github.com/riv-dev/welcome'
     s.license = 'MIT'
