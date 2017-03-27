@@ -129,47 +129,48 @@ class CodeChecker
     #end
 
     #Search through HTML files again to do cross-checking between SASS and HTML
-    types.each do |file_type|
-      #puts "Cross-checking #{file_type} files"
-      #puts
-      folders.each do |folder|
-        Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
-          next if self.ignore_file?(file_name)
+    if @@all_sass_files.length > 0
+      types.each do |file_type|
+        #puts "Cross-checking #{file_type} files"
+        #puts
+        folders.each do |folder|
+          Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
+            next if self.ignore_file?(file_name)
 
-          #puts "File #{file_name}"
-          page = Nokogiri::HTML(File.open(file_name))
+            #puts "File #{file_name}"
+            page = Nokogiri::HTML(File.open(file_name))
 
-          #Check hover styling
-          results_all_tags_that_require_hover = page.css('a,input[type="submit"],input[type="reset"],input[type="button"],button')
-          results_hover_applied = []
+            #Check hover styling
+            results_all_tags_that_require_hover = page.css('a,input[type="submit"],input[type="reset"],input[type="button"],button')
+            results_hover_applied = []
 
-          all_hover_selector_strings.each do |selector_string|
-            begin
-              #puts selector_string
-              results = page.css(selector_string.gsub(/\.no-touchevents/,'')) #We understand no-touchevents
-              results.each do |result|
-                if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
-                  line = @@all_html_files[file_name].lines[result.line-1]
-                  @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
-                else
-                  results_hover_applied << result
+            all_hover_selector_strings.each do |selector_string|
+              begin
+                #puts selector_string
+                results = page.css(selector_string.gsub(/\.no-touchevents/,'')) #We understand no-touchevents
+                results.each do |result|
+                  if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
+                    line = @@all_html_files[file_name].lines[result.line-1]
+                    @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
+                  else
+                    results_hover_applied << result
+                  end
                 end
-              end
-            rescue => e
-              #puts e
-            end #end begin
-          end #end all_hover
+              rescue => e
+                #puts e
+              end #end begin
+            end #end all_hover
 
-          tags_that_need_hover = results_all_tags_that_require_hover.to_a - results_hover_applied
+            tags_that_need_hover = results_all_tags_that_require_hover.to_a - results_hover_applied
 
-          tags_that_need_hover.each do |tag_that_needs_hover|
-            line = @@all_html_files[file_name].lines[tag_that_needs_hover.line-1]
-            @@all_html_files[file_name].puts_warning("Ryukyu: No hover style is defined. <a>, <input>, <button> tags require hover", line, line.to_s.strip)
-          end
-        end #end Dir.glob
-      end #folders.each
-    end #type.each do
-
+            tags_that_need_hover.each do |tag_that_needs_hover|
+              line = @@all_html_files[file_name].lines[tag_that_needs_hover.line-1]
+              @@all_html_files[file_name].puts_warning("Ryukyu: No hover style is defined. <a>, <input>, <button> tags require hover", line, line.to_s.strip)
+            end
+          end #end Dir.glob
+        end #folders.each
+      end #type.each do
+    end
 
     #Done with all checks, display all the errors
     @@all_html_files.keys.each do |file_name|
