@@ -37,6 +37,7 @@ You may check the folder to see the resulting HTML that was checked
 ```bash
 /code_checker_tested/index.html
 /code_checker_tested/faqs/index.html
+/code_checker_tested/tower/index.html
 /code_checker_tested/restaurant/index.html
 ```
 
