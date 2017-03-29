@@ -1,11 +1,14 @@
-require 'nokogiri'
 require 'fileutils'
 require 'w3c_validators'
 require 'open-uri'
+
 require_relative 'models/HTMLFile.rb'
-require_relative 'models/HTMLFileFactory.rb'
 require_relative 'models/SASSFile.rb'
-require_relative 'views/ErrorView.rb'
+require_relative 'models/HTMLFileFactory.rb'
+require_relative 'models/RyukyuHTMLValidator.rb'
+require_relative 'models/RyukyuSASSValidator.rb'
+require_relative 'models/RyukyuCrossValidator.rb'
+require_relative 'views/ValidationConsoleView.rb'
 
 include W3CValidators
 
@@ -19,259 +22,181 @@ class CodeChecker
   end
 
   #Run code checker on a specific file
-  def self.check(file_path, options)
-    sass_file = nil
-    html_file = nil
+  def self.check_file(file_path, options)
+    code_file = nil
     begin
       captures = file_path.match(/\.(\w+)$/).captures
       if(captures[0] == 'scss')
-        sass_file = SASSFile.new(file_path)
+        code_file = SASSFile.new(file_path)
       else
-        html_file = HTMLFileFactory.create(html_file, captures[0])
+        code_file = HTMLFileFactory.create(html_file, captures[0])
       end
     rescue
-      html_file = HTMLFile.new(file_path)
+      code_file = HTMLFile.new(file_path)
     end
 
-    ErrorView.display(html_file, options[:output_file]) if html_file
-    ErrorView.display(sass_file, options[:output_file]) if sass_file
+    return code_file
   end
 
-  #Run code checker on a uri
-  def self.check_urls_file(urlfile, options)
-    validator = NuValidator.new
+  def self.import_html(urlfile, options)
+    urls = []
 
+    #Read in the URL's and prepare them accordingly
+    if options[:roothost] 
+      options[:roothost].chomp.strip.gsub!(/\/$/,'') #remove trailing '/'
+    end
     f = File.open(urlfile, "r")
+    #Properly clean and build the urls from the file
     f.each_line do |url|
-      page = nil
+      next if url.chomp.strip.length == 0
+
+      url.chomp.strip!
+
+      if options[:roothost] 
+        url = '/' + url unless url.match(/^\//)
+        url = options[:roothost] + url
+      end
+
+      url = "http://" + url unless url.match(/^http/)
       url = url.chomp.strip
+
+      urls << url
+    end
+
+    #Now that the URL's are ready, import the HTML
+    import_folder = options[:import_folder]
+    import_folder = "code_checker_tested" if import_folder == nil
+    #Clear the import folder if it already exists
+    self.remove_dir(import_folder)
+
+    #Iterate through each URL and import
+    urls.each do |url|
+      #get the relative path
+      relative_request_path = URI.parse(url).request_uri
+
+      if !relative_request_path.match(/\.html\s*$/)
+        if relative_request_path.match(/\/\s*$/)
+           relative_request_path = relative_request_path + "index.html" 
+        else
+          relative_request_path = relative_request_path + "/index.html"
+        end
+      end
+
+      import_file_path = import_folder + relative_request_path
+
+      dirname = File.dirname(import_file_path)
+
+      unless File.directory?(dirname)
+        FileUtils.mkdir_p(dirname)
+      end
+
+      import_file = File.open(import_file_path,'w')
+
       if options[:username] and options[:password]
-        puts "Checking #{url} with username=#{options[:username]} and password=#{options[:password]}"
-        uri = nil
+        puts "Importing #{url} with username=#{options[:username]} and password=#{options[:password]}"
         begin
-          uri = open(url, :http_basic_authentication => [options[:username], options[:password]], :redirect => false)
+          open(url, :http_basic_authentication => [options[:username], options[:password]], :redirect => false) { |f|
+            f.each_line {|line| import_file << line}
+          }
         rescue OpenURI::HTTPRedirect => redirect
           #Handle redirects
-          uri = open(redirect.uri.to_s, :http_basic_authentication => [options[:username], options[:password]], :redirect => false)
+          open(redirect.uri.to_s, :http_basic_authentication => [options[:username], options[:password]], :redirect => false) {|f|
+            f.each_line {|line| import_file << line}
+          }
         end
-        page = Nokogiri::HTML(uri)
       else
-        puts "Checking #{url}"
-        page = Nokogiri::HTML(open(url))
+        puts "Importing #{url}"
+        open(url) {|f| 
+          f.each_line {|line| import_file << line}
+        }
       end
 
-      results = validator.validate_text(page.to_s)
+      import_file.close
 
-      #puts page.to_s
-      #Save the HTML file
-      if options[:export_folder] 
-        request_path = URI.parse(url).request_uri
-        request_path = options[:export_folder] + request_path
-
-        if !request_path.match(/\.html\s*$/)
-          if request_path.match(/\/\s*$/)
-            request_path = request_path + "index.html" 
-          else
-            request_path = request_path + "/index.html"
-          end
-        end
-
-        dirname = File.dirname(request_path)
-        unless File.directory?(dirname)
-          FileUtils.mkdir_p(dirname)
-        end
-
-        f = File.open(request_path,'w')
-        f << page.to_s
-        f.close
-      end
-
-      ErrorView.display_w3c(url, results, options[:output_file])
-
+      puts "  Imported #{import_file_path}"
     end
+
+    return import_folder
   end
 
-  #Run code checker on files within the folder
-  def self.check_folder(folders, options)
-    puts "Code Checker running, please wait..."
-    #Process options
-    #By default check all types
-    types = HTMLFileFactory.get_supported_types
-    types << "scss"
-    #if types option is defined, check only the specified types
-    types = options[:types] if options[:types] != nil and options[:types].length > 0
+  def self.check_html(folders, options)
+    puts "Checking HTML..."
+    #Ryukyu Validator
+    ryukyu_validator = RyukyuHTMLValidator.new
+    #W3C Validator
+    w3c_validator = NuValidator.new
 
-    #import file and folder exclusion options
-    @@exclude_files = options[:exclude_files]
-    @@exclude_folders = options[:exclude_folders]
+    folders.each do |folder|
+      Dir.glob(folder+"/**/*.html") do |file_name|
+        if !self.ignore_file?(file_name, options)
+          puts "  Checking #{file_name}"
+          html_file = HTMLFile.new(file_name)
+          @@all_html_files[file_name] = html_file
 
-    #Clear the output file
-    if options[:output_file]
-      f = open(options[:output_file],'w')
-      f.close
-    end
-
-    #Run the checker for files and folders that have not been excluded
-    types.each do |file_type|
-      #puts "Checking #{file_type} files"
-      #puts
-      #Check SASS Files
-      if file_type == "scss"
-        folders.each do |folder|
-          Dir.glob(folder+"/**/*.scss") do |file_name|
-            @@all_sass_files << SASSFile.new(file_name) if !self.ignore_file?(file_name)
-          end     
-        end
-      else
-        folders.each do |folder|
-          Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
-            @@all_html_files[file_name] = HTMLFileFactory.create(file_name, file_type) if !self.ignore_file?(file_name)
-          end 
-        end
-      end
-    end #type.each do
-
-
-    #Cross checking
-    #Collect all mixins and includes
-    all_mixins = {}
-    all_includes = []
-    all_root_selectors = []
-    @@all_sass_files.each do |sass_file|
-      #Hash for speed performance
-      sass_file.all_mixins.each do |mixin|
-        all_mixins[mixin.name.strip] = mixin
-      end
-
-      all_includes.concat(sass_file.all_includes)
-      all_root_selectors.concat(sass_file.root_selectors)
-    end
-
-    #Insert all defined mixins
-    all_includes.each do |sass_include|
-      if mixin = all_mixins[sass_include.name.strip]
-          mixin.includes.each do |insert_include|
-            clone = insert_include.clone
-            clone.parent = sass_include.parent
-            sass_include.parent.includes << clone if sass_include.parent != nil
+          if options[:validators] == nil or options[:validators].include?('ryukyu')
+            ryukyu_validator.validate(html_file)
           end
 
-          mixin.properties.each do |insert_property|
-            clone = insert_property.clone
-            clone.parent = sass_include.parent
-            sass_include.parent.properties << clone if sass_include.parent != nil
+          if options[:validators] == nil or options[:validators].include?('w3c')
+            w3c_results = w3c_validator.validate_file(html_file.file_path)
+            html_file.errors.concat(w3c_results.errors)
+            html_file.warnings.concat(w3c_results.warnings)
           end
-
-          mixin.children_selectors.each do |insert_child_selector|
-            clone = self.deep_copy(insert_child_selector) #Do a deep copy
-            clone.parent = sass_include.parent
-            sass_include.parent.children_selectors << clone if sass_include.parent != nil
-          end #insert
-      end #if
-    end #all_includes
-
-    all_hover_selector_strings = []
-
-    i = 0
-    self.check_all_selectors(all_root_selectors) do |selector|
-      if selector.name.match(/:hover/)
-        #puts "#{i}. #{selector.name}"
-        #i = i+1
-        all_hover_selector_strings << selector.element_selector_string
-      end      
+        end
+      end   
     end
 
-    #i=0
-    #all_hover_selector_strings.each do |selector|
-      #puts "#{i}. #{selector}"
-      #i = i+1
-    #end
+    return @@all_html_files
+  end
+  
+  def self.check_sass(folders, options)
+    puts "Checking SASS..."
+    #Ryukyu Validator
+    ryukyu_validator = RyukyuSASSValidator.new
 
-    #Search through HTML files again to do cross-checking between SASS and HTML
-    if @@all_sass_files.length > 0
-      types.each do |file_type|
-        #puts "Cross-checking #{file_type} files"
-        #puts
-        folders.each do |folder|
-          Dir.glob(folder+"/**/*.#{file_type}") do |file_name|
-            next if self.ignore_file?(file_name)
-
-            #puts "File #{file_name}"
-            page = Nokogiri::HTML(File.open(file_name))
-
-            #Check hover styling
-            results_all_tags_that_require_hover = page.css('a,input[type="submit"],input[type="reset"],input[type="button"],button')
-            results_hover_applied = []
-
-            all_hover_selector_strings.each do |selector_string|
-              begin
-                #puts selector_string
-                results = page.css(selector_string.gsub(/\.no-touchevents/,'')) #We understand no-touchevents
-                results.each do |result|
-                  if result.name.strip != "a" and result.name.strip != "input" and result.name.strip != "button"
-                    line = @@all_html_files[file_name].lines[result.line-1]
-                    @@all_html_files[file_name].puts_warning("Ryukyu: Hover style should only be put on <a>, <input>, <button> tags", line, line.to_s.strip)
-                  else
-                    results_hover_applied << result
-                  end
-                end
-              rescue => e
-                #puts e
-              end #end begin
-            end #end all_hover
-
-            tags_that_need_hover = results_all_tags_that_require_hover.to_a - results_hover_applied
-
-            tags_that_need_hover.each do |tag_that_needs_hover|
-              line = @@all_html_files[file_name].lines[tag_that_needs_hover.line-1]
-              @@all_html_files[file_name].puts_warning("Ryukyu: No hover style is defined. <a>, <input>, <button> tags require hover", line, line.to_s.strip)
-            end
-          end #end Dir.glob
-        end #folders.each
-      end #type.each do
+    folders.each do |folder|
+      Dir.glob(folder+"/**/*.scss") do |file_name|
+        if !self.ignore_file?(file_name, options)
+          puts "  Checking #{file_name}"
+          sass_file = SASSFile.new(file_name)
+          @@all_sass_files << sass_file
+          ryukyu_validator.validate(sass_file)
+        end
+      end     
     end
 
-    #Done with all checks, display all the errors
-    @@all_html_files.keys.each do |file_name|
-      ErrorView.display(@@all_html_files[file_name], options[:output_file])
-    end
+    return @@all_sass_files
+  end
 
-    @@all_sass_files.each do |file|
-      ErrorView.display(file, options[:output_file])
-    end
+  def self.cross_check_html_sass(html_files,sass_files)
+    ryukyu_validator = RyukyuCrossValidator.new
+    puts "Performing cross validation between HTML and SASS..."
+    results = ryukyu_validator.validate(html_files,sass_files)
+    return results
+  end
 
-  end #def self.check_folder
+  def self.clear_output_file(output_file)
+    ValidationConsoleView.clear_output_file(output_file)
+  end
 
-  def self.deep_copy(selector)
-    selector = selector.clone
+  def self.display_console(code_file, output_file)
+    ValidationConsoleView.display(code_file, output_file)
+  end
 
-    i = 0
-    children_selectors = selector.children_selectors
-    selector.children_selectors = []
-    children_selectors.each do |child_selector|
-      selector.children_selectors << child_selector.clone
-      selector.children_selectors[i].parent = selector
-      i = i+1
-    end
-    return selector
-  end  
-
-  def self.check_all_selectors(root_selectors)
-    root_selectors.each do |root_selector|
-      yield(root_selector)
-
-      self.check_all_selectors(root_selector.children_selectors) do |sel|
-        yield(sel)
-      end
-    end
+  def self.display_all_console(code_files, output_file)
+    ValidationConsoleView.display_all(code_files, output_file)
   end
 
   private
   #Helper functions
   #Returns true if options have been set to ignore the file
-  def self.ignore_file?(path)
+  def self.ignore_file?(path, options)
     path_components = path.split("/");
     filename = path_components.last
+
+    #import file and folder exclusion options
+    @@exclude_files = options[:exclude_files]
+    @@exclude_folders = options[:exclude_folders]
 
     if @@exclude_files != nil
       @@exclude_files.each do |exclude_file|
@@ -321,5 +246,21 @@ class CodeChecker
 
     return false
   end
+
+  def self.remove_dir(path)
+    if File.directory?(path)
+      Dir.foreach(path) do |file|
+        if ((file.to_s != ".") and (file.to_s != ".."))
+          self.remove_dir("#{path}/#{file}")
+        end
+      end
+      Dir.delete(path)
+    else
+      begin
+        File.delete(path)
+      rescue
+      end
+    end
+  end  
 
 end

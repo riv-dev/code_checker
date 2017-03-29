@@ -42,66 +42,77 @@ https://www.macbartender.com/system-item-setup/
 
 You are now ready, run the tool!
 
-###  Option 1: Check a specific html file
-Navigate to the folder or provide full path name.
+###  Option 1: Check HTML code given relative URL's in a file
+```bash
+code_checker -I urls_list.txt -r http://localhost:3000
+```
+
+#### urls_list.txt
+```bash
+/
+/faqs
+/tower
+/restaurant
+```
+
+### Option 1: with remote server and password
+```bash
+code_checker -I urls_list.txt -r http://projectx.ryukyu-i.co.jp -u admin -p my_password
+```
+
+#### urls_list.txt
+```bash
+/
+/faqs
+/tower
+/restaurant
+```
+
+### Option 2: check local SASS only
+Navigate to project folder or SASS directory and specify the folder path
+```bash
+code_checker -S _dev/_sass
+```
+
+Ignore certain folders
+```bash
+code_checker -S _dev/_sass -X _bootstrap,_animate
+```
+
+### Option 3: Check HTML and SASS and do cross-checking
+Specify both options 1 and options 2
+```bash
+code_checker -I urls_list.txt -r http://localhost:3000 -S _dev/_sass
+```
+
+### Option 4: Check a single file (for quick debugging)
 ```bash
 code_checker -f index.html
 ```
 
-### Option 2: Check entire folders and sub-folders
-Navigate to root where folders exists or provide full path name. Example below is for "views" and "_dev/_sass" folders.
 ```bash
-code_checker -F views,_dev/_sass
-```
-
-### Option 3: Check all files and folders in current directory
-```bash
-code_checker -F .
-```
-
-### Optional: Exclude files and folder
-Use -x for file exclusions.
-```bash
-code_checker -F . -x index.html
-```
-
-Use -X for folder exclusions
-```bash
-code_checker -F . -X node_modules
-```
-
-Allows wildcard matching
-```bash
-code_checker -F . -x *.ejs
-```
-
-Allows multiple files and folders, separate with comma (no white spaces)
-```bash
-code_checker -F . -x *.ejs,*.php -X node_modules,lib,*temp*
-```
-
-### Optional: Check specific file types only (html, hbs, php, ejs)
-Code checker checks all supported file types if -t option is not specified.
-If -t is specified, it will check those file types only.
-
-#### For example, check only html files:
-```bash
-code_checker -F . -t html
-```
-
-#### For example, check html and hbs files:
-```bash
-code_checker -F . -t html,hbs
-```
-
-#### For example, check only html and php files:
-```bash
-code_checker -F . -t html,php
+code_checker -f fonts.scss
 ```
 
 ### Optional: Pipe the output to a logfile
 ```bash
-code_checker -f index.html -o log.txt
+code_checker -I urls_list.txt -o log.txt
+```
+
+### Optional: Turn on certain validators only
+Run w3c validation only
+```bash
+code_checker -I urls_list.txt -V w3c
+```
+
+Run ryukyu validation only
+```bash
+code_checker -I urls_list.txt -V ryukyu
+```
+
+Run both w3c and ryukyu (this is run by default, does not need to be specified)
+```bash
+code_checker -I urls_list.txt -V w3c,ryukyu
 ```
 
 ### Help: Get help about usage

@@ -1,1 +1,33 @@
-CCode Checker running, please wait...
+Checked ./lib/models/screen.scss
+[Warning] line 1: [First line should contain @charset "utf-8";]
+
+    
+
+
+
+[Warning] line 6: [Ryukyu: Use compass mixin @include opacity()]
+
+    opacity: 0.8;
+
+
+
+[Warning] line 1: [Ryukyu: Avoid styling directly on HTML tag, define a class instead.]
+
+    body {
+
+
+
+[Warning] line 9: [Ryukyu: Hover must be defined inside @media for PC only or using .no-touchevents class]
+
+    .hello:hover {
+
+
+
+[Warning] line 14: [Ryukyu: Hover must be defined inside @media for PC only or using .no-touchevents class]
+
+    &:hover {
+
+
+
+ 
+ 

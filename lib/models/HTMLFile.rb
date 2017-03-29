@@ -19,6 +19,12 @@ class HTMLFile < CodeFile
 
     def initialize(file_path)
         super(file_path)
+
+        if @root_tags.length == 0
+            #Somewhere there was not a closing tag so the root was not 
+            #discovered properly.  Manually add in the root
+           @root_tags << @parent_tags_stash.first
+        end
     end #initialize
 
     def custom_set_codeline_class
@@ -38,79 +44,8 @@ class HTMLFile < CodeFile
 
         @tags_by_id = {}
         @tags_by_class = {}
-
-        @h1_tags = []
     end
     
-    def custom_check_file_after_processing_done
-        if @root_tags.length == 0
-            #Somewhere there was not a closing tag so the root was not 
-            #discovered properly.  Manually add in the root
-           @root_tags << @parent_tags_stash.first
-        end
-
-        #@root_tags.each do |root_tag|
-        #    puts "Root tag: #{root_tag}"
-        #    print_elements(root_tag,"")
-        #    puts
-        #end
-
-        #At this point all HTML lines have been processed.
-        #You may now iterate through the tags and look for errors or warnings
-        #There should be only one root tag, the <html> tag, however allow cases where
-        #there may be more than one root tag
-        @root_tags.each do |root_tag|
-            check_all_elements(root_tag) do |current_element|
-
-                #Insert custom checks here
-
-                #1) Ryukyu coding rule, no <img /> style void tags
-                if current_element.is_a?(HTMLTagVoid)
-                    return if current_element.type == "path" #path is a foreign tag, allow "/" at the end
-
-                    if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
-                        puts_warning("Ryukyu: void tag should not have '/' at end", current_element.code_line, current_element.code_line.str.strip)
-                    end
-
-                    if current_element.type == 'img'
-                        if !current_element.str.match(/alt/)
-                            puts_warning("Ryukyu: img tag needs alt attribute defined", current_element.code_line, current_element.code_line.str.strip)
-                        end
-                    end
-
-                end
-
-                #2) No half-width spaces in content
-                if current_element.is_a?(HTMLContent)
-                    asian_char_regex = /([\p{Han}|\p{Katakana}|\p{Hiragana}|\p{Hangul}])(\s+)/
-                    if current_element.str.match(asian_char_regex)
-                        current_element.str.gsub!(asian_char_regex,'\1'+" ".colorize(:background => :yellow))
-                        puts_warning("Ryukyu: No half-width spaces in Japanese characters", current_element.code_line, current_element.str)
-                    end
-                end
-
-                #3) Only one h1 tag
-                if current_element.is_a?(HTMLTagOpen)
-                    if current_element.type == 'h1'
-                        @h1_tags << current_element
-                        if @h1_tags.length > 1
-                            warning_str = "This h1 tag: #{current_element.str}"
-                            @h1_tags.each  do |h1_tag|
-                                 next if h1_tag == @h1_tags.last
-                                 warning_str = warning_str + "\n    Other h1 is tag in: #{h1_tag.code_line.code_file.file_path}: line #{h1_tag.code_line.line_number}"
-                            end
-                            puts_warning("Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.", current_element.code_line, warning_str)
-                        end
-                    elsif current_element.type == 'a'
-                        if !current_element.str.match(/href/)
-                            puts_warning("Ryukyu: a tag needs href attribute defined", current_element.code_line, current_element.code_line.str.strip)
-                        end
-                    end                    
-                end
-            end
-        end
-    end
-
     def get_tag_by_id(id)
         return @tags_by_id[id]
     end
@@ -139,13 +74,10 @@ class HTMLFile < CodeFile
         return str
     end
 
-    #Private and helper functions
-    private
-
     #Recursive tree traversal check
     def check_all_elements(root_element)
         if root_element.is_a?(HTMLTagOpen) and !root_element.has_closing_tag
-            puts_error("<#{root_element.type}> has no closing tag", root_element.code_line, root_element.code_line.str.strip)
+            self.errors << ValidationMessage.new(root_element.code_line.line_number, "<#{root_element.type}> has no closing tag", root_element.code_line.str.strip)
         end
 
         #Recursion to traverse the full tree
@@ -160,5 +92,4 @@ class HTMLFile < CodeFile
         #Insert custom checks on the element here        
         yield(root_element)
     end
-
 end

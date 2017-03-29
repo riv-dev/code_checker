@@ -24,9 +24,6 @@ class CodeFile
         #insert read_file_and_check_process_line here in child
         read_file_and_process_each_line
 
-        #override this method
-        custom_check_file_after_processing_done
-
         #Refactored to views
         #insert display_all_errors_and_warnings here in child
         #display_all_errors_and_warnings
@@ -36,16 +33,6 @@ class CodeFile
 
 
     end #initialize
-
-    def puts_error(error, line, details)
-        @errors << "[Error]".colorize(:color => :white, :background => :red) + " line #{line.line_number}: " + "[#{error}]".red
-        @errors << "\n    #{details}\n\n\n"
-    end
-
-    def puts_warning(warning, line, details)
-        @warnings << "[Warning]".colorize(:color => :black, :background => :yellow) + " line #{line.line_number}: " + "[#{warning}]".yellow
-        @warnings << "\n    #{details}\n\n\n"
-    end
 
     protected
     #Override this method in the child class
@@ -61,12 +48,6 @@ class CodeFile
         return false
     end
     
-    #Override this method in the child class
-    def custom_check_file_after_processing_done
-        puts "[Application Error]".colorize(:color => :white, :background => :red) + " [#{__FILE__}][Need to override #{__method__} method in #{self.class} class]".red
-        return false
-    end
-
     def to_s
         return @file_path
     end
@@ -84,25 +65,6 @@ class CodeFile
             end #f.each_line
 
         end #File.open
-    end
-
-    def display_all_errors_and_warnings
-        #Display errors
-        puts "Checked #{@file_path}"
-        if @errors.length > 0 or @warnings.length > 0
-            @errors.each do |error|
-                puts "  #{error}"
-            end
-
-            @warnings.each do |warning|
-                puts "  #{warning}"
-            end
-            puts
-        else
-            puts "  " + "[Success]".green + "[No errors found]"
-            puts
-        end
-        puts
     end
 
 end

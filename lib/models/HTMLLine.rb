@@ -2,6 +2,7 @@ require 'colorize'
 require_relative 'CodeLine.rb'
 require_relative 'HTMLTagFactory.rb'
 require_relative 'HTMLContent.rb'
+require_relative 'ValidationMessage.rb'
 
 class HTMLLine < CodeLine
     attr_accessor :tags #Type HTMLTag
@@ -93,8 +94,7 @@ class HTMLLine < CodeLine
                 if tag != nil
                     @tags << tag
                 else
-                    puts_error("invalid tag detected", @line_number)
-                    puts_error_location(str,i)
+                    @code_file.errors << ValidationMessage.new(@line_number, "invalid tag detected", str)
                 end
 
                 #Flush any current content into the current parent tag
@@ -147,8 +147,7 @@ class HTMLLine < CodeLine
                     end #end !closing_tag.has_opening_ta
 
                     if !closing_tag.has_opening_tag
-                        puts_error("Closing tag has no opening tag", @line_number)
-                        puts_error_location(str,i)                    
+                        @code_file.errors << ValidationMessage.new(@line_number, "Closing tag has no opening tag", str)
                     else #end !closing_tag.has_opening_tag 
                         #pop the parent off
                         parent = @code_file.parent_tags_stash.pop 

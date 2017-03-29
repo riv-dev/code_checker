@@ -4,6 +4,7 @@ require_relative 'SASSProperty.rb'
 require_relative 'SASSInclude.rb'
 require_relative 'SASSDirective.rb'
 require_relative 'SASSKeyFrames.rb'
+require_relative 'ValidationMessage.rb'
 
 class SASSLine < CodeLine
     attr_accessor :selectors
@@ -25,7 +26,7 @@ class SASSLine < CodeLine
     def custom_process_line(str)
         if @line_number == 1
             if !str.match(/^\s*@charset\s+"utf-8"/)
-                puts_warning('First line should contain @charset "utf-8";', @line_number)
+                @code_file.warnings << ValidationMessage.new(@line_number, 'First line should contain @charset "utf-8";', nil)
             else
                 #We are good, ignore the line
                 return
@@ -89,8 +90,19 @@ class SASSLine < CodeLine
             name = captures[1]
             parameters = nil
             parameters = captures[2] if captures.length == 3
-            current_include = SASSInclude.new(self, @code_file.parents_stash.last, name, parameters)
-            @code_file.parents_stash.last.includes << current_include if @code_file.parents_stash.last != nil
+
+            #Find the current parent, ignore sass directives
+            current_parent = nil
+
+            @code_file.parents_stash.reverse.each do |parent|
+                if parent and !parent.is_a?(SASSDirective)
+                    current_parent = parent
+                    break
+                end
+            end
+
+            current_include = SASSInclude.new(self, current_parent, name, parameters)
+            current_parent.includes << current_include if current_parent != nil
             @code_file.all_includes << current_include
 
             if captures = str.scan(/\{/)
@@ -143,8 +155,7 @@ class SASSLine < CodeLine
 
         #Check for ending ";"        
         if str.match(/[\w\)]\s*$/)
-           puts_error('Missing ; at end of the line', @line_number) 
-           puts_error_location(str,str.length)
+           @code_file.errors << ValidationMessage.new(@line_number, 'Missing ; at end of the line', str.chomp.strip)
            #Correct the string so we can properly continue the check below
            str = str + ";"
         end
@@ -179,8 +190,7 @@ class SASSLine < CodeLine
                 #Detect mixins
                     current_parent = @code_file.parents_stash.last
                     if current_parent != nil
-                        puts_error('Mixin cannot be nested inside parent selector', @line_number) 
-                        puts_error_location(str,str.length)
+                        @code_file.errors << ValidationMessage.new(@line_number, 'Mixin cannot be nested inside parent selector', str.chomp.strip)
                     end
                     current_selector = SASSMixin.new(self, captures[2], captures[4])
                     @code_file.all_mixins << current_selector
@@ -238,15 +248,14 @@ class SASSLine < CodeLine
                     end
 
                     current_css_property = SASSProperty.new(self, current_parent, values[0].strip.chomp, values[1].strip.chomp)
-                    @code_file.parents_stash.last.properties << current_css_property if @code_file.parents_stash.last != nil
+                    current_parent.properties << current_css_property if @code_file.parents_stash.last != nil
                     @code_file.all_properties << current_css_property
                 elsif values.length == 1
                     #it is not a valid CSS property:value pair
                     #possibly it is a sass mixin or extend
                 else #syntax error
                     #puts error
-                    puts_error("Invalid line.", @line_number)
-                    puts_error_location(@@current_undefined_str, i)
+                    @code_file.errors << ValidationMessage.new(@line_number, "Invalid line.", @@current_undefined_str)
                 end
 
                 #Reset str
