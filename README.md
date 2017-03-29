@@ -80,6 +80,11 @@ code_checker -f index.html
 code_checker -f fonts.scss
 ```
 
+### Option 5: Check all HTML files inside a local folder
+```bash
+code_checker -H mock
+```
+
 ### Optional: Pipe the output to a logfile
 ```bash
 code_checker -I urls_list.txt -o log.txt
