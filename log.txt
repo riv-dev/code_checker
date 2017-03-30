@@ -1,31 +1,761 @@
-Checked ./lib/models/screen.scss
-[Warning] line 1: [First line should contain @charset "utf-8";]
+Checked lib/models/faq.html
+[Warning] line 5: [Ryukyu: No half-width spaces in Japanese characters]
 
-    
-
-
-
-[Warning] line 6: [Ryukyu: Use compass mixin @include opacity()]
-
-    opacity: 0.8;
+    eiicon(エイコン) | 強力なパートナーと出会うオープンイノベーションプラットフォーム
 
 
 
-[Warning] line 1: [Ryukyu: Avoid styling directly on HTML tag, define a class instead.]
+[Warning] line 70: [Ryukyu: No half-width spaces in Japanese characters]
 
-    body {
-
-
-
-[Warning] line 9: [Ryukyu: Hover must be defined inside @media for PC only or using .no-touchevents class]
-
-    .hello:hover {
+    朝倉 将行様
 
 
 
-[Warning] line 14: [Ryukyu: Hover must be defined inside @media for PC only or using .no-touchevents class]
+[Warning] line 127: [Ryukyu: No half-width spaces in Japanese characters]
 
-    &:hover {
+    朝倉 将行様
+
+
+
+[Warning] line 147: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#search">
+
+
+
+[Warning] line 151: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#topics">
+
+
+
+[Warning] line 153: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#pickups">
+
+
+
+[Warning] line 155: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#events">
+
+
+
+[Warning] line 157: [Ryukyu: No half-width spaces in Japanese characters]
+
+    エイコン ラボ
+
+
+
+[Warning] line 157: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#news">
+
+
+
+[Warning] line 178: [Ryukyu: No half-width spaces in Japanese characters]
+
+    インテリジェンスの新サービス エイコン。
+
+
+
+[Warning] line 452: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 483: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 481: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 447: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 446: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 494: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 525: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 523: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 489: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 488: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 536: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 567: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 565: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 531: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 530: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 578: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="		search-company-desc-caption search-company-desc-full ">
+
+
+
+[Warning] line 608: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 606: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 573: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 572: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 445: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <ul class="search-companies ">
+
+
+
+[Warning] line 633: [Ryukyu: No half-width spaces in Japanese characters]
+
+    XXXX年に株式会社みずほ銀行が株式会社マネーフォワードと &quot;包括協力協定締結をしています。提携した目的は、「プロジェクトベースでの共創関係を築く」です。
+
+
+
+[Warning] line 638: [Ryukyu: No half-width spaces in Japanese characters]
+
+    XXXX年に株式会社みずほ銀行が株式会社マネーフォワードと &quot;包括協力協定締結をしています。提携した目的は、「プロジェクトベースでの共創関係を築く」です。
+
+
+
+[Warning] line 658: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_1.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 669: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_2.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 680: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_3.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 726: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 731: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="event-title ">
+
+
+
+[Warning] line 721: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 744: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 739: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 762: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 767: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="event-title ">
+
+
+
+[Warning] line 757: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 783: [Ryukyu: No half-width spaces in Japanese characters]
+
+    エイコン ラボ
+
+
+
+[Warning] line 792: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="news-title ">
+
+
+
+[Warning] line 799: [Ryukyu: No half-width spaces in Japanese characters]
+
+    SEKISUI HOUSE ACCELERATOR 2016とは SEKISUI HOUSE ACCELERATOR 2016とは住宅のリーディングカンパニーとして創業以来培ってきた経営資源（以下リソース）を解放し活用することで、スタートアップの成長を支援するプログラムです。スタートア...
+
+
+
+[Warning] line 811: [Ryukyu: No half-width spaces in Japanese characters]
+
+    日本のテクノロジー企業、成長率トップ50を発表――有限責任監査法人トーマツ 1～25位にランクインした企業の傾向と特徴
+
+
+
+[Warning] line 810: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="news-title ">
+
+
+
+[Warning] line 817: [Ryukyu: No half-width spaces in Japanese characters]
+
+    ベンチャー支援などを行う有限責任監査法人トーマツはこのほど、国内のテクノロジー企業の成長率「デロイト トウシュ トーマツ リミテッド 日本テクノロジー Fast50」を発表した。同ランキングはテクノロジー・メディア・テレコミュニケーション（通信）...
+
+
+
+[Warning] line 831: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="success-story  success-story-case-studies " href="/case-studies/">
+
+
+
+[Warning] line 837: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="success-story  success-story-matching-advisor " href="/matching-advisor/index.html">
+
+
+
+[Warning] line 40: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <body class="l-site-body isPage ">
+
+
+
+ 
+ 
+Checked lib/models/index.html
+[Error] line 568: [invalid tag detected]
+
+    			<%helloooooo%> hello <%hellooooo %>
+
+
+
+
+[Error] line 568: [invalid tag detected]
+
+    			<%helloooooo%> hello <%hellooooo %>
+
+
+
+
+[Error] line 569: [invalid tag detected]
+
+    			<li class="mb-10"><span class="c-<?php echo $i ?>">c-<?php echo $i ?></span> <span class="d-ib p-5 bgc-<?php echo $i ?>">bgc-<?php echo $i ?></span></li>
+
+
+
+
+[Error] line 569: [invalid tag detected]
+
+    			<li class="mb-10"><span class="c-<?php echo $i ?>">c-<?php echo $i ?></span> <span class="d-ib p-5 bgc-<?php echo $i ?>">bgc-<?php echo $i ?></span></li>
+
+
+
+
+[Warning] line 5: [Ryukyu: No half-width spaces in Japanese characters]
+
+    古宇利オーシャンタワー | Kouri Ocean Tower
+
+
+
+[Warning] line 112: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <li class="navigation__item navigation__item--restaurant" >
+
+
+
+[Warning] line 169: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="toplanguage__item toplanguage__item--en ">
+
+
+
+[Warning] line 202: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a href="/mock/zh-cn/" class="toplanguage__link" >
+
+
+
+[Warning] line 208: [Ryukyu: No trailing white spaces at end of tag >]
+
+    </a >
+
+
+
+[Warning] line 214: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="topkeyvisual__show ">
+
+
+
+[Warning] line 242: [Ryukyu: We usually use h1 for logo or page title.  Only one h1 per document.]
+
+    <h1 class="header__logo">
+
+
+
+[Warning] line 278: [Ryukyu: No trailing white spaces at end of tag >]
+
+    </li >
+
+
+
+[Warning] line 408: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="card card--white card--xlarge ">
+
+
+
+[Warning] line 437: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="card card--navy card--large ">
+
+
+
+[Warning] line 475: [Ryukyu: No half-width spaces in Japanese characters]
+
+    本格ナポリピッツァや南国フルーツをあしらったスイーツなどが評判の「オーシャンカフェ」と、こだわりの沖縄食材を使った料理が楽しめるメインダイニング「レストラン アイランドブルー」。ゆったりと海を眺めながら、ランチやカフェタイムをお過ごしいただけます。
+
+
+
+[Warning] line 463: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="card card--white card--small ">
+
+
+
+[Warning] line 548: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="card card--navy card--xsmall ">
+
+
+
+[Warning] line 586: [Ryukyu: No half-width spaces in Japanese characters]
+
+    9:00 ～ 18:00 (最終入園 17:30)
+
+
+
+[Warning] line 39: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <body class="is-top h-overflow-hidden ">
+
+
+
+ 
+ 
+Checked lib/models/index2.html
+[Warning] line 5: [Ryukyu: No half-width spaces in Japanese characters]
+
+    eiicon(エイコン) | 強力なパートナーと出会うオープンイノベーションプラットフォーム
+
+
+
+[Warning] line 70: [Ryukyu: No half-width spaces in Japanese characters]
+
+    朝倉 将行様
+
+
+
+[Warning] line 127: [Ryukyu: No half-width spaces in Japanese characters]
+
+    朝倉 将行様
+
+
+
+[Warning] line 147: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#search">
+
+
+
+[Warning] line 151: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#topics">
+
+
+
+[Warning] line 153: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#pickups">
+
+
+
+[Warning] line 155: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#events">
+
+
+
+[Warning] line 157: [Ryukyu: No half-width spaces in Japanese characters]
+
+    エイコン ラボ
+
+
+
+[Warning] line 157: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="main-nav-link " href="#news">
+
+
+
+[Warning] line 178: [Ryukyu: No half-width spaces in Japanese characters]
+
+    インテリジェンスの新サービス エイコン。
+
+
+
+[Warning] line 452: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 483: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 481: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 447: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 446: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 494: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 525: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 523: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 489: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 488: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 536: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="      				search-company-desc-caption ">
+
+
+
+[Warning] line 567: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 565: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 531: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 530: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 578: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <figcaption class="		search-company-desc-caption search-company-desc-full ">
+
+
+
+[Warning] line 608: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a href="#" class="btn btn-detail ">
+
+
+
+[Warning] line 606: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <div class="search-company-btn ">
+
+
+
+[Warning] line 573: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <article class="search-company ">
+
+
+
+[Warning] line 572: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <li class="search-companies-item ">
+
+
+
+[Warning] line 445: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <ul class="search-companies ">
+
+
+
+[Warning] line 633: [Ryukyu: No half-width spaces in Japanese characters]
+
+    XXXX年に株式会社みずほ銀行が株式会社マネーフォワードと &quot;包括協力協定締結をしています。提携した目的は、「プロジェクトベースでの共創関係を築く」です。
+
+
+
+[Warning] line 638: [Ryukyu: No half-width spaces in Japanese characters]
+
+    XXXX年に株式会社みずほ銀行が株式会社マネーフォワードと &quot;包括協力協定締結をしています。提携した目的は、「プロジェクトベースでの共創関係を築く」です。
+
+
+
+[Warning] line 658: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_1.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 669: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_2.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 680: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <img class="topic-img " src="/assets/img/pages/top/topics_img_3.jpg" alt="特集名がはいります" >
+
+
+
+[Warning] line 726: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 731: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="event-title ">
+
+
+
+[Warning] line 721: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 744: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 739: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 762: [Ryukyu: No half-width spaces in Japanese characters]
+
+    東京 渋谷
+
+
+
+[Warning] line 767: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="event-title ">
+
+
+
+[Warning] line 757: [Ryukyu: No trailing white spaces at end of tag >]
+
+    <a class="events-item-link" href="#" >
+
+
+
+[Warning] line 783: [Ryukyu: No half-width spaces in Japanese characters]
+
+    エイコン ラボ
+
+
+
+[Warning] line 792: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="news-title ">
+
+
+
+[Warning] line 799: [Ryukyu: No half-width spaces in Japanese characters]
+
+    SEKISUI HOUSE ACCELERATOR 2016とは SEKISUI HOUSE ACCELERATOR 2016とは住宅のリーディングカンパニーとして創業以来培ってきた経営資源（以下リソース）を解放し活用することで、スタートアップの成長を支援するプログラムです。スタートア...
+
+
+
+[Warning] line 811: [Ryukyu: No half-width spaces in Japanese characters]
+
+    日本のテクノロジー企業、成長率トップ50を発表――有限責任監査法人トーマツ 1～25位にランクインした企業の傾向と特徴
+
+
+
+[Warning] line 810: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <h4 class="news-title ">
+
+
+
+[Warning] line 817: [Ryukyu: No half-width spaces in Japanese characters]
+
+    ベンチャー支援などを行う有限責任監査法人トーマツはこのほど、国内のテクノロジー企業の成長率「デロイト トウシュ トーマツ リミテッド 日本テクノロジー Fast50」を発表した。同ランキングはテクノロジー・メディア・テレコミュニケーション（通信）...
+
+
+
+[Warning] line 831: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="success-story  success-story-case-studies " href="/case-studies/">
+
+
+
+[Warning] line 837: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <a class="success-story  success-story-matching-advisor " href="/matching-advisor/index.html">
+
+
+
+[Warning] line 40: [Ryukyu: No trailing white spaces at end of attribute value]
+
+    <body class="l-site-body isPage ">
 
 
 

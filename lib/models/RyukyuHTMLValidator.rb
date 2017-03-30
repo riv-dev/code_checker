@@ -17,9 +17,14 @@ class RyukyuHTMLValidator
 
                 #1) Ryukyu coding rule, no <img /> style void tags
                 if current_element.is_a?(HTMLTagVoid)
-                    return if current_element.type == "path" #path is a foreign tag, allow "/" at the end
+
+                    if current_element.str.match(/\w+\s+"/)
+                        line_str = current_element.str.gsub(/(\w+)\s+"/,'\1' + " ".colorize(:background => :yellow) + '"')
+                        html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: No trailing white spaces at end of attribute value", line_str)
+                    end
 
                     if current_element.str.match(/<\s*(\w+)\s*.*(\/\s*>)$/)
+                        return if current_element.type == "path" #path is a foreign tag, allow "/" at the end
                         html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: void tag should not have '/' at end", line_str)
                     end
 
@@ -43,6 +48,21 @@ class RyukyuHTMLValidator
 
                 #3) Only one h1 tag
                 if current_element.is_a?(HTMLTagOpen)
+                    if current_element.str.match(/\w+\s+"/)
+                        line_str = current_element.str.gsub(/(\w+)\s+"/,'\1' + " ".colorize(:background => :yellow) + '"')
+                        html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: No trailing white spaces at end of attribute value", line_str)
+                    end
+
+                    if current_element.str.match(/\s+>\s*$/)
+                        line_str = current_element.str.gsub(/(\s+)(>\s*)$/," ".colorize(:background => :yellow) + '\2')
+                        html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: No trailing white spaces at end of tag >", line_str)                            
+                    end
+
+                    if current_element.closing_tag.str.match(/\s+>\s*$/)
+                        line_str = current_element.closing_tag.str.gsub(/(\s+)(>\s*)$/," ".colorize(:background => :yellow) + '\2')
+                        html_file.warnings << ValidationMessage.new(current_element.closing_tag.code_line.line_number, "Ryukyu: No trailing white spaces at end of tag >", line_str)
+                    end
+
                     if current_element.type == 'h1'
                         h1_tags << current_element
                         if h1_tags.length > 1
@@ -54,10 +74,11 @@ class RyukyuHTMLValidator
                         end
                     end                    
                 end
-            end
-        end
+
+            end #end current_element
+        end #end root_tag
 
         return html_file
-    end
+    end #end def
 
 end

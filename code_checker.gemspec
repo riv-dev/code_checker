@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.7.0'
+    s.version = '1.7.1'
     s.date = '2017-03-02'
     s.summary = "Check HTML & SASS code for basic syntax and coding rules"
     s.authors = ["Ken Le"]
