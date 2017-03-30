@@ -2,7 +2,7 @@ class SASSInclude
     attr_accessor :codeline, :parent, :name, :parameters
 
     @@common_include_names = ['border-radius','transition','box-shadow','text-shadow','linear-gradient','radial-gradient','rotate',
-                              'skew','scale','translate','opacity','background-size']
+                              'skew','scale','translate','opacity','background-size', 'transform']
 
     def initialize(codeline, parent, name, parameters)
         @codeline = codeline
