@@ -18,6 +18,11 @@ If you get Error: Operation not permitted /usr/bin, try the fix
 https://www.macbartender.com/system-item-setup/
 
 You are now ready, run the tool!
+### Quick Tip: Turn on certain validators only with -V
+Available validators are: ryukyu, w3c, and achecker.  By default all validators are run.
+```bash
+code_checker -I urls_list.txt -r http://localhost:3000 -V achecker
+```
 
 ###  Option 1: Check HTML code given relative URL's in a file
 ```bash
