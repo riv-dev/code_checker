@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'code_checker'
-    s.version = '1.7.1'
+    s.version = '1.7.3'
     s.date = '2017-03-02'
     s.summary = "Check HTML & SASS code for basic syntax and coding rules"
     s.authors = ["Ken Le"]
@@ -32,8 +32,10 @@ Gem::Specification.new do |s|
                 "lib/models/RyukyuHTMLValidator.rb",
                 "lib/models/RyukyuSASSValidator.rb",
                 "lib/models/RyukyuCrossValidator.rb",
+                "lib/models/ACheckerValidator.rb",
                 "lib/models/ValidationMessage.rb",
-                "lib/views/ValidationConsoleView.rb"]
+                "lib/views/ValidationConsoleView.rb",
+                "lib/adapters/ValidationExportAdapter.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"
     s.add_dependency "w3c_validators"

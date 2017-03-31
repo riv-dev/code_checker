@@ -24,14 +24,13 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -S _dev/_sass -X _bootstrap,_animate",
                    "Run with both -I and -S, or -H and -S to do cross checking between HTML and SASS",
                    "  e.g. code_checker -I urls_file.txt -S _dev/_sass",
-                   "Run with -I and -E to specify a custom folder to export HTML, default folder is \"tested\"",
-                   "  e.g. code_checker -I urls_file.txt -E temp",
-                   "Run with -o to output results to a file",
-                   "  e.g. code_checker -I urls_file.txt -o log.txt",
+                   "Run with -O to specify code_checker output folder. Default folder is 'code_checker_output'",
+                   "  e.g. code_checker -I urls_file.txt -O output_folder",
                    "Run with -V to specify validators to run",
                    "  e.g. code_checker -I urls_file.txt -V ryukyu",
                    "  e.g. code_checker -I urls_file.txt -V w3c",
-                   "  e.g. code_checker -I urls_file.txt -V ryukyu,w3c (by default this is run)",
+                   "  e.g. code_checker -I urls_file.txt -V achecker",
+                   "  e.g. code_checker -I urls_file.txt -V ryukyu,w3c,achecker (by default this is run)",
                    " ",
                    "Option Descriptions:"].join("\n")
 
@@ -79,8 +78,8 @@ OptionParser.new do |opts|
         options [:validators] = names
     end
 
-    opts.on('-o', '--output_file filename', 'Output file name') do |name|
-        options[:output_file] = name
+    opts.on('-O', '--output_folder foldername', 'Output folder name') do |name|
+        options[:output_folder] = name
     end
 
 	opts.on('-h', '--help', 'Displays Help') do
@@ -111,13 +110,15 @@ options[:exclude_folders] = options[:exclude_folders].split(/\s*,\s*/) if option
 options[:validators] = options[:validators].split(/\s*,\s*/) if options[:validators] != nil
 options[:html_folders] = options[:html_folders].split(/\s*,\s*/) if options[:html_folders] != nil
 options[:sass_folders] = options[:sass_folders].split(/\s*,\s*/) if options[:sass_folders] != nil
+options[:output_folder] = "code_checker_output" if options[:output_folder] == nil
 
 #puts options
-CodeChecker.clear_output_file(options[:output_file])
+CodeChecker.clear_output_folder(options[:output_folder])
 
 if infile = options[:infile]
     validated_code_file = CodeChecker.check_file(infile, options)
-    CodeChecker.display_console(validated_code_file, options[:output_file])
+    CodeChecker.display_console(validated_code_file)
+    CodeChecker.export_result(validated_code_file, options[:output_folder])
 end
 
 validated_html = nil
@@ -143,5 +144,8 @@ if validated_html and validated_sass
     CodeChecker.cross_check_html_sass(validated_html,validated_sass)
 end
 
-CodeChecker.display_all_console(validated_html,options[:output_file])
-CodeChecker.display_all_console(validated_sass,options[:output_file])
+CodeChecker.display_all_console(validated_html)
+CodeChecker.display_all_console(validated_sass)
+
+CodeChecker.export_all_results(validated_html, options[:output_folder])
+CodeChecker.export_all_results(validated_sass, options[:output_folder])

@@ -8,7 +8,9 @@ require_relative 'models/HTMLFileFactory.rb'
 require_relative 'models/RyukyuHTMLValidator.rb'
 require_relative 'models/RyukyuSASSValidator.rb'
 require_relative 'models/RyukyuCrossValidator.rb'
+require_relative 'models/ACheckerValidator.rb'
 require_relative 'views/ValidationConsoleView.rb'
+require_relative 'adapters/ValidationExportAdapter.rb'
 
 include W3CValidators
 
@@ -64,8 +66,10 @@ class CodeChecker
     end
 
     #Now that the URL's are ready, import the HTML
-    import_folder = options[:import_folder]
-    import_folder = "code_checker_tested" if import_folder == nil
+    output_folder = options[:output_folder]
+
+    import_folder = output_folder.split('/').push("imported").join('/')
+
     #Clear the import folder if it already exists
     self.remove_dir(import_folder)
 
@@ -124,7 +128,9 @@ class CodeChecker
     #Ryukyu Validator
     ryukyu_validator = RyukyuHTMLValidator.new
     #W3C Validator
-    w3c_validator = NuValidator.new
+    w3c_validator = NuValidator.new(:validator_uri => 'https://validator.w3.org/nu/')
+    #AChecker Validator
+    achecker_validator = ACheckerValidator.new
 
     folders.each do |folder|
       Dir.glob(folder+"/**/*.html") do |file_name|
@@ -138,9 +144,21 @@ class CodeChecker
           end
 
           if options[:validators] == nil or options[:validators].include?('w3c')
-            w3c_results = w3c_validator.validate_file(html_file.file_path)
-            html_file.errors.concat(w3c_results.errors)
-            html_file.warnings.concat(w3c_results.warnings)
+            begin
+              w3c_results = w3c_validator.validate_file(html_file.file_path)
+              html_file.errors.concat(w3c_results.errors)
+              html_file.warnings.concat(w3c_results.warnings)
+            rescue
+              html_file.errors.push(ValidationMessage.new("NA","W3C: service is down.",nil))
+            end
+          end
+
+          if options[:validators] == nil or options[:validators].include?('achecker')
+            results = achecker_validator.validate(html_file.file_path)
+            #puts results
+            #a = File.open('results.html','w')
+            #a << results
+            #a.close
           end
         end
       end   
@@ -175,16 +193,24 @@ class CodeChecker
     return results
   end
 
-  def self.clear_output_file(output_file)
-    ValidationConsoleView.clear_output_file(output_file)
+  def self.clear_output_folder(output_folder)
+    self.remove_dir(output_folder)
   end
 
-  def self.display_console(code_file, output_file)
-    ValidationConsoleView.display(code_file, output_file)
+  def self.display_console(code_file)
+    ValidationConsoleView.display(code_file)
   end
 
-  def self.display_all_console(code_files, output_file)
-    ValidationConsoleView.display_all(code_files, output_file)
+  def self.display_all_console(code_files)
+    ValidationConsoleView.display_all(code_files)
+  end
+
+  def self.export_result(code_file, output_folder)
+    ValidationExportAdapter.export_result(code_file, output_folder)
+  end
+
+  def self.export_all_results(code_files, output_folder)
+    ValidationExportAdapter.export_all_results(code_files, output_folder)
   end
 
   private

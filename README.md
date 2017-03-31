@@ -32,13 +32,13 @@ code_checker -I urls_list.txt -r http://localhost:3000
 /restaurant/index.php
 ```
 
-#### By default HTML is imported into "code_checker_tested" folder
+#### By default HTML is imported into "code_checker_output/imported" folder
 You may check the folder to see the resulting HTML that was checked
 ```bash
-/code_checker_tested/index.html
-/code_checker_tested/faqs/index.html
-/code_checker_tested/tower/index.html
-/code_checker_tested/restaurant/index.html
+/code_checker/imported/index.html
+/code_checker/imported/faqs/index.html
+/code_checker/imported/tower/index.html
+/code_checker/imported/restaurant/index.html
 ```
 
 ### Option 1: with remote server and password
@@ -85,9 +85,9 @@ code_checker -f fonts.scss
 code_checker -H mock
 ```
 
-### Optional: Pipe the output to a logfile
+### Optional: Change the output folder
 ```bash
-code_checker -I urls_list.txt -o log.txt
+code_checker -I urls_list.txt -O my_output_folder
 ```
 
 ### Optional: Turn on certain validators only
@@ -101,9 +101,14 @@ Run ryukyu validation only
 code_checker -I urls_list.txt -V ryukyu
 ```
 
+Run achecker validation only
+```bash
+code_checker -I urls_list.txt -V achecker
+```
+
 Run both w3c and ryukyu (this is run by default, does not need to be specified)
 ```bash
-code_checker -I urls_list.txt -V w3c,ryukyu
+code_checker -I urls_list.txt -V w3c,ryukyu,achecker
 ```
 
 ### Help: Get help about usage

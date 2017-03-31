@@ -1,19 +1,11 @@
-require 'colorize'
+class ValidationExportAdapter
 
-class ValidationConsoleView
     @@output = nil
-    #def self.clear_output_file(output_file)
-    #    return if output_file == nil
-    #    f = File.open(output_file,'w')
-    #    f.close
-    #end
 
-    def self.display(code_file)
+    def self.export_result(code_file, output_folder)
         return if code_file == nil
 
-        #if output_file
-        #    @@output = open(output_file,'a')
-        #end
+        @@output = open(output_folder + "/results.txt",'a')
 
         self.puts_it "Checked #{code_file.file_path}"
 
@@ -36,19 +28,19 @@ class ValidationConsoleView
         end
         self.puts_it " "
 
-        #@@output.close if @@output    
+        @@output.close if @@output    
     end
 
-    def self.display_all(code_files)
+    def self.export_all_results(code_files, output_folder)
         return if code_files == nil
 
         if code_files.respond_to?('keys')
             code_files.keys.each do |filename|
-                self.display(code_files[filename])
+                self.export_result(code_files[filename], output_folder)
              end
         else
             code_files.each do |code_file|
-                self.display(code_file)
+                self.export_result(code_file, output_folder)
             end
         end
     end
@@ -64,13 +56,9 @@ class ValidationConsoleView
     end
 
     def self.puts_it(str)
-        #if @@output
-        #    #remove coloring
-        #    str_nocolor = str.gsub(/\033\[\d+;\d+;\d+m(.*?)\033\[0m/,'\1')
-        #    @@output.write("#{str_nocolor}\n")
-        #end
-
-        puts str
+        #remove coloring
+        str_nocolor = str.gsub(/\033\[\d+;\d+;\d+m(.*?)\033\[0m/,'\1')
+        @@output.write("#{str_nocolor}\n")
     end
 
 end
