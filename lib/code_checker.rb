@@ -140,11 +140,13 @@ class CodeChecker
           @@all_html_files[file_name] = html_file
 
           if options[:validators] == nil or options[:validators].include?('ryukyu')
+            puts "    running ryukyu validation..."
             ryukyu_validator.validate(html_file)
           end
 
           if options[:validators] == nil or options[:validators].include?('w3c')
             begin
+              puts "    running w3c validation..."
               w3c_results = w3c_validator.validate_file(html_file.file_path)
               html_file.errors.concat(w3c_results.errors)
               html_file.warnings.concat(w3c_results.warnings)
@@ -155,6 +157,7 @@ class CodeChecker
 
           if options[:validators] == nil or options[:validators].include?('achecker')
             begin
+              puts "    running achecker validation..."
               achecker_results = achecker_validator.validate(html_file.file_path)
               html_file.reports[:achecker] = achecker_results[:report]
               html_file.errors.concat(achecker_results[:errors])
@@ -185,6 +188,7 @@ class CodeChecker
           puts "  Checking #{file_name}"
           sass_file = SASSFile.new(file_name)
           @@all_sass_files << sass_file
+          puts "    running ryukyu validation..."
           ryukyu_validator.validate(sass_file)
         end
       end     
