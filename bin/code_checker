@@ -131,7 +131,7 @@ elsif options[:urlfile]
     html_folders << CodeChecker.import_html(options[:urlfile], options)
 end
 
-if html_folders
+if html_folders and !html_folders.empty?
     validated_html = CodeChecker.check_html(html_folders, options)
 end
 

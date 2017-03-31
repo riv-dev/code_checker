@@ -21,6 +21,10 @@ class ValidationExportAdapter
             a.close
         end
 
+        unless File.directory?(output_folder)
+            FileUtils.mkdir_p(output_folder)
+        end
+
         @@output = open(output_folder + "/results.txt",'a')
 
         self.puts_it "####################################################################################"
