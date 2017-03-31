@@ -23,13 +23,15 @@ class ValidationConsoleView
         #self.puts_it "Checked #{code_file.file_path}"
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
-                error.message = "W3C: " + error.message if error.is_a?(W3CValidators::Message)
-                self.puts_error(error.message,error.line,error.source)    
+                error_msg = "W3C: " + error.message if error.is_a?(W3CValidators::Message)
+                error_msg = error.message unless error_msg
+                self.puts_error(error_msg,error.line,error.source)    
             end
 
             code_file.warnings.each do |warning|
-                warning.message = "W3C: " + warning.message if warning.is_a?(W3CValidators::Message)
-                self.puts_warning(warning.message,warning.line,warning.source)
+                warning_msg = "W3C: " + warning.message if warning.is_a?(W3CValidators::Message)
+                warning_msg = warning.message unless warning_msg
+                self.puts_warning(warning_msg,warning.line,warning.source)
             end
             self.puts_it " "
         else
