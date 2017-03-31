@@ -18,8 +18,6 @@ If you get Error: Operation not permitted /usr/bin, try the fix
 https://www.macbartender.com/system-item-setup/
 
 You are now ready, run the tool!
-### Quick Tip: Turn on and off validators
-By default all validators are turned on (ryukyu, w3c, and achecker).  The resulting report may be too long.  Check optional options below for turning on certain validators only.
 
 ###  Option 1: Check HTML code given relative URL's in a file
 ```bash
