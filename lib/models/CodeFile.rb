@@ -1,7 +1,7 @@
 require_relative 'CodeLine.rb'
 
 class CodeFile
-    attr_accessor :file_path, :lines, :errors, :warnings
+    attr_accessor :file_path, :lines, :errors, :warnings, :reports
 
     #Used for parsing document
     attr_accessor :open_comment_detected
@@ -9,6 +9,7 @@ class CodeFile
     def initialize(file_path)
         @errors = []
         @warnings = []
+        @reports = {}
         @file_path = file_path
         @lines = []
 

@@ -15,7 +15,9 @@ class ValidationConsoleView
         #    @@output = open(output_file,'a')
         #end
 
+        self.puts_it "####################################################################################"
         self.puts_it "Checked #{code_file.file_path}"
+        self.puts_it "####################################################################################\n\n"
 
         #Display errors
         #self.puts_it "Checked #{code_file.file_path}"

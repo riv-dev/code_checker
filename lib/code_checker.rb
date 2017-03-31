@@ -154,7 +154,14 @@ class CodeChecker
           end
 
           if options[:validators] == nil or options[:validators].include?('achecker')
-            results = achecker_validator.validate(html_file.file_path)
+            begin
+              achecker_results = achecker_validator.validate(html_file.file_path)
+              html_file.reports[:achecker] = achecker_results[:report]
+              html_file.errors.concat(achecker_results[:errors])
+              html_file.warnings.concat(achecker_results[:warnings])
+            rescue
+              html_file.errors.push(ValidationMessage.new("NA","AChecker: service is down.",nil))        
+            end
             #puts results
             #a = File.open('results.html','w')
             #a << results

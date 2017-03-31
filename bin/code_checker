@@ -144,6 +144,7 @@ if validated_html and validated_sass
     CodeChecker.cross_check_html_sass(validated_html,validated_sass)
 end
 
+puts " "
 CodeChecker.display_all_console(validated_html)
 CodeChecker.display_all_console(validated_sass)
 

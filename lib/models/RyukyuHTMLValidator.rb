@@ -29,11 +29,11 @@ class RyukyuHTMLValidator
                     end
 
                     #Already checked by W3C
-                    #if current_element.type == 'img'
-                    #    if !current_element.str.match(/alt/)
-                    #        html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: img tag needs alt attribute defined", line_str)
-                    #    end
-                    #end
+                    if current_element.type == 'img'
+                        if !current_element.str.match(/alt/)
+                            html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: img tag needs alt attribute defined", line_str)
+                        end
+                    end
 
                 end
 

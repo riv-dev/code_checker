@@ -5,9 +5,27 @@ class ValidationExportAdapter
     def self.export_result(code_file, output_folder)
         return if code_file == nil
 
+        code_file.reports.keys.each do |report_type|
+            filename = report_type.to_s + "_" + code_file.file_path.split("/").last
+            export_report_path = output_folder + "/reports/" + File.dirname(code_file.file_path).gsub(output_folder+"/imported/",'') + "/" + filename
+            puts "Exported #{report_type.to_s} detailed report to: #{export_report_path}"
+
+            dirname = File.dirname(export_report_path)
+
+            unless File.directory?(dirname)
+                FileUtils.mkdir_p(dirname)
+            end
+
+            a = File.open(export_report_path,'w')
+            a << code_file.reports[report_type]
+            a.close
+        end
+
         @@output = open(output_folder + "/results.txt",'a')
 
+        self.puts_it "####################################################################################"
         self.puts_it "Checked #{code_file.file_path}"
+        self.puts_it "####################################################################################\n\n"
 
         #Display errors
         #self.puts_it "Checked #{code_file.file_path}"
@@ -33,6 +51,7 @@ class ValidationExportAdapter
 
     def self.export_all_results(code_files, output_folder)
         return if code_files == nil
+        puts "Exported results to: #{output_folder}/results.txt"
 
         if code_files.respond_to?('keys')
             code_files.keys.each do |filename|
