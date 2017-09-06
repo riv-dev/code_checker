@@ -7,8 +7,10 @@ options = {}
 OptionParser.new do |opts|
 	opts.banner = ["Run with -f to check a single file.",
                    "  e.g. code_checker -f index.html",
-                   "Run with -I to specify urls to check HTML",
+                   "Run with -I to specify urls to check HTML from file",
                    "  e.g. code_checker -I urls_file.txt",
+                   "Run with -l to specify urls to check HTML on command line"
+                   " e.g. code_checker -l /,/tower.php,/restaurant.php"
                    "Run with -r and -I to specify root host, URL file will have relative paths",
                    "  e.g. code_checker -r localhost:3000 -I urls_file.txt",
                    "Run with -u and -p to specify username and password for URLs",
@@ -50,6 +52,10 @@ OptionParser.new do |opts|
         options[:urlfile] = name
     end
 
+    opts.on('-l', '--list urls_list', 'List URL list') do |list|
+        options[:url_list] = list 
+    end
+
     opts.on('-S', '--sass folderpaths', 'SASS folder paths') do |path|
         options[:sass_folders] = path
     end
@@ -61,10 +67,6 @@ OptionParser.new do |opts|
 	opts.on('-f', '--file filename', 'Input file name') do |name|
 		options[:infile] = name;
 	end
-
-    opts.on('-i', '--import_folder name', 'Import folder name') do |name|
-        options[:import_folder] = name
-    end
 
     opts.on('-x', '--exclude_files files', 'File to exclude, allows * wildcards') do |names|
         options[:exclude_files] = names
@@ -108,6 +110,7 @@ end
 options[:exclude_files] = options[:exclude_files].split(/\s*,\s*/) if options[:exclude_files] != nil
 options[:exclude_folders] = options[:exclude_folders].split(/\s*,\s*/) if options[:exclude_folders] != nil
 options[:validators] = options[:validators].split(/\s*,\s*/) if options[:validators] != nil
+options[:url_list] = options[:url_list].split(/\s*,\s*/) if options[:url_list] != nil
 options[:html_folders] = options[:html_folders].split(/\s*,\s*/) if options[:html_folders] != nil
 options[:sass_folders] = options[:sass_folders].split(/\s*,\s*/) if options[:sass_folders] != nil
 options[:output_folder] = "code_checker_output" if options[:output_folder] == nil
@@ -126,13 +129,13 @@ html_folders = nil
 
 html_folders = []
 if options[:html_folders]
-    html_folders = options[:html_folders]
-elsif options[:urlfile]
-    html_folders << CodeChecker.import_html(options[:urlfile], options)
+    html_folders = options[:html_folders] #check local HTML folders
+elsif options[:urlfile] or options[:url_list]
+    html_folders << CodeChecker.import_html(options) #import HTML into local folder
 end
 
 if html_folders and !html_folders.empty?
-    validated_html = CodeChecker.check_html(html_folders, options)
+    validated_html = CodeChecker.check_html(html_folders, options) #check the local or imported HTML
 end
 
 validated_sass = nil
