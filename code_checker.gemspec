@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
                 "lib/models/ACheckerValidator.rb",
                 "lib/models/ValidationMessage.rb",
                 "lib/views/ValidationConsoleView.rb",
+                "lib/views/JSONView.rb",
                 "lib/adapters/ValidationExportAdapter.rb"]
     s.add_dependency "colorize"
     s.add_dependency "nokogiri"

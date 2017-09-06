@@ -10,6 +10,7 @@ require_relative 'models/RyukyuSASSValidator.rb'
 require_relative 'models/RyukyuCrossValidator.rb'
 require_relative 'models/ACheckerValidator.rb'
 require_relative 'views/ValidationConsoleView.rb'
+require_relative 'views/JSONView.rb'
 require_relative 'adapters/ValidationExportAdapter.rb'
 
 include W3CValidators
@@ -108,7 +109,10 @@ class CodeChecker
       import_file = File.open(import_file_path,'w')
 
       if options[:username] and options[:password]
-        puts "Importing #{url} with username=#{options[:username]} and password=#{options[:password]}"
+        unless options[:web_api] #suppress output for web api mode, display only results JSON
+          puts "Importing #{url} with username=#{options[:username]} and password=#{options[:password]}"
+        end
+
         begin
           open(url, :http_basic_authentication => [options[:username], options[:password]], :redirect => false) { |f|
             f.each_line {|line| import_file << line}
@@ -120,7 +124,9 @@ class CodeChecker
           }
         end
       else
-        puts "Importing #{url}"
+        unless options[:web_api] #suppress output for web api mode, display only results JSON
+          puts "Importing #{url}"
+        end
         open(url) {|f| 
           f.each_line {|line| import_file << line}
         }
@@ -128,14 +134,18 @@ class CodeChecker
 
       import_file.close
 
-      puts "  Imported #{import_file_path}"
+      unless options[:web_api] #suppress output for web api mode, display only results JSON
+        puts "  Imported #{import_file_path}"
+      end
     end
 
     return import_folder
   end
 
   def self.check_html(folders, options)
-    puts "Checking HTML..."
+    unless options[:web_api] #supress output for web api mode, display only results JSON
+      puts "Checking HTML..."
+    end
     #Ryukyu Validator
     ryukyu_validator = RyukyuHTMLValidator.new
     #W3C Validator
@@ -146,18 +156,24 @@ class CodeChecker
     folders.each do |folder|
       Dir.glob(folder+"/**/*.html") do |file_name|
         if !self.ignore_file?(file_name, options)
-          puts "  Checking #{file_name}"
+          unless options[:web_api]
+            puts "  Checking #{file_name}"
+          end
           html_file = HTMLFile.new(file_name)
           @@all_html_files[file_name] = html_file
 
           if options[:validators] == nil or options[:validators].include?('ryukyu')
-            puts "    running ryukyu validation..."
+            unless options[:web_api]
+              puts "    running ryukyu validation..."
+            end
             ryukyu_validator.validate(html_file)
           end
 
           if options[:validators] == nil or options[:validators].include?('w3c')
             begin
-              puts "    running w3c validation..."
+              unless options[:web_api]
+                puts "    running w3c validation..."
+              end
               w3c_results = w3c_validator.validate_file(html_file.file_path)
               html_file.errors.concat(w3c_results.errors)
               html_file.warnings.concat(w3c_results.warnings)
@@ -168,7 +184,9 @@ class CodeChecker
 
           if options[:validators] == nil or options[:validators].include?('achecker')
             begin
-              puts "    running achecker validation..."
+              unless options[:web_api]
+                puts "    running achecker validation..."
+              end
               achecker_results = achecker_validator.validate(html_file.file_path)
               html_file.reports[:achecker] = achecker_results[:report]
               html_file.errors.concat(achecker_results[:errors])
@@ -189,17 +207,23 @@ class CodeChecker
   end
   
   def self.check_sass(folders, options)
-    puts "Checking SASS..."
+    unless options[:web_api]
+      puts "Checking SASS..."
+    end
     #Ryukyu Validator
     ryukyu_validator = RyukyuSASSValidator.new
 
     folders.each do |folder|
       Dir.glob(folder+"/**/*.scss") do |file_name|
         if !self.ignore_file?(file_name, options)
-          puts "  Checking #{file_name}"
+          unless options[:web_api]
+            puts "  Checking #{file_name}"
+          end
           sass_file = SASSFile.new(file_name)
           @@all_sass_files << sass_file
-          puts "    running ryukyu validation..."
+          unless options[:web_api]
+            puts "    running ryukyu validation..."
+          end
           ryukyu_validator.validate(sass_file)
         end
       end     
@@ -210,7 +234,9 @@ class CodeChecker
 
   def self.cross_check_html_sass(html_files,sass_files)
     ryukyu_validator = RyukyuCrossValidator.new
-    puts "Performing cross validation between HTML and SASS..."
+    unless options[:web_api]
+      puts "Performing cross validation between HTML and SASS..."
+    end
     results = ryukyu_validator.validate(html_files,sass_files)
     return results
   end
@@ -223,8 +249,12 @@ class CodeChecker
     ValidationConsoleView.display(code_file)
   end
 
-  def self.display_all_console(code_files)
-    ValidationConsoleView.display_all(code_files)
+  def self.display_json(code_file)
+    JSONView.display(code_file)
+  end
+
+  def self.display_all_json(code_files)
+    JSONView.display_all(code_files)
   end
 
   def self.export_result(code_file, output_folder)

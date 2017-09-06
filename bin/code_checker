@@ -28,6 +28,8 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -I urls_file.txt -S _dev/_sass",
                    "Run with -O to specify code_checker output folder. Default folder is 'code_checker_output'",
                    "  e.g. code_checker -I urls_file.txt -O output_folder",
+                   "Run with -W to run for web API, output is in JSON format'",
+                   "  e.g. code_checker -I urls_file.txt -W",
                    "Run with -V to specify validators to run",
                    "  e.g. code_checker -I urls_file.txt -V ryukyu",
                    "  e.g. code_checker -I urls_file.txt -V w3c",
@@ -83,6 +85,14 @@ OptionParser.new do |opts|
     opts.on('-O', '--output_folder foldername', 'Output folder name') do |name|
         options[:output_folder] = name
     end
+
+    opts.on('-N', '--no_export', 'Do not export results') do
+        options[:no_export] = true
+    end
+
+    opts.on('-W', '--web_api', 'Turn on when running with a web API') do
+        options[:web_api] = true
+    end   
 
 	opts.on('-h', '--help', 'Displays Help') do
 		puts opts
@@ -148,9 +158,17 @@ if validated_html and validated_sass
     CodeChecker.cross_check_html_sass(validated_html,validated_sass)
 end
 
-puts " "
-CodeChecker.display_all_console(validated_html)
-CodeChecker.display_all_console(validated_sass)
+if options[:web_api]
+    CodeChecker.display_all_json(validated_html)
+    CodeChecker.display_all_json(validated_sass)
+    options[:no_export] = true
+else
+    CodeChecker.display_all_console(validated_html)
+    CodeChecker.display_all_console(validated_sass)
+end
 
-CodeChecker.export_all_results(validated_html, options[:output_folder])
-CodeChecker.export_all_results(validated_sass, options[:output_folder])
+if options[:no_export] == nil or !options[:no_export]
+    CodeChecker.export_all_results(validated_html, options[:output_folder])
+    CodeChecker.export_all_results(validated_sass, options[:output_folder])
+end
+
