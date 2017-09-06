@@ -9,8 +9,8 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -f index.html",
                    "Run with -I to specify urls to check HTML from file",
                    "  e.g. code_checker -I urls_file.txt",
-                   "Run with -l to specify urls to check HTML on command line"
-                   " e.g. code_checker -l /,/tower.php,/restaurant.php"
+                   "Run with -l to specify urls to check HTML on command line",
+                   " e.g. code_checker -l /,/tower.php,/restaurant.php",
                    "Run with -r and -I to specify root host, URL file will have relative paths",
                    "  e.g. code_checker -r localhost:3000 -I urls_file.txt",
                    "Run with -u and -p to specify username and password for URLs",
