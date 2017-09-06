@@ -147,6 +147,8 @@ Cross checking between .html and .scss files
 - Ryukyu rule 5: Makes sure hover styles are applied to 'a', 'input', 'button' tags only
 - Ryukyu rule 5: Makes sure all 'a', 'input', and 'button' tags have hover style defined
 
+## Building the GEM and editing the source code
+Visit http://guides.rubygems.org/make-your-own-gem/ for details.
 
 ## [Under Construction, do not try yet] Directions to run automatically within Grunt, Ryukyu project
 Add the following line to _dev/Gemfile

@@ -41,34 +41,39 @@ class CodeChecker
   end
 
   def self.import_html(options)
-    urls = []
 
     #Read in the URL's and prepare them accordingly
     if options[:roothost] 
       options[:roothost].chomp.strip.gsub!(/\/$/,'') #remove trailing '/'
     end
 
+    unprocessed_urls = []
     if options[:urlfile]
       urlfile = options[:urlfile]
       f = File.open(urlfile, "r")
-      #Properly clean and build the urls from the file
       f.each_line do |url|
-        next if url.chomp.strip.length == 0
-
-        url.chomp.strip!
-
-        if options[:roothost] 
-          url = '/' + url unless url.match(/^\//)
-          url = options[:roothost] + url
-        end
-
-        url = "http://" + url unless url.match(/^http/)
-        url = url.chomp.strip
-
-        urls << url
+        unprocessed_urls << url
       end
     elsif options[:url_list]
-      urls = options[:url_list]
+      unprocessed_urls = options[:url_list]
+    end
+
+    #Properly clean and build the urls from the file
+    urls = []
+    unprocessed_urls.each do |url|
+      next if url.chomp.strip.length == 0
+
+      url.chomp.strip!
+
+      if options[:roothost] 
+        url = '/' + url unless url.match(/^\//) #Add / before the relative URL if not exist
+        url = options[:roothost] + url
+      end
+
+      url = "http://" + url unless url.match(/^http/) #Make sure to include http
+      url = url.chomp.strip
+
+      urls << url
     end
 
     #Now that the URL's are ready, import the HTML

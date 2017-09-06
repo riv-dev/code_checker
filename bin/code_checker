@@ -95,8 +95,9 @@ if options == {}
     exit
 end
 
-if options[:roothost] and options[:urlfile] == nil
-    puts 'Must provide -I urlfile option when using -r option'
+if options[:roothost] and options[:urlfile] == nil and options[:url_list] == nil
+    puts 'Must provide -I urlfile option when using -r option OR'
+    puts 'Must provide -l url_list option when using -r option'
     puts 'Run "code_checker -h" to view examples'
     exit
 end
