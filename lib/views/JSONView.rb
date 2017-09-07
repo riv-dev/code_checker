@@ -2,12 +2,6 @@
 require 'json'
 
 class JSONView 
-    @@output = nil
-    #def self.clear_output_file(output_file)
-    #    return if output_file == nil
-    #    f = File.open(output_file,'w')
-    #    f.close
-    #end
     @@all_results = []
 
     @@display_all_invoked = false
