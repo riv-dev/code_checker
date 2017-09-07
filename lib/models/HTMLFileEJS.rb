@@ -1,3 +1,4 @@
+#encoding: utf-8
 class HTMLFileEJS < HTMLFile
     @@open_ejs_detected = false
 

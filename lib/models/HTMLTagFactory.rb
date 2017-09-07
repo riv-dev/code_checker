@@ -1,3 +1,4 @@
+#encoding: utf-8
 require_relative 'HTMLTagOpen.rb'
 require_relative 'HTMLTagClose.rb'
 require_relative 'HTMLTagVoid.rb'

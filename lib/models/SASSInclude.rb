@@ -1,3 +1,4 @@
+#encoding: utf-8
 class SASSInclude
     attr_accessor :codeline, :parent, :name, :parameters
 

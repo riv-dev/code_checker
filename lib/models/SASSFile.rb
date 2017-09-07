@@ -1,3 +1,4 @@
+#encoding: utf-8
 require_relative 'CodeFile.rb'
 require_relative 'SASSLine.rb'
 require_relative 'SASSMixin.rb'

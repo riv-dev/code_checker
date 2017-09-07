@@ -1,3 +1,4 @@
+#encoding: utf-8
 class SASSProperty
 
     attr_accessor :codeline

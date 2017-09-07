@@ -1,3 +1,4 @@
+#encoding: utf-8
 class ValidationMessage
     attr_accessor :line
     attr_accessor :message

@@ -1,3 +1,4 @@
+#encoding: utf-8
 class SASSMixin
     attr_accessor :codeline
     attr_accessor :name #Type string

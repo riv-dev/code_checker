@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'fileutils'
 require 'w3c_validators'
 require 'open-uri'

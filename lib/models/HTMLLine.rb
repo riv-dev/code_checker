@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'colorize'
 require_relative 'CodeLine.rb'
 require_relative 'HTMLTagFactory.rb'

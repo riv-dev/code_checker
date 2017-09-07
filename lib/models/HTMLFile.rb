@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'colorize'
 require_relative 'CodeFile.rb'
 require_relative 'HTMLLine.rb'

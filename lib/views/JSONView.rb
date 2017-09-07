@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'json'
 
 class JSONView 
@@ -18,11 +19,13 @@ class JSONView
 
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
-                results[:errors] << {:line_num => error.line, :message => error.message, :source => error.source}
+                error_msg = error.message.gsub(/"/,"'")
+                results[:errors] << {:line_num => error.line, :message => error_msg, :source => error.source}
             end
 
             code_file.warnings.each do |warning|
-                results[:warnings] << {:line_num => warning.line, :message => warning.message, :source => warning.source}
+                warning_msg = warning.message.gsub(/"/,"'")
+                results[:warnings] << {:line_num => warning.line, :message => warning_msg, :source => warning.source}
             end
         else
             results[:success] = true
@@ -31,7 +34,7 @@ class JSONView
         if @@display_all_invoked
             @@all_results << results
         else
-            puts results.to_json
+            puts JSON.pretty_generate(results)
         end
     end
 
@@ -49,7 +52,7 @@ class JSONView
             end
         end
 
-        puts @@all_results.to_json
+        puts JSON.pretty_generate(@@all_results)
 
         @@display_all_invoked = false
     end

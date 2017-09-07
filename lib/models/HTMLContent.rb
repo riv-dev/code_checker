@@ -1,3 +1,4 @@
+#encoding: utf-8
 require_relative 'HTMLElement.rb'
 
 class HTMLContent < HTMLElement

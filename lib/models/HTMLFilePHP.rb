@@ -1,3 +1,4 @@
+#encoding: utf-8
 class HTMLFilePHP < HTMLFile
     @@open_php_detected = false
 

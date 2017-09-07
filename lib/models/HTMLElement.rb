@@ -1,3 +1,4 @@
+#encoding: utf-8
 class HTMLElement
    attr_accessor :code_line #Type HTMLLine
    attr_accessor :str #Type String

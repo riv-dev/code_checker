@@ -1,3 +1,4 @@
+#encoding: utf-8
 require_relative 'CodeLine.rb'
 require_relative 'SASSSelector.rb'
 require_relative 'SASSProperty.rb'
