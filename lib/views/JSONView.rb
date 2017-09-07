@@ -11,6 +11,15 @@ class JSONView
     @@all_results = []
 
     @@display_all_invoked = false
+    def self.message_type(validation_message)
+        if validation_message.is_a?(W3CValidators::Message)
+            return "W3C"
+        elsif validation_message.message.match(/Ryukyu/)
+            return "Ryukyu"
+        elsif validation_message.message.match(/AChecker/)
+            return "AChecker"
+        end
+    end
 
     def self.display(code_file)
         return if code_file == nil
@@ -20,12 +29,14 @@ class JSONView
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
                 error_msg = error.message.gsub(/"/,"'")
-                results[:errors] << {:line_num => error.line, :message => error_msg, :source => error.source}
+                type = self.message_type(error)
+                results[:errors] << {:type => type, :line_num => error.line, :message => error_msg, :source => error.source}
             end
 
             code_file.warnings.each do |warning|
                 warning_msg = warning.message.gsub(/"/,"'")
-                results[:warnings] << {:line_num => warning.line, :message => warning_msg, :source => warning.source}
+                type = self.message_type(warning)
+                results[:warnings] << {:type => type, :line_num => warning.line, :message => warning_msg, :source => warning.source}
             end
         else
             results[:success] = true
