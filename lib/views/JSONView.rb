@@ -24,13 +24,13 @@ class JSONView
             code_file.errors.each do |error|
                 error_msg = error.message.gsub(/"/,"'")
                 type = self.message_type(error)
-                results[:errors] << {:type => type, :line_num => error.line, :message => error_msg, :source => error.source}
+                results[:errors] << {:validator => type, :line_num => error.line, :message => error_msg, :source => error.source}
             end
 
             code_file.warnings.each do |warning|
                 warning_msg = warning.message.gsub(/"/,"'")
                 type = self.message_type(warning)
-                results[:warnings] << {:type => type, :line_num => warning.line, :message => warning_msg, :source => warning.source}
+                results[:warnings] << {:validator => type, :line_num => warning.line, :message => warning_msg, :source => warning.source}
             end
         else
             results[:success] = true
