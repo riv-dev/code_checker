@@ -18,7 +18,7 @@ class JSONView
     def self.display(code_file)
         return if code_file == nil
 
-        results = {:file_path => code_file.file_path, :errors => [], :warnings => [], :success => false}
+        results = {version: "1.9.5", :file_path => code_file.file_path, :errors => [], :warnings => [], :success => false}
 
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
