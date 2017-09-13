@@ -172,3 +172,8 @@ if options[:no_export] == nil or !options[:no_export]
     CodeChecker.export_all_results(validated_sass, options[:output_folder])
 end
 
+#Clean up all folders
+if options[:web_api]
+    CodeChecker.remove_imported(options)
+end
+

@@ -143,6 +143,10 @@ class CodeChecker
     return import_folder
   end
 
+  def self.remove_imported(options)
+    FileUtils.rm_rf(options[:output_folder])
+  end
+
   def self.check_html(folders, options)
     unless options[:web_api] #supress output for web api mode, display only results JSON
       puts "Checking HTML..."
