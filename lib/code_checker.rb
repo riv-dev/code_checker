@@ -297,7 +297,7 @@ class CodeChecker
     return @@all_sass_files
   end
 
-  def self.cross_check_html_sass(html_files,sass_files)
+  def self.cross_check_html_sass(html_files,sass_files, options)
     ryukyu_validator = RyukyuCrossValidator.new
     unless options[:web_api]
       puts "Performing cross validation between HTML and SASS..."

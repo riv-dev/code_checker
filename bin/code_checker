@@ -178,7 +178,7 @@ if sass_folders and !sass_folders.empty?
 end
 
 if validated_html and validated_sass
-    CodeChecker.cross_check_html_sass(validated_html,validated_sass)
+    CodeChecker.cross_check_html_sass(validated_html,validated_sass,options)
 end
 
 if options[:web_api]
