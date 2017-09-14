@@ -2,6 +2,7 @@
 require 'fileutils'
 require 'w3c_validators'
 require 'open-uri'
+require 'open3'
 
 require_relative 'models/HTMLFile.rb'
 require_relative 'models/SASSFile.rb'
@@ -210,11 +211,70 @@ class CodeChecker
 
     return @@all_html_files
   end
+
+  def self.import_sass(options)
+      #Now that the URL's are ready, import the HTML
+      output_folder = options[:output_folder]
+      
+      import_folder = output_folder.split('/').push("imported_sass").join('/')
+
+      FileUtils.mkdir_p(import_folder)
+      
+      #Clear the import folder if it already exists
+      self.remove_dir(import_folder)
+    
+        #Read in the URL's and prepare them accordingly
+        if options[:github_url] 
+          options[:github_url].chomp.strip.gsub!(/\/$/,'') #remove trailing '/'
+        else
+          return
+        end
+    
+        download_urls = []
+        imported_sass_folders = []
+        if options[:sass_folders]
+          options[:sass_folders].each do |relative_url|
+            download_url = "#{options[:github_url]}/trunk/#{relative_url}"
+
+            download_command = "svn export #{download_url} #{import_folder}/#{relative_url}"
+
+            if options[:github_username] and options[:github_password]
+              download_command = "#{download_command} --non-interactive --no-auth-cache --username #{options[:github_username]} --password #{options[:github_password]}"
+            end
+
+            output = `#{download_command}` #Execute system command with back ticks
+
+            unless options[:web_api]
+              puts output 
+            end
+
+            imported_sass_folders << "#{import_folder}/#{relative_url}".gsub!(/\/\//,'/')
+
+            if options[:exclude_file]
+              options[:exclude_files].each.with_index do |filepath, index|
+                options[:exclude_file][index] = "#{import_folder}/#{relative_url}/#{filepath}".gsub!(/\/\//,'/')
+              end
+            end
+      
+            if options[:exclude_folders]
+              options[:exclude_folders].each.with_index do |folderpath, index|
+               options[:exclude_folders][index] = "#{import_folder}/#{relative_url}/#{folderpath}".gsub!(/\/\//,'/')
+              end      
+              #puts "*****#{options[:exclude_folders]}"
+            end
+          end
+        else
+          return
+        end
+
+        return imported_sass_folders
+  end
   
   def self.check_sass(folders, options)
     unless options[:web_api]
       puts "Checking SASS..."
     end
+
     #Ryukyu Validator
     ryukyu_validator = RyukyuSASSValidator.new
 
@@ -252,6 +312,10 @@ class CodeChecker
 
   def self.display_console(code_file)
     ValidationConsoleView.display(code_file)
+  end
+
+  def self.display_all_console(code_files)
+    ValidationConsoleView.display_all(code_files)
   end
 
   def self.display_json(code_file)
@@ -306,23 +370,15 @@ class CodeChecker
         #Check for wildcards in exclude_folder name
         if exclude_folder.match(/\*.+\*/) #match front and back
             term = exclude_folder.gsub(/\*/,'')
-            path_components.each do |folder_name|
-              return true if folder_name.match(/#{term}/)
-            end
+            return true if path_components.join("/").match(/#{term}/)
           elsif exclude_folder.match(/\*.*\w$/) #match back only
             term = exclude_folder.gsub(/\*/,'')
-            path_components.each do |folder_name|
-              return true if folder_name.match(/#{term}$/)
-            end
+            return true if path_components.join("/").match(/#{term}$/)
           elsif exclude_folder.match(/.+\*$/) #match front only
             term = exclude_folder.gsub(/\*/,'')
-            path_components.each do |folder_name|
-              return true if folder_name.match(/^#{term}/)
-            end            
+            return true if path_components.join("/").match(/^#{term}/)
           else #no wildcard, match exactly
-            path_components.each do |folder_name|
-              return true if folder_name == exclude_folder
-            end            
+            return true if path_components.join("/").match(/^#{exclude_folder}/)
           end
       end
     end

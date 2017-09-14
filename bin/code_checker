@@ -20,6 +20,10 @@ OptionParser.new do |opts|
                    "  e.g. code_checker -H views/contacts,views/top",
                    "Run with -S to specify local SASS folder(s) to check",
                    "  e.g. code_checker -S _dev/_sass",
+                   "Run with -g to specify github repository for SASS",
+                   "  e.g. code_checker -g https://www.github.com/my_repo -S _dev/_sass",
+                   "Run with -U and -P to specify github username and password",
+                   "  e.g. code_checker -g https://www.github.com/my_repo -S _dev/_sass -U my_git_username -P my_git_password", 
                    "Run with -x to exclude certain files",
                    "  e.g. code_checker -H views -x test.html,scrap.html",
                    "Run with -X to exclude certain folders",
@@ -60,6 +64,18 @@ OptionParser.new do |opts|
 
     opts.on('-S', '--sass folderpaths', 'SASS folder paths') do |path|
         options[:sass_folders] = path
+    end
+
+    opts.on('-g', '--github url', 'Github SASS source URL') do |path|
+        options[:github_url] = path
+    end
+
+    opts.on('-U', '--github_username username', 'Github Username') do |username|
+        options[:github_username] = username
+    end
+
+    opts.on('-P', '--github_password password', 'Github Password') do |password|
+        options[:github_password] = password 
     end
 
     opts.on('-H', '--html folderpaths', 'HTML folder paths') do |path|
@@ -149,9 +165,16 @@ if html_folders and !html_folders.empty?
     validated_html = CodeChecker.check_html(html_folders, options) #check the local or imported HTML
 end
 
+sass_folders = []
+if options[:github_url]
+    sass_folders = CodeChecker.import_sass(options)
+elsif options[:sass_folders]
+    sass_folders = options[:sass_folders]
+end
+
 validated_sass = nil
-if options[:sass_folders]
-    validated_sass = CodeChecker.check_sass(options[:sass_folders], options)    
+if sass_folders and !sass_folders.empty?
+    validated_sass = CodeChecker.check_sass(sass_folders, options)    
 end
 
 if validated_html and validated_sass
@@ -174,6 +197,6 @@ end
 
 #Clean up all folders
 if options[:web_api]
-    CodeChecker.remove_imported(options)
+    #CodeChecker.remove_imported(options)
 end
 
