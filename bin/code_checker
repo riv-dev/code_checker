@@ -196,6 +196,6 @@ end
 
 #Clean up all folders
 if options[:web_api]
-    #CodeChecker.remove_imported(options)
+    CodeChecker.remove_imported(options)
 end
 

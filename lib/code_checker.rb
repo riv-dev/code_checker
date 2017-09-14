@@ -248,17 +248,17 @@ class CodeChecker
               puts output 
             end
 
-            imported_sass_folders << "#{import_folder}/#{relative_url}".gsub!(/\/\//,'/')
+            imported_sass_folders << "#{import_folder}/#{relative_url}".gsub(/\/\//,'/')
 
             if options[:exclude_file]
               options[:exclude_files].each.with_index do |filepath, index|
-                options[:exclude_file][index] = "#{import_folder}/#{relative_url}/#{filepath}".gsub!(/\/\//,'/')
+                options[:exclude_file][index] = "#{import_folder}/#{relative_url}/#{filepath}".gsub(/\/\//,'/')
               end
             end
       
             if options[:exclude_folders]
               options[:exclude_folders].each.with_index do |folderpath, index|
-               options[:exclude_folders][index] = "#{import_folder}/#{relative_url}/#{folderpath}".gsub!(/\/\//,'/')
+               options[:exclude_folders][index] = "#{import_folder}/#{relative_url}/#{folderpath}".gsub(/\/\//,'/')
               end      
               #puts "*****#{options[:exclude_folders]}"
             end
