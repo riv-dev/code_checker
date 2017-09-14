@@ -182,8 +182,7 @@ if validated_html and validated_sass
 end
 
 if options[:web_api]
-    CodeChecker.display_all_json(validated_html)
-    CodeChecker.display_all_json(validated_sass)
+    CodeChecker.display_all_html_and_sass_json(validated_html,validated_sass)
     options[:no_export] = true
 else
     CodeChecker.display_all_console(validated_html)

@@ -18,7 +18,14 @@ class JSONView
     def self.display(code_file)
         return if code_file == nil
 
-        results = {version: "1.9.5", :file_path => code_file.file_path, :errors => [], :warnings => [], :success => false}
+        file_type = nil
+        if code_file.is_a?(HTMLFile)
+            file_type = "html"
+        elsif code_file.is_a?(SASSFile)
+            file_type = "sass"
+        end
+
+        results = {version: "2.0.0", :file_path => code_file.file_path, :file_type => file_type, :errors => [], :warnings => [], :success => false}
 
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
@@ -44,6 +51,8 @@ class JSONView
     end
 
     def self.display_all(code_files)
+        @@all_results = []
+
         @@display_all_invoked = true
         return if code_files == nil
 
@@ -62,4 +71,22 @@ class JSONView
         @@display_all_invoked = false
     end
 
+    def self.display_all_html_and_sass(html_files, sass_files)
+        @@all_results = []
+        
+        @@display_all_invoked = true
+        return if html_files == nil or sass_files == nil
+        
+        html_files.keys.each do |filename|
+            self.display(html_files[filename])
+        end
+
+        sass_files.each do |sass_file|
+            self.display(sass_file)
+        end
+        
+        puts JSON.pretty_generate(@@all_results)
+        
+        @@display_all_invoked = false
+    end
 end

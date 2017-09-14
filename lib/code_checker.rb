@@ -326,6 +326,10 @@ class CodeChecker
     JSONView.display_all(code_files)
   end
 
+  def self.display_all_html_and_sass_json(html_files, sass_files)
+    JSONView.display_all_html_and_sass(html_files, sass_files)
+  end
+
   def self.export_result(code_file, output_folder)
     ValidationExportAdapter.export_result(code_file, output_folder)
   end
