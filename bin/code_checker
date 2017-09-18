@@ -167,7 +167,12 @@ end
 
 sass_folders = []
 if options[:github_url]
-    sass_folders = CodeChecker.import_sass(options)
+    if options[:github_username] and options[:github_username]
+        sass_folders = CodeChecker.import_sass(options)
+    else
+        puts "Error, need to specify github username and password"
+        exit
+    end
 elsif options[:sass_folders]
     sass_folders = options[:sass_folders]
 end
