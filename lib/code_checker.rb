@@ -242,7 +242,17 @@ class CodeChecker
               download_command = "#{download_command} --non-interactive --no-auth-cache --username #{options[:github_username]} --password #{options[:github_password]}"
             end
 
-            output = `#{download_command}` #Execute system command with back ticks
+            #output = `#{download_command}` #Execute system command with back ticks
+
+            output, e, s = Open3.capture3("#{download_command}", :stdin_data=>"foo\nbar\nbaz\n")
+            #puts "o: #{o}"
+            #puts "e: #{e}"
+            #puts "s: #{s}"
+
+            if e and e =~/svn/
+              puts "Error, an error occured while trying to import code from github.  Please check url, username, and password."
+              exit
+            end
 
             unless options[:web_api]
               puts output 
