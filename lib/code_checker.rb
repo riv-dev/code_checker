@@ -250,7 +250,7 @@ class CodeChecker
             #puts "s: #{s}"
 
             if e and e =~/svn/
-              puts "Error, an error occured while trying to import code from github.  Please check url, username, and password."
+              puts "Error, version 2.0.6, an error occured while trying to import code from github.  Please check url, username, and password. #{e}"
               exit
             end
 

@@ -25,7 +25,7 @@ class JSONView
             file_type = "sass"
         end
 
-        results = {version: "2.0.5", :file_path => code_file.file_path, :file_type => file_type, :errors => [], :warnings => [], :success => false}
+        results = {version: "2.0.6", :file_path => code_file.file_path, :file_type => file_type, :errors => [], :warnings => [], :success => false}
 
         if code_file.errors.length > 0 or code_file.warnings.length > 0
             code_file.errors.each do |error|
