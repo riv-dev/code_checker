@@ -75,16 +75,21 @@ class JSONView
         @@all_results = []
         
         @@display_all_invoked = true
-        return if html_files == nil or sass_files == nil
+
+        return [] if html_files == nil and sass_files == nil
         
-        html_files.keys.each do |filename|
-            self.display(html_files[filename])
+        if html_files
+            html_files.keys.each do |filename|
+                self.display(html_files[filename])
+            end
         end
 
-        sass_files.each do |sass_file|
-            self.display(sass_file)
+        if sass_files
+            sass_files.each do |sass_file|
+                self.display(sass_file)
+            end
         end
-        
+
         puts JSON.pretty_generate(@@all_results)
         
         @@display_all_invoked = false
