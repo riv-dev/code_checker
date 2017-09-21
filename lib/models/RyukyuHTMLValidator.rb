@@ -59,7 +59,7 @@ class RyukyuHTMLValidator
                         html_file.warnings << ValidationMessage.new(line_number, "Ryukyu: No trailing white spaces at end of tag >", line_str)                            
                     end
 
-                    if current_element.closing_tag.str.match(/\s+>\s*$/)
+                    if current_element.has_closing_tag and current_element.closing_tag.str.match(/\s+>\s*$/)
                         line_str = current_element.closing_tag.str.gsub(/(\s+)(>\s*)$/," ".colorize(:background => :yellow) + '\2')
                         html_file.warnings << ValidationMessage.new(current_element.closing_tag.code_line.line_number, "Ryukyu: No trailing white spaces at end of tag >", line_str)
                     end
