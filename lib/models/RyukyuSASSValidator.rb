@@ -51,7 +51,7 @@ class RyukyuSASSValidator
             line_str = sass_include.codeline.str.chomp.strip
 
             if sass_include.name.match(/transition/)
-                if sass_include.parent.name.match(/hover/)
+                if sass_include.parent and sass_include.parent.name.match(/hover/)
                    sass_file.warnings << ValidationMessage.new(line_number, "Ryukyu: transition should not be put inside hover", line_str)
                 end
             end

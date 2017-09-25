@@ -85,12 +85,16 @@ class HTMLFile < CodeFile
         if root_element.is_a?(HTMLTagOpen)
             root_element.children.each do |child|
                 check_all_elements(child) do |current_element|
-                    yield(current_element)
+                    if current_element
+                        yield(current_element)
+                    end
                 end
             end
         end
 
         #Insert custom checks on the element here        
-        yield(root_element)
+        if root_element 
+            yield(root_element)
+        end
     end
 end
