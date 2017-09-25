@@ -72,7 +72,7 @@ class RyukyuSASSValidator
                     end
                 end
             elsif sass_property.name.match(/font-size/)
-                if !sass_property.value.match(/px/)
+                if !sass_property.value.match(/px/) and !sass_property.value.match(/^\s*0\s*$/)
                     sass_file.warnings << ValidationMessage.new(line_number, "Ryukyu: Use px for font-size,don't use em, rem, %... , because it offers absolute control over text.", line_str)
                 end
             elsif sass_property.name.match(/display/)
